@@ -47,15 +47,15 @@ internal class ToonFr(context: MangaLoaderContext) :
 
 	private fun dateReplace(date: String): String {
 		return date.lowercase()
-			.replace("jan", "janv.")
-			.replace("fév", "févr.")
-			.replace("mar", "mars")
-			.replace("avr", "avr.")
-			.replace("juil", "juil.")
-			.replace("sep", "sept.")
-			.replace("nov", "nov.")
-			.replace("oct", "oct.")
-			.replace("déc", "déc.")
+			.replace(Regex("\\bjan\\b"), "janv.")
+			.replace(Regex("\\bfév\\b"), "févr.")
+			.replace(Regex("\\bmar\\b"), "mars")
+			.replace(Regex("\\bavr\\b"), "avr.")
+			.replace(Regex("\\bjuil\\b"), "juil.")
+			.replace(Regex("\\bsep\\b"), "sept.")
+			.replace(Regex("\\bnov\\b"), "nov.")
+			.replace(Regex("\\boct\\b"), "oct.")
+			.replace(Regex("\\bdéc\\b"), "déc.")
 	}
 }
 
