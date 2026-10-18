@@ -42,7 +42,7 @@ public interface WebClient {
 	public suspend fun httpHead(url: HttpUrl): Response
 
 	/**
-	 * Do a POST http request to specific url with `multipart/form-data` payload
+	 * Do a POST http request to specific url with `application/x-www-form-urlencoded` payload
 	 * @param url
 	 * @param form payload as key=>value map
 	 */
@@ -50,14 +50,14 @@ public interface WebClient {
 		httpPost(url.toHttpUrl(), form, null)
 
 	/**
-	 * Do a POST http request to specific url with `multipart/form-data` payload
+	 * Do a POST http request to specific url with `application/x-www-form-urlencoded` payload
 	 * @param url
 	 * @param form payload as key=>value map
 	 */
 	public suspend fun httpPost(url: HttpUrl, form: Map<String, String>): Response = httpPost(url, form, null)
 
 	/**
-	 * Do a POST http request to specific url with `multipart/form-data` payload
+	 * Do a POST http request to specific url with `application/x-www-form-urlencoded` payload
 	 * @param url
 	 * @param form payload as key=>value map
 	 * @param extraHeaders additional HTTP headers for request
@@ -65,21 +65,21 @@ public interface WebClient {
 	public suspend fun httpPost(url: HttpUrl, form: Map<String, String>, extraHeaders: Headers?): Response
 
 	/**
-	 * Do a POST http request to specific url with `multipart/form-data` payload
+	 * Do a POST http request to specific url with `application/x-www-form-urlencoded` payload
 	 * @param url
 	 * @param payload payload as `key=value` string with `&` separator
 	 */
 	public suspend fun httpPost(url: String, payload: String): Response = httpPost(url.toHttpUrl(), payload, null)
 
 	/**
-	 * Do a POST http request to specific url with `multipart/form-data` payload
+	 * Do a POST http request to specific url with `application/x-www-form-urlencoded` payload
 	 * @param url
 	 * @param payload payload as `key=value` string with `&` separator
 	 */
 	public suspend fun httpPost(url: HttpUrl, payload: String): Response = httpPost(url, payload, null)
 
 	/**
-	 * Do a POST http request to specific url with `multipart/form-data` payload
+	 * Do a POST http request to specific url with `application/x-www-form-urlencoded` payload
 	 * @param url
 	 * @param payload payload as `key=value` string with `&` separator
 	 * @param extraHeaders additional HTTP headers for request
