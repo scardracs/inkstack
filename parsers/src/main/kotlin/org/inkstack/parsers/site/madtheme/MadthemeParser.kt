@@ -159,7 +159,7 @@ internal abstract class MadthemeParser(
 				title = div.selectFirst("div.meta")?.selectFirst("div.title")?.text().orEmpty(),
 				altTitles = emptySet(),
 				rating = div.selectFirst("div.meta span.score")?.ownText()?.toFloatOrNull()?.div(5f) ?: RATING_UNKNOWN,
-				tags = doc.body().select("div.meta div.genres span").mapToSet { span ->
+				tags = div.select("div.meta div.genres span").mapToSet { span ->
 					MangaTag(
 						key = span.attr("class"),
 						title = span.text().toTitleCase(),
