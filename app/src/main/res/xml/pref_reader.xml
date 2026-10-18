@@ -27,13 +27,6 @@
 		app:useSimpleSummaryProvider="true" />
 
 	<SwitchPreferenceCompat
-		android:defaultValue="false"
-		android:icon="@drawable/ic_zoom_out"
-		android:key="reader_zoom_buttons"
-		android:summary="@string/reader_zoom_buttons_summary"
-		android:title="@string/reader_zoom_buttons" />
-
-	<SwitchPreferenceCompat
 		android:defaultValue="true"
 		android:icon="@drawable/ic_reader_vertical"
 		android:key="webtoon_zoom"

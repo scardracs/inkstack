@@ -3,8 +3,6 @@ package org.inkstack.reader.ui.pager.vm
 import android.graphics.Rect
 import android.net.Uri
 import androidx.annotation.WorkerThread
-import com.davemorrissey.labs.subscaleview.DefaultOnImageEventListener
-import com.davemorrissey.labs.subscaleview.ImageSource
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +32,7 @@ class PageViewModel(
 	private val networkState: NetworkState,
 	private val exceptionResolver: ExceptionResolver,
 	private val isWebtoon: Boolean,
-) : DefaultOnImageEventListener {
+) {
 
 	private val scope = loader.loaderScope + Dispatchers.Main.immediate
 	private var job: Job? = null
@@ -79,24 +77,22 @@ class PageViewModel(
 		job?.cancel()
 	}
 
-	override fun onImageLoaded() {
+	fun onImageShown() {
 		state.update { currentState ->
 			if (currentState is PageState.Loaded) {
-				PageState.Shown(currentState.source, currentState.isConverted)
+				PageState.Shown(currentState.uri, currentState.crop, currentState.isConverted)
 			} else {
 				currentState
 			}
 		}
 	}
 
-	override fun onImageLoadError(e: Throwable) {
+	fun onImageLoadError(e: Throwable) {
 		e.printStackTraceDebug()
-
 		state.update { currentState ->
 			if (currentState is PageState.Loaded) {
-				val uri = (currentState.source as? ImageSource.Uri)?.uri
-				if (!currentState.isConverted && uri != null && e is IOException) {
-					tryConvert(uri, e)
+				if (!currentState.isConverted && e is IOException) {
+					tryConvert(currentState.uri, e)
 					PageState.Converting()
 				} else {
 					PageState.Error(e)
@@ -119,7 +115,7 @@ class PageViewModel(
 				} else {
 					null
 				}
-				state.value = PageState.Loaded(newUri.toImageSource(cachedBounds), isConverted = true)
+				state.value = PageState.Loaded(newUri, cachedBounds, isConverted = true)
 			} catch (ce: CancellationException) {
 				throw ce
 			} catch (e2: Throwable) {
@@ -150,7 +146,7 @@ class PageViewModel(
 			} else {
 				null
 			}
-			state.value = PageState.Loaded(uri.toImageSource(cachedBounds), isConverted = false)
+			state.value = PageState.Loaded(uri, cachedBounds, isConverted = false)
 		} catch (e: CancellationException) {
 			throw e
 		} catch (e: Throwable) {
@@ -175,13 +171,4 @@ class PageViewModel(
 				}
 			}
 		}.launchIn(scope)
-
-	private fun Uri.toImageSource(bounds: Rect?): ImageSource {
-		val source = ImageSource.uri(this)
-		return if (bounds != null) {
-			source.region(bounds)
-		} else {
-			source
-		}
-	}
 }

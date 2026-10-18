@@ -2,6 +2,9 @@
 <resources>
 	<item name="toolbar" type="id" />
 	<item name="container" type="id" />
+	<item name="container_master" type="id" />
+	<item name="button_prev" type="id" />
+	<item name="button_next" type="id" />
 	<item name="action_tracker" type="id" />
 	<item name="fast_scroller" type="id" />
 	<item name="group_branches" type="id" />

@@ -162,9 +162,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isReaderVolumeButtonsEnabled: Boolean
 		get() = prefs.getBoolean(KEY_READER_VOLUME_BUTTONS, false)
 
-	val isReaderZoomButtonsEnabled: Boolean
-		get() = prefs.getBoolean(KEY_READER_ZOOM_BUTTONS, false)
-
 	val isReaderControlAlwaysLTR: Boolean
 		get() = prefs.getBoolean(KEY_READER_CONTROL_LTR, false)
 
@@ -799,7 +796,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_READER_DOUBLE_PAGES_SENSITIVITY = "reader_double_pages_sensitivity_2"
 		const val KEY_READER_DOUBLE_FOLDABLE = "reader_double_foldable"
 		const val KEY_READER_DOUBLE_COVER_PAGE = "reader_double_cover_page"
-		const val KEY_READER_ZOOM_BUTTONS = "reader_zoom_buttons"
 		const val KEY_READER_CONTROL_LTR = "reader_taps_ltr"
 		const val KEY_READER_NAVIGATION_INVERTED = "reader_navigation_inverted"
 		const val KEY_READER_FULLSCREEN = "reader_fullscreen"

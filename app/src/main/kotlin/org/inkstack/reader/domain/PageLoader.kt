@@ -9,14 +9,12 @@ import androidx.collection.LongSparseArray
 import androidx.collection.set
 import androidx.core.net.toFile
 import androidx.core.net.toUri
-import coil3.BitmapImage
-import coil3.Image
 import coil3.ImageLoader
+import coil3.asImage
 import coil3.memory.MemoryCache
 import coil3.request.ImageRequest
 import coil3.request.transformations
 import coil3.toBitmap
-import com.davemorrissey.labs.subscaleview.ImageSource
 import dagger.hilt.android.ActivityRetainedLifecycle
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -144,7 +142,7 @@ class PageLoader @Inject constructor(
 		}
 	}
 
-	suspend fun loadPreview(page: MangaPage): ImageSource? {
+	suspend fun loadPreview(page: MangaPage): Any? {
 		val preview = page.preview
 		if (preview.isNullOrEmpty()) {
 			return null
@@ -154,29 +152,23 @@ class PageLoader @Inject constructor(
 			.mangaSourceExtra(page.source)
 			.transformations(TrimTransformation())
 			.build()
-		return coil.execute(request).image?.toImageSource()
+		return coil.execute(request).image?.toBitmap()?.asImage() ?: preview
 	}
 
-	fun peekPreviewSource(preview: String?): ImageSource? {
+	fun peekPreviewSource(preview: String?): Any? {
 		if (preview.isNullOrEmpty()) {
 			return null
 		}
 		coil.memoryCache?.let { cache ->
 			val key = MemoryCache.Key(preview)
-			cache[key]?.image?.let {
-				return if (it is BitmapImage) {
-					ImageSource.cachedBitmap(it.toBitmap())
-				} else {
-					ImageSource.bitmap(it.toBitmap())
-				}
-			}
+			cache[key]?.image?.let { return it }
 		}
 		coil.diskCache?.let { cache ->
 			cache.openSnapshot(preview)?.use { snapshot ->
-				return ImageSource.file(snapshot.data.toFile())
+				return snapshot.data.toFile()
 			}
 		}
-		return null
+		return preview
 	}
 
 	fun loadPageAsync(page: MangaPage, force: Boolean): ProgressDeferred<Uri, Float> = synchronized(tasks) {
@@ -213,7 +205,7 @@ class PageLoader @Inject constructor(
 			val file = uri.toFile()
 			runInterruptible(Dispatchers.IO) {
 				context.ensureRamAtLeast(BitmapDecoderCompat.estimateDecodedSize(file))
-				// Software bitmap: must be compressible to PNG for the SSIV fallback cache.
+				// Software bitmap: must be compressible to PNG for the page cache.
 				BitmapDecoderCompat.decode(file, preferHardware = false)
 			}.use { image ->
 				// New PNG cache entry — never overwrite the original JPEG/WebP bytes in place.
@@ -223,7 +215,7 @@ class PageLoader @Inject constructor(
 	}
 
 	suspend fun getTrimmedBounds(uri: Uri): Rect? = runCatchingCancellable {
-		edgeDetector.getBounds(ImageSource.uri(uri))
+		edgeDetector.getBounds(uri)
 	}.onFailure { error ->
 		error.printStackTraceDebug()
 	}.getOrNull()
@@ -363,12 +355,6 @@ class PageLoader @Inject constructor(
 	}
 
 	private fun MangaSource.isOniSaga(): Boolean = name == "ONISAGA" || name.startsWith("ONISAGA_")
-
-	private fun Image.toImageSource(): ImageSource = if (this is BitmapImage) {
-		ImageSource.cachedBitmap(toBitmap())
-	} else {
-		ImageSource.bitmap(toBitmap())
-	}
 
 	private fun Deferred<Uri>.isValid(): Boolean {
 		return getCompletionResultOrNull()?.map { uri ->

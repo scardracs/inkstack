@@ -1,25 +1,28 @@
 package org.inkstack.reader.ui.pager.vm
 
-import com.davemorrissey.labs.subscaleview.ImageSource
+import android.graphics.Rect
+import android.net.Uri
 
 sealed class PageState {
 
 	data object Empty : PageState()
 
 	data class Loading(
-		val preview: ImageSource?,
+		val preview: Any?,
 		val progress: Int,
 	) : PageState()
 
 	data class Loaded(
-		val source: ImageSource,
+		val uri: Uri,
+		val crop: Rect?,
 		val isConverted: Boolean,
 	) : PageState()
 
 	class Converting() : PageState()
 
 	data class Shown(
-		val source: ImageSource,
+		val uri: Uri,
+		val crop: Rect?,
 		val isConverted: Boolean,
 	) : PageState()
 

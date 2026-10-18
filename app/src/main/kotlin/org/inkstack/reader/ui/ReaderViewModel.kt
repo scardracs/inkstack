@@ -184,14 +184,6 @@ class ReaderViewModel @Inject constructor(
         }
     }.flowOn(Dispatchers.Default)
 
-    val isZoomControlsEnabled = getObserveIsZoomControlEnabled().flatMapLatest { zoom ->
-        if (zoom) {
-            combine(readerMode, isWebtoonZooEnabled) { mode, ze -> ze || mode != ReaderMode.WEBTOON }
-        } else {
-            flowOf(false)
-        }
-    }.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, false)
-
     val readerSettingsProducer = readerSettingsProducerFactory.create(
         manga.mapNotNull { it?.id },
     )
@@ -567,11 +559,6 @@ class ReaderViewModel @Inject constructor(
     private fun observeWebtoonZoomOut() = settings.observeAsFlow(
         key = AppSettings.KEY_WEBTOON_ZOOM_OUT,
         valueProducer = { defaultWebtoonZoomOut },
-    )
-
-    private fun getObserveIsZoomControlEnabled() = settings.observeAsFlow(
-        key = AppSettings.KEY_READER_ZOOM_BUTTONS,
-        valueProducer = { isReaderZoomButtonsEnabled },
     )
 
     private fun initIncognitoMode() {

@@ -1,13 +1,8 @@
 package org.inkstack.reader.ui.config
 
 import android.graphics.Bitmap
-import android.view.View
-import androidx.annotation.CheckResult
 import androidx.collection.scatterSetOf
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-import com.davemorrissey.labs.subscaleview.decoder.SkiaImageDecoder
-import com.davemorrissey.labs.subscaleview.decoder.SkiaImageRegionDecoder
-import com.davemorrissey.labs.subscaleview.decoder.SkiaPooledImageRegionDecoder
+import androidx.compose.runtime.Immutable
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -25,10 +20,10 @@ import org.inkstack.core.prefs.AppSettings
 import org.inkstack.core.prefs.ReaderBackground
 import org.inkstack.core.prefs.ReaderMode
 import org.inkstack.core.util.MediatorStateFlow
-import org.inkstack.core.util.ext.isLowRamDevice
 import org.inkstack.core.util.ext.processLifecycleScope
 import org.inkstack.reader.domain.ReaderColorFilter
 
+@Immutable
 data class ReaderSettings(
 	val zoomMode: ZoomMode,
 	val background: ReaderBackground,
@@ -55,35 +50,17 @@ data class ReaderSettings(
 		isPagesCropEnabledWebtoon = settings.isPagesCropEnabled(ReaderMode.WEBTOON),
 	)
 
-	fun applyBackground(view: View) {
-		view.background = background.resolve(view.context)
-		view.backgroundTintList = if (background.isLight(view.context)) {
-			colorFilter?.getBackgroundTint()
-		} else {
-			null
-		}
-	}
-
 	fun isPagesCropEnabled(isWebtoon: Boolean) = if (isWebtoon) {
 		isPagesCropEnabledWebtoon
 	} else {
 		isPagesCropEnabledStandard
 	}
 
-	@CheckResult
-	fun applyBitmapConfig(ssiv: SubsamplingScaleImageView): Boolean {
-		val config = bitmapConfig
-		return if (ssiv.regionDecoderFactory.bitmapConfig != config) {
-			ssiv.regionDecoderFactory = if (ssiv.context.isLowRamDevice()) {
-				SkiaImageRegionDecoder.Factory(config)
-			} else {
-				SkiaPooledImageRegionDecoder.Factory(config)
-			}
-			ssiv.bitmapDecoderFactory = SkiaImageDecoder.Factory(config)
-			true
-		} else {
-			false
-		}
+	fun composeColorFilter(): androidx.compose.ui.graphics.ColorFilter? {
+		val cf = colorFilter?.takeUnless { it.isEmpty } ?: return null
+		return androidx.compose.ui.graphics.ColorFilter.colorMatrix(
+			androidx.compose.ui.graphics.ColorMatrix(cf.toColorMatrix().array.copyOf()),
+		)
 	}
 
 	class Producer @AssistedInject constructor(
@@ -124,7 +101,7 @@ data class ReaderSettings(
 			combine(
 				mangaId.flatMapLatest { mangaDataRepository.observeColorFilter(it) },
 				settings.observeChanges().filter { x -> x == null || x in settingsKeys }.onStart { emit(null) },
-			) { mangaCf, settingsKey ->
+			) { mangaCf, _ ->
 				ReaderSettings(settings, mangaCf)
 			}.collect {
 				publishValue(it)
@@ -133,7 +110,6 @@ data class ReaderSettings(
 
 		@AssistedFactory
 		interface Factory {
-
 			fun create(mangaId: Flow<Long>): Producer
 		}
 	}

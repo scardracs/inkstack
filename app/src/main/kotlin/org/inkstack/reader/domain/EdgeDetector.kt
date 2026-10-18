@@ -2,52 +2,60 @@ package org.inkstack.reader.domain
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.BitmapRegionDecoder
 import android.graphics.Color
 import android.graphics.Point
 import android.graphics.Rect
+import android.net.Uri
+import android.os.Build
 import androidx.annotation.ColorInt
 import androidx.core.graphics.alpha
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
-import com.davemorrissey.labs.subscaleview.ImageSource
-import com.davemorrissey.labs.subscaleview.decoder.SkiaPooledImageRegionDecoder
+import androidx.core.net.toFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import org.inkstack.core.util.SynchronizedSieveCache
+import org.inkstack.core.util.ext.isZipUri
+import java.io.FileInputStream
+import java.util.zip.ZipFile
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-class EdgeDetector(private val context: Context) {
+class EdgeDetector(
+	@Suppress("UNUSED_PARAMETER") private val context: Context,
+) {
 
 	private val mutex = Mutex()
-	private val cache = SynchronizedSieveCache<ImageSource, Rect>(CACHE_SIZE)
+	private val cache = SynchronizedSieveCache<Uri, Rect>(CACHE_SIZE)
 
-	suspend fun getBounds(imageSource: ImageSource): Rect? {
-		cache[imageSource]?.let { rect ->
+	suspend fun getBounds(uri: Uri): Rect? {
+		cache[uri]?.let { rect ->
 			return if (rect.isEmpty) null else rect
 		}
 		return mutex.withLock {
 			withContext(Dispatchers.IO) {
-				val decoder = SkiaPooledImageRegionDecoder(Bitmap.Config.RGB_565)
+				val decoder = openDecoder(uri) ?: return@withContext null
 				try {
-					val size = runInterruptible {
-						decoder.init(context, imageSource)
-					}
+					val size = Point(decoder.width, decoder.height)
 					val scaleFactor = calculateScaleFactor(size)
 					val sampleSize = (1f / scaleFactor).toInt().coerceAtLeast(1)
 
 					val fullBitmap = decoder.decodeRegion(
 						Rect(0, 0, size.x, size.y),
-						sampleSize,
-					)
+						BitmapFactory.Options().apply {
+							inSampleSize = sampleSize
+							inPreferredConfig = Bitmap.Config.RGB_565
+						},
+					) ?: return@withContext null
 
 					try {
 						val edges = coroutineScope {
@@ -75,11 +83,46 @@ class EdgeDetector(private val context: Context) {
 						fullBitmap.recycle()
 					}
 				} finally {
-					decoder.recycle()
+					if (Build.VERSION.SDK_INT < 31) {
+						@Suppress("DEPRECATION")
+						decoder.recycle()
+					}
 				}
 			}
 		}.also {
-			cache.put(imageSource, it ?: EMPTY_RECT)
+			cache.put(uri, it ?: EMPTY_RECT)
+		}
+	}
+
+	private fun openDecoder(uri: Uri): BitmapRegionDecoder? {
+		return try {
+			when {
+				uri.isZipUri() -> {
+					ZipFile(uri.schemeSpecificPart).use { zip ->
+						val entry = zip.getEntry(uri.fragment) ?: return null
+						zip.getInputStream(entry).use { input ->
+							if (Build.VERSION.SDK_INT >= 31) {
+								BitmapRegionDecoder.newInstance(input)
+							} else {
+								@Suppress("DEPRECATION")
+								BitmapRegionDecoder.newInstance(input, false)
+							}
+						}
+					}
+				}
+				else -> {
+					FileInputStream(uri.toFile()).use { input ->
+						if (Build.VERSION.SDK_INT >= 31) {
+							BitmapRegionDecoder.newInstance(input)
+						} else {
+							@Suppress("DEPRECATION")
+							BitmapRegionDecoder.newInstance(input, false)
+						}
+					}
+				}
+			}
+		} catch (_: Exception) {
+			null
 		}
 	}
 
@@ -88,33 +131,25 @@ class EdgeDetector(private val context: Context) {
 		val rectCount = size.x / BLOCK_SIZE
 		val maxRect = rectCount / 3
 		val blockPixels = IntArray(BLOCK_SIZE * BLOCK_SIZE)
-
 		val bitmapWidth = bitmap.width
 		val bitmapHeight = bitmap.height
 
 		for (i in 0 until rectCount) {
-			if (i > maxRect) {
-				return -1
-			}
+			if (i > maxRect) return -1
 			var dd = BLOCK_SIZE
 			for (j in 0 until size.y / BLOCK_SIZE) {
 				val regionX = if (isLeft) i * BLOCK_SIZE else size.x - (i + 1) * BLOCK_SIZE
 				val regionY = j * BLOCK_SIZE
-
-				// Convert to bitmap coordinates
 				val bitmapX = regionX / sampleSize
 				val bitmapY = regionY / sampleSize
 				val blockWidth = min(BLOCK_SIZE / sampleSize, bitmapWidth - bitmapX)
 				val blockHeight = min(BLOCK_SIZE / sampleSize, bitmapHeight - bitmapY)
-
 				if (blockWidth > 0 && blockHeight > 0) {
 					bitmap.getPixels(blockPixels, 0, blockWidth, bitmapX, bitmapY, blockWidth, blockHeight)
-
 					for (ii in 0 until minOf(blockWidth, dd / sampleSize)) {
 						for (jj in 0 until blockHeight) {
 							val bi = if (isLeft) ii else blockWidth - ii - 1
-							val pixel = blockPixels[jj * blockWidth + bi]
-							if (pixel.isNotWhite()) {
+							if (blockPixels[jj * blockWidth + bi].isNotWhite()) {
 								width = minOf(width, BLOCK_SIZE * i + ii * sampleSize)
 								dd -= sampleSize
 								break
@@ -122,13 +157,9 @@ class EdgeDetector(private val context: Context) {
 						}
 					}
 				}
-				if (dd == 0) {
-					break
-				}
+				if (dd == 0) break
 			}
-			if (dd < BLOCK_SIZE) {
-				break // We have already found vertical field or it is not exist
-			}
+			if (dd < BLOCK_SIZE) break
 		}
 		return width
 	}
@@ -138,33 +169,25 @@ class EdgeDetector(private val context: Context) {
 		val rectCount = size.y / BLOCK_SIZE
 		val maxRect = rectCount / 3
 		val blockPixels = IntArray(BLOCK_SIZE * BLOCK_SIZE)
-
 		val bitmapWidth = bitmap.width
 		val bitmapHeight = bitmap.height
 
 		for (j in 0 until rectCount) {
-			if (j > maxRect) {
-				return -1
-			}
+			if (j > maxRect) return -1
 			var dd = BLOCK_SIZE
 			for (i in 0 until size.x / BLOCK_SIZE) {
 				val regionX = i * BLOCK_SIZE
 				val regionY = if (isTop) j * BLOCK_SIZE else size.y - (j + 1) * BLOCK_SIZE
-
-				// Convert to bitmap coordinates
 				val bitmapX = regionX / sampleSize
 				val bitmapY = regionY / sampleSize
 				val blockWidth = min(BLOCK_SIZE / sampleSize, bitmapWidth - bitmapX)
 				val blockHeight = min(BLOCK_SIZE / sampleSize, bitmapHeight - bitmapY)
-
 				if (blockWidth > 0 && blockHeight > 0) {
 					bitmap.getPixels(blockPixels, 0, blockWidth, bitmapX, bitmapY, blockWidth, blockHeight)
-
 					for (jj in 0 until minOf(blockHeight, dd / sampleSize)) {
 						for (ii in 0 until blockWidth) {
 							val bj = if (isTop) jj else blockHeight - jj - 1
-							val pixel = blockPixels[bj * blockWidth + ii]
-							if (pixel.isNotWhite()) {
+							if (blockPixels[bj * blockWidth + ii].isNotWhite()) {
 								height = minOf(height, BLOCK_SIZE * j + jj * sampleSize)
 								dd -= sampleSize
 								break
@@ -172,21 +195,13 @@ class EdgeDetector(private val context: Context) {
 						}
 					}
 				}
-				if (dd == 0) {
-					break
-				}
+				if (dd == 0) break
 			}
-			if (dd < BLOCK_SIZE) {
-				break // We have already found vertical field or it is not exist
-			}
+			if (dd < BLOCK_SIZE) break
 		}
 		return height
 	}
 
-	/**
-	 * Calculate scale factor for performance optimization.
-	 * Large images can be downscaled for edge detection without losing accuracy.
-	 */
 	private fun calculateScaleFactor(size: Point): Float {
 		val maxDimension = max(size.x, size.y)
 		return when {
@@ -198,7 +213,6 @@ class EdgeDetector(private val context: Context) {
 	}
 
 	companion object {
-
 		private const val BLOCK_SIZE = 100
 		private const val COLOR_TOLERANCE = 16
 		private const val CACHE_SIZE = 24
@@ -212,7 +226,5 @@ class EdgeDetector(private val context: Context) {
 		}
 
 		private fun Int.isNotWhite() = !isColorTheSame(this, Color.WHITE, COLOR_TOLERANCE)
-
-		private fun region(x: Int, y: Int) = Rect(x, y, x + BLOCK_SIZE, y + BLOCK_SIZE)
 	}
 }
