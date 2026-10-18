@@ -1149,7 +1149,7 @@ Optional — skip it and you appear as anon.</string>
 	<string name="community_comment_too_short">Comments need at least %d characters.</string>
 	<string name="community_comment_chain_depth">You\'ve replied enough times in this thread. Let someone else in.</string>
 	<plurals name="community_comment_rate_limited_in">
-		<item quantity="one">You have posted as much as a new account can for now. Try again in about a minute.</item>
+		<item quantity="one">You have posted as much as a new account can for now. Try again in about %1$d minute.</item>
 		<item quantity="other">You have posted as much as a new account can for now. Try again in about %1$d minutes.</item>
 	</plurals>
 	<string name="community_comment_rate_limited">You\'re posting too quickly. Try again in a little while.</string>
