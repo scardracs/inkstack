@@ -49,7 +49,7 @@ class SingleMangaImporter @Inject constructor(
 		if (!hasZipExtension(name)) {
 			throw UnsupportedFileException("Unsupported file $name on $uri")
 		}
-		val dest = File(getOutputDir(), name)
+		val dest = resolveUniqueOutputFile(getOutputDir(), name)
 		runInterruptible {
 			contentResolver.openSource(uri)
 		}.use { source ->
@@ -90,6 +90,22 @@ class SingleMangaImporter @Inject constructor(
 
 	private suspend fun getOutputDir(): File {
 		return storageManager.getDefaultWriteableDir() ?: throw IOException("External files dir unavailable")
+	}
+
+	private fun resolveUniqueOutputFile(dir: File, name: String): File {
+		var candidate = File(dir, name)
+		if (!candidate.exists()) {
+			return candidate
+		}
+		val dotIndex = name.lastIndexOf('.')
+		val base = if (dotIndex > 0) name.substring(0, dotIndex) else name
+		val ext = if (dotIndex > 0) name.substring(dotIndex) else ""
+		var suffix = 1
+		while (candidate.exists()) {
+			candidate = File(dir, "$base ($suffix)$ext")
+			suffix++
+		}
+		return candidate
 	}
 
 	private suspend fun DocumentFile.source() = runInterruptible(Dispatchers.IO) {
