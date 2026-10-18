@@ -57,11 +57,11 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(),
 		disableFitToContents()
 
 		val args = arguments ?: Bundle.EMPTY
-		var defaultTab = args.getInt(AppRouter.KEY_TAB, settings.defaultDetailsTab)
 		val adapter = ChaptersPagesAdapter(this, settings.isPagesTabEnabled)
-		if (!adapter.isPagesTabEnabled) {
-			defaultTab = (defaultTab - 1).coerceAtLeast(TAB_CHAPTERS)
-		}
+		val defaultTab = pagerPositionFromLogicalTab(
+			args.getInt(AppRouter.KEY_TAB, settings.defaultDetailsTab),
+			adapter.isPagesTabEnabled,
+		)
 		(viewModel as? DetailsViewModel)?.let { dvm ->
 			ReadButtonDelegate(binding.splitButtonRead, dvm, router).attach(viewLifecycleOwner)
 		}
@@ -155,7 +155,9 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(),
 
 	private fun onPageChanged(position: Int) {
 		viewBinding?.toolbar?.invalidateMenu()
-		settings.lastDetailsTab = position
+		val pagesTabEnabled = (viewBinding?.pager?.adapter as? ChaptersPagesAdapter)?.isPagesTabEnabled
+			?: settings.isPagesTabEnabled
+		settings.lastDetailsTab = logicalTabFromPagerPosition(position, pagesTabEnabled)
 	}
 
 	private fun onNewChaptersChanged(counter: Int) {
@@ -173,5 +175,19 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(),
 		const val TAB_CHAPTERS = 0
 		const val TAB_PAGES = 1
 		const val TAB_BOOKMARKS = 2
+
+		private fun logicalTabFromPagerPosition(position: Int, isPagesTabEnabled: Boolean): Int {
+			if (!isPagesTabEnabled && position >= TAB_PAGES) {
+				return position + 1
+			}
+			return position
+		}
+
+		private fun pagerPositionFromLogicalTab(tab: Int, isPagesTabEnabled: Boolean): Int {
+			if (!isPagesTabEnabled && tab > TAB_CHAPTERS) {
+				return (tab - 1).coerceAtLeast(TAB_CHAPTERS)
+			}
+			return tab
+		}
 	}
 }
