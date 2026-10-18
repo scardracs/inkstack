@@ -267,7 +267,7 @@ internal class NhentaiWorld(context: MangaLoaderContext) :
 
 	private suspend fun fetchTags(): Set<MangaTag> {
 		val doc = webClient.httpGet("https://$domain").parseHtml()
-		val scriptSrc = doc.select("script")[7].src()!!
+		val scriptSrc = doc.select("script").getOrNull(7)?.src() ?: throw ParseException("Script not found", doc.baseUri())
 		val docJS = webClient.httpGet(scriptSrc).parseRaw()
 
 		val optionsStart = docJS.indexOf("genres:[{")
