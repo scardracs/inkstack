@@ -340,6 +340,8 @@
     <string name="scrobbling_empty_hint">Per tenere traccia dell\'avanzamento della lettura, seleziona Menu → Traccia nella schermata dei dettagli del manga.</string>
     <string name="nothing_here">Non c\'è niente qui</string>
     <string name="services">Servizi</string>
+    <string name="community">Community</string>
+    <string name="community_summary">Commenti, valutazioni e affidabilità delle fonti</string>
     <string name="theme_name_mamimi">Mamimi</string>
     <string name="theme_name_kanade">Kanade</string>
     <string name="theme_name_asuka">Asuka</string>
@@ -578,7 +580,7 @@
     <string name="fix">Aggiustamenti</string>
     <string name="missing_storage_permission">Non sono presenti i permessi per accedere al manga nella memoria esterna</string>
     <string name="webtoon_gaps">Gap in modalità webtoon</string>
-    <string name="webtoon_gaps_summary">Mostra gap verticali tra le pagine in modalità webotoon</string>
+    <string name="webtoon_gaps_summary">Mostra gap verticali tra le pagine in modalità webtoon</string>
     <string name="config_reset_confirm">Ripristinare le impostazioni ai valori predefiniti? Questo procedimento è irreversibile.</string>
     <string name="use_two_pages_landscape">Usa il layout a due pagine con l\'orientamento orizzontale (beta)</string>
     <string name="error_no_data_received">Non è stato ricevuto nessun dato dal server</string>
@@ -646,7 +648,7 @@
     <string name="unpin">Rimuovi</string>
     <string name="source_unpinned">Fonte rimossa</string>
     <string name="sources_unpinned">Fonti rimosse</string>
-    <string name="tracker_debug_info_summary">Informazioni di debug sui controlli in background per i nuovi capitoli</string>
+    <string name="tracker_debug_info_summary">Info di debug sui controlli in background dei nuovi capitoli</string>
     <string name="location">Posizione</string>
     <string name="chapters_deleted_pattern">Rimosso %1$s, cancellato %2$s</string>
     <string name="search_suggestions">Suggerimenti per la ricerca</string>
@@ -810,7 +812,7 @@
     <string name="dont_ask_again">Non chiedere più</string>
     <string name="incognito_mode_hint_nsfw">Questo manga potrebbe contenere contenuti per adulti. Vuoi utilizzare la modalità incognito?</string>
     <string name="additional_action_required">È necessaria un\'azione aggiuntiva</string>
-    <string name="theme_name_expressive">Espressivo (Test)</string>
+    <string name="theme_name_expressive">Espressivo</string>
     <string name="hide_from_main_screen">Nascondi dalla schermata principale</string>
     <string name="changelog">Changelog</string>
     <string name="changelog_summary">Cronologia delle modifiche delle versioni rilasciate di recente</string>
