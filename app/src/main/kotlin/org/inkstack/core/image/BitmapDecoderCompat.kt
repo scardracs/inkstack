@@ -85,19 +85,29 @@ object BitmapDecoderCompat {
 	}.getOrDefault(false)
 
 	/**
-	 * Free memory to ask for before decoding [file].
+	 * Free memory to ask for before decoding [file] into an ARGB bitmap (e.g. PNG convert).
 	 *
-	 * Twice the file size is the rule for the formats this was written for. A JPEG XL is often a tenth
-	 * of the PNG it decodes to, so for one that guess is read from the header instead.
+	 * Prefer pixel-bounds × 4 over file size: JPEG/WebP/JXL compress far below decoded RGBA.
 	 */
 	@Blocking
 	fun estimateDecodedSize(file: File): Long {
-		val guess = file.length() * 2
-		if (!isJxl(file) || !JxlSupport.isAvailable) {
-			return guess
+		val fallback = file.length() * 2
+		if (isJxl(file) && JxlSupport.isAvailable) {
+			val size = runCatchingCancellable { JxlCoder.getSize(file.readBytes()) }.getOrNull()
+			if (size != null) {
+				return maxOf(fallback, size.width.toLong() * size.height * 4)
+			}
 		}
-		val size = runCatchingCancellable { JxlCoder.getSize(file.readBytes()) }.getOrNull() ?: return guess
-		return maxOf(guess, size.width.toLong() * size.height * 4)
+		val bounds = runCatchingCancellable {
+			val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+			BitmapFactory.decodeFile(file.path, options)
+			if (options.outWidth > 0 && options.outHeight > 0) {
+				options.outWidth.toLong() * options.outHeight * 4
+			} else {
+				null
+			}
+		}.getOrNull()
+		return bounds?.coerceAtLeast(fallback) ?: fallback
 	}
 
 	@Blocking
