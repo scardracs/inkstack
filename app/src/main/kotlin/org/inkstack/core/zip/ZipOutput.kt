@@ -140,7 +140,14 @@ class ZipOutput(
 			}
 		} catch (e: NullPointerException) { // probably NullPointerException: Deflater has been closed
 			e.printStackTraceDebug()
-			newOutput(append).withOutputImpl(block)
+			cachedOutput?.closeSafe()
+			cachedOutput = null
+			if (append) {
+				throw IllegalStateException("Zip deflater closed; refusing to append a second archive", e)
+			}
+			newOutput(append = false).withOutputImpl(block).also {
+				append = true
+			}
 		}
 	}
 
