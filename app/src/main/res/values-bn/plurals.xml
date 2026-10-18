@@ -36,4 +36,20 @@
         <item quantity="one">%1$d ঘন্টা</item>
         <item quantity="other">%1$d টি ঘন্টা</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d রেটিং</item>
+		<item quantity="other">%d রেটিং</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d মন্তব্য</item>
+		<item quantity="other">%d মন্তব্য</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">নতুন অ্যাকাউন্টের সীমা শেষ। প্রায় %1$d মিনিট পরে আবার চেষ্টা করুন।</item>
+		<item quantity="other">নতুন অ্যাকাউন্টের সীমা শেষ। প্রায় %1$d মিনিট পরে আবার চেষ্টা করুন।</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%dটি নতুন উত্তর</item>
+		<item quantity="other">%dটি নতুন উত্তর</item>
+	</plurals>
 </resources>
