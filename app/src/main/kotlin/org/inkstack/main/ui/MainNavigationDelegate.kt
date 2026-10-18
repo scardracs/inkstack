@@ -19,6 +19,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.navigationrail.NavigationRailView
+import com.google.android.material.search.SearchView
 import com.google.android.material.transition.MaterialFadeThrough
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
@@ -56,9 +57,12 @@ class MainNavigationDelegate(
 	private val settings: AppSettings,
 ) : OnBackPressedCallback(false),
 	NavigationBarView.OnItemSelectedListener,
-	NavigationBarView.OnItemReselectedListener, View.OnClickListener {
+	NavigationBarView.OnItemReselectedListener,
+	View.OnClickListener,
+	SearchView.TransitionListener {
 
 	private val listeners = LinkedList<OnFragmentChangedListener>()
+	private var isSearchShowing = false
 	val navRailHeader = (navBar as? NavigationRailView)?.headerView?.let {
 		NavigationRailFabBinding.bind(it)
 	}
@@ -107,6 +111,20 @@ class MainNavigationDelegate(
 
 	override fun handleOnBackPressed() {
 		navBar.selectedItemId = firstItem()?.itemId ?: return
+	}
+
+	override fun onStateChanged(
+		searchView: SearchView,
+		previousState: SearchView.TransitionState,
+		newState: SearchView.TransitionState,
+	) {
+		isSearchShowing = newState >= SearchView.TransitionState.SHOWING
+		updateBackCallbackEnabled(primaryFragment)
+	}
+
+	fun syncSearchShowing(isShowing: Boolean) {
+		isSearchShowing = isShowing
+		updateBackCallbackEnabled(primaryFragment)
 	}
 
 	fun onCreate(lifecycleOwner: LifecycleOwner, savedInstanceState: Bundle?) {
@@ -222,13 +240,13 @@ class MainNavigationDelegate(
 			return false
 		}
 		val fragment = instantiateFragment(fragmentClass)
-		val args = buildBundle(1) {
+		fragment.arguments = buildBundle(1) {
 			putBoolean(AppRouter.KEY_IS_BOTTOMTAB, true)
 		}
 		fragment.enterTransition = MaterialFadeThrough()
 		fragmentManager.beginTransaction()
 			.setReorderingAllowed(true)
-			.replace(R.id.container, fragmentClass, args, TAG_PRIMARY)
+			.replace(R.id.container, fragment, TAG_PRIMARY)
 			.runOnCommit { onFragmentChanged(fragment, fromUser = true) }
 			.commit()
 		return true
@@ -240,8 +258,17 @@ class MainNavigationDelegate(
 	}
 
 	private fun onFragmentChanged(fragment: Fragment, fromUser: Boolean) {
-		isEnabled = getItemId(fragment) != firstItem()?.itemId
+		updateBackCallbackEnabled(fragment)
 		listeners.forEach { it.onFragmentChanged(fragment, fromUser) }
+	}
+
+	private fun updateBackCallbackEnabled(fragment: Fragment?) {
+		if (isSearchShowing) {
+			isEnabled = false
+			return
+		}
+		val current = fragment ?: return
+		isEnabled = getItemId(current) != firstItem()?.itemId
 	}
 
 	private fun createMenu(items: List<NavItem>, menu: Menu) {

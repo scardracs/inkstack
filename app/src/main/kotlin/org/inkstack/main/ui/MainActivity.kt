@@ -193,6 +193,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		viewBinding.bottomNav?.addOnLayoutChangeListener(this)
 		viewBinding.searchView.addTransitionListener(this)
 		viewBinding.searchView.addTransitionListener(exitCallback)
+		viewBinding.searchView.addTransitionListener(navigationDelegate)
 		initSearch()
 	}
 
@@ -219,6 +220,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
 		super.onRestoreInstanceState(savedInstanceState)
 		adjustSearchUI(viewBinding.searchView.isShowing)
+		navigationDelegate.syncSearchShowing(viewBinding.searchView.isShowing)
 		navigationDelegate.syncSelectedItem()
 	}
 
