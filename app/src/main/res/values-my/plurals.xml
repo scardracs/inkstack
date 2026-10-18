@@ -27,4 +27,20 @@
     <plurals name="minutes">
         <item quantity="other">%1$d မိနစ်</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">အဆင့်သတ်မှတ်ချက် %d ခု</item>
+		<item quantity="other">အဆင့်သတ်မှတ်ချက် %d ခု</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">မှတ်ချက် %d ခု</item>
+		<item quantity="other">မှတ်ချက် %d ခု</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">အကောင့်အသစ်အတွက် ယခု တင်နိုင်သည့် ပမာဏ ပြည့်သွားပါပြီ။ ခန့်မှန်း %1$d မိနစ်အကြာတွင် ထပ်ကြိုးစားပါ။</item>
+		<item quantity="other">အကောင့်အသစ်အတွက် ယခု တင်နိုင်သည့် ပမာဏ ပြည့်သွားပါပြီ။ ခန့်မှန်း %1$d မိနစ်အကြာတွင် ထပ်ကြိုးစားပါ။</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">ပြန်ကြားချက်အသစ် %d ခု</item>
+		<item quantity="other">ပြန်ကြားချက်အသစ် %d ခု</item>
+	</plurals>
 </resources>
