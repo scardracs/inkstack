@@ -25,7 +25,7 @@ internal class ManhwaLatino(context: MangaLoaderContext) :
 		var maxPageChapter = 1
 		if (!maxPageChapterSelect.isNullOrEmpty()) {
 			maxPageChapterSelect.map {
-				val i = it.attr("href").substringAfterLast("=").toInt()
+				val i = it.attr("href").substringAfterLast("=").toIntOrNull() ?: return@map
 				if (i > maxPageChapter) {
 					maxPageChapter = i
 				}
