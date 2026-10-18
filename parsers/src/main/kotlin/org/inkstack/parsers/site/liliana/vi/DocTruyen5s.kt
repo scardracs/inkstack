@@ -24,7 +24,9 @@ internal class DocTruyen5s(context: MangaLoaderContext) :
 		val doc = webClient.httpGet(fullUrl).parseHtml()
 		val script = doc.selectFirstOrThrow("script:containsData(const CHAPTER_ID)").data()
 		val chapterId = script.substringAfter("const CHAPTER_ID = ", "").substringBefore(';', "")
-		check(chapterId.isNotEmpty()) { ParseException("Không thể tìm thấy CHAPTER_ID, hãy kiểm tra nguồn!", fullUrl) }
+		if (chapterId.isEmpty()) {
+			throw ParseException("Không thể tìm thấy CHAPTER_ID, hãy kiểm tra nguồn!", fullUrl)
+		}
 
 		val ajaxUrl = buildString {
 			append("https://")
@@ -38,7 +40,7 @@ internal class DocTruyen5s(context: MangaLoaderContext) :
 
 		val pageListDoc = Jsoup.parse(responseJson.getString("html"))
 
-		return pageListDoc.selectOrThrow("div.separator a").mapNotNull { element ->
+		val pages = pageListDoc.selectOrThrow("div.separator a").mapNotNull { element ->
 			val originalUrl = element.attr("href").takeIf { it.isNotEmpty() } ?: element.attr("src")
 			if (originalUrl.isEmpty()) return@mapNotNull null
 			
@@ -55,6 +57,10 @@ internal class DocTruyen5s(context: MangaLoaderContext) :
 				)
 			}
 		}
+		if (pages.isEmpty()) {
+			throw ParseException("Không thể tải ảnh trang, hãy kiểm tra nguồn!", fullUrl)
+		}
+		return pages
 	}
 
 	private fun addCdnServers(url: String): List<String> {
