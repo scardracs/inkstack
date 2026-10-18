@@ -1,207 +1,187 @@
 package org.inkstack.image.ui
 
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
-import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.core.graphics.drawable.toBitmap
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isVisible
-import androidx.core.view.updateLayoutParams
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
 import coil3.request.CachePolicy
-import coil3.request.ErrorResult
 import coil3.request.ImageRequest
-import coil3.request.SuccessResult
-import coil3.request.lifecycle
-import coil3.request.target
-import coil3.target.GenericViewTarget
-import coil3.target.Target
-import com.davemorrissey.labs.subscaleview.ImageSource
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import me.saket.telephoto.zoomable.ZoomSpec
+import me.saket.telephoto.zoomable.coil3.ZoomableAsyncImage
+import me.saket.telephoto.zoomable.rememberZoomableImageState
+import me.saket.telephoto.zoomable.rememberZoomableState
 import org.inkstack.R
-import org.inkstack.core.exceptions.resolve.SnackbarErrorObserver
-import org.inkstack.core.image.CoilImageView
+import coil3.memory.MemoryCache
 import org.inkstack.core.image.CoilMemoryCacheKey
 import org.inkstack.core.model.MangaSource
 import org.inkstack.core.nav.AppRouter
-import org.inkstack.core.ui.BaseActivity
-import org.inkstack.core.ui.util.PopupMenuMediator
+import org.inkstack.core.ui.BaseComposeActivity
 import org.inkstack.core.util.ShareHelper
-import org.inkstack.core.util.ext.consumeAll
-import org.inkstack.core.util.ext.end
-import org.inkstack.core.util.ext.enqueueWith
-import org.inkstack.core.util.ext.getDisplayIcon
 import org.inkstack.core.util.ext.getDisplayMessage
 import org.inkstack.core.util.ext.getParcelableExtraCompat
-import org.inkstack.core.util.ext.getThemeColor
-import org.inkstack.core.util.ext.isAnimatedImage
+import org.inkstack.core.util.ext.isZipUri
 import org.inkstack.core.util.ext.mangaSourceExtra
-import org.inkstack.core.util.ext.observe
 import org.inkstack.core.util.ext.observeEvent
-import org.inkstack.core.util.ext.start
-import org.inkstack.databinding.ActivityImageBinding
-import org.inkstack.databinding.ItemErrorStateBinding
+import org.inkstack.core.util.ext.tryLaunch
+import org.inkstack.parsers.model.MangaSource as ParserMangaSource
 import javax.inject.Inject
-import androidx.appcompat.R as appcompatR
 
 @AndroidEntryPoint
-class ImageActivity : BaseActivity<ActivityImageBinding>(),
-	ImageRequest.Listener,
-	View.OnClickListener {
+class ImageActivity : BaseComposeActivity() {
 
-	@Inject
-	lateinit var coil: ImageLoader
+	@Inject lateinit var coil: ImageLoader
 
-	private var errorBinding: ItemErrorStateBinding? = null
 	private val viewModel: ImageViewModel by viewModels()
-	private lateinit var menuMediator: PopupMenuMediator
+
+	private val saveLauncher = registerForActivityResult(
+		ActivityResultContracts.CreateDocument("image/png"),
+	) { uri ->
+		if (uri != null) viewModel.saveImage(uri)
+	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(ActivityImageBinding.inflate(layoutInflater))
-		viewBinding.buttonBack.setOnClickListener(this)
-		viewBinding.buttonMenu.setOnClickListener(this)
-
-		val menuProvider = ImageMenuProvider(
-			activity = this,
-			snackbarHost = viewBinding.root,
-			viewModel = viewModel,
-		)
-		menuMediator = PopupMenuMediator(menuProvider)
-		viewModel.isLoading.observe(this, ::onLoadingStateChanged)
-		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.root, null))
-		viewModel.onImageSaved.observeEvent(this, ::onImageSaved)
-		loadImage()
-	}
-
-	override fun onClick(v: View) {
-		when (v.id) {
-			R.id.button_back -> dispatchNavigateUp()
-			R.id.button_menu -> menuMediator.onLongClick(v)
-			else -> loadImage()
+		viewModel.onImageSaved.observeEvent(this) { uri ->
+			Snackbar.make(window.decorView, R.string.page_saved, Snackbar.LENGTH_LONG)
+				.setAction(R.string.share) { ShareHelper.shareImage(this, uri) }
+				.show()
 		}
-	}
 
-	override fun onError(request: ImageRequest, result: ErrorResult) {
-		viewBinding.progressBar.hide()
-		with(errorBinding ?: ItemErrorStateBinding.bind(viewBinding.stubError.inflate())) {
-			errorBinding = this
-			root.isVisible = true
-			textViewError.text = result.throwable.getDisplayMessage(resources)
-			textViewError.setCompoundDrawablesWithIntrinsicBounds(0, result.throwable.getDisplayIcon(), 0, 0)
-			buttonRetry.isVisible = true
-			buttonRetry.setOnClickListener(this@ImageActivity)
-		}
-	}
+		val dataUri = intent.data
+		val previewKey = intent.getParcelableExtraCompat<CoilMemoryCacheKey>(AppRouter.KEY_PREVIEW)?.data
+		val source = MangaSource(intent.getStringExtra(AppRouter.KEY_SOURCE))
 
-	override fun onStart(request: ImageRequest) {
-		viewBinding.progressBar.show()
-		(errorBinding?.root ?: viewBinding.stubError).isVisible = false
-	}
-
-	override fun onSuccess(request: ImageRequest, result: SuccessResult) {
-		viewBinding.progressBar.hide()
-		(errorBinding?.root ?: viewBinding.stubError).isVisible = false
-	}
-
-	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val typeMask = WindowInsetsCompat.Type.systemBars()
-		val barsInsets = insets.getInsets(typeMask)
-		val baseMargin = v.resources.getDimensionPixelOffset(R.dimen.screen_padding)
-		viewBinding.buttonMenu.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-			marginEnd = barsInsets.end(v) + baseMargin
-			topMargin = barsInsets.top + baseMargin
-		}
-		viewBinding.buttonBack.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-			marginStart = barsInsets.start(v) + baseMargin
-			topMargin = barsInsets.top + baseMargin
-		}
-		return insets.consumeAll(typeMask)
-	}
-
-	private fun loadImage() {
-		val url = intent.data?.toString()
-		val isAnimated = url?.isAnimatedImage() == true
-
-		if (isAnimated) {
-			viewBinding.ssiv.isVisible = false
-			viewBinding.animatedView.isVisible = true
-			ImageRequest.Builder(this)
-				.data(intent.data)
-				.memoryCacheKey(intent.getParcelableExtraCompat<CoilMemoryCacheKey>(AppRouter.KEY_PREVIEW)?.data)
-				.memoryCachePolicy(CachePolicy.READ_ONLY)
-				.lifecycle(this)
-				.listener(this)
-				.mangaSourceExtra(MangaSource(intent.getStringExtra(AppRouter.KEY_SOURCE)))
-				.target(viewBinding.animatedView)
-				.enqueueWith(coil)
-		} else {
-			viewBinding.ssiv.isVisible = true
-			viewBinding.animatedView.isVisible = false
-			ImageRequest.Builder(this)
-				.data(intent.data)
-				.memoryCacheKey(intent.getParcelableExtraCompat<CoilMemoryCacheKey>(AppRouter.KEY_PREVIEW)?.data)
-				.memoryCachePolicy(CachePolicy.READ_ONLY)
-				.lifecycle(this)
-				.listener(this)
-				.mangaSourceExtra(MangaSource(intent.getStringExtra(AppRouter.KEY_SOURCE)))
-				.target(SsivTarget(viewBinding.ssiv))
-				.enqueueWith(coil)
-		}
-	}
-
-	private fun onImageSaved(uri: Uri) {
-		Snackbar.make(viewBinding.root, R.string.page_saved, Snackbar.LENGTH_LONG)
-			.setAction(R.string.share) {
-				ShareHelper.shareImage(this, uri)
-			}.show()
-	}
-
-	private fun onLoadingStateChanged(isLoading: Boolean) {
-		val button = viewBinding.buttonMenu
-		button.isClickable = !isLoading
-		if (isLoading) {
-			button.setImageDrawable(
-				CircularProgressDrawable(this).also {
-					it.setStyle(CircularProgressDrawable.LARGE)
-					it.setColorSchemeColors(getThemeColor(appcompatR.attr.colorControlNormal))
-					it.start()
-				},
+		setComposeContent {
+			val isLoading by viewModel.isLoading.collectAsState()
+			ImageViewerScreen(
+				uri = dataUri,
+				previewKey = previewKey,
+				source = source,
+				imageLoader = coil,
+				isLoading = isLoading,
+				onBack = { dispatchNavigateUp() },
+				onSave = ::launchSave,
 			)
-		} else {
-			button.setImageResource(appcompatR.drawable.abc_ic_menu_overflow_material)
 		}
 	}
 
-	private class SsivTarget(
-		override val view: SubsamplingScaleImageView,
-	) : GenericViewTarget<SubsamplingScaleImageView>() {
+	private fun launchSave() {
+		val name = intent.data?.let {
+			if (it.isZipUri()) it.fragment else it.lastPathSegment
+		}?.substringBeforeLast('.')?.plus(".png")
+		if (name == null || !saveLauncher.tryLaunch(name)) {
+			Snackbar.make(window.decorView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT).show()
+		}
+	}
+}
 
-		override var drawable: Drawable? = null
-			set(value) {
-				field = value
-				setImageDrawable(value)
-			}
+@Composable
+private fun ImageViewerScreen(
+	uri: Uri?,
+	previewKey: MemoryCache.Key?,
+	source: ParserMangaSource,
+	imageLoader: ImageLoader,
+	isLoading: Boolean,
+	onBack: () -> Unit,
+	onSave: () -> Unit,
+) {
+	val context = LocalContext.current
+	var error by remember { mutableStateOf<Throwable?>(null) }
+	var loading by remember { mutableStateOf(true) }
+	var menuOpen by remember { mutableStateOf(false) }
+	val request = remember(uri, previewKey, source) {
+		ImageRequest.Builder(context)
+			.data(uri)
+			.memoryCacheKey(previewKey)
+			.memoryCachePolicy(CachePolicy.READ_ONLY)
+			.mangaSourceExtra(source)
+			.listener(
+				onStart = { loading = true; error = null },
+				onSuccess = { _, _ -> loading = false },
+				onError = { _, result -> loading = false; error = result.throwable },
+			)
+			.build()
+	}
 
-		override fun equals(other: Any?): Boolean {
-			return (this === other) || (other is SsivTarget && view == other.view)
+	Box(modifier = Modifier.fillMaxSize()) {
+		val zoomableState = rememberZoomableState(zoomSpec = ZoomSpec(maxZoomFactor = 5f))
+		ZoomableAsyncImage(
+			model = request,
+			contentDescription = null,
+			imageLoader = imageLoader,
+			state = rememberZoomableImageState(zoomableState),
+			modifier = Modifier.fillMaxSize(),
+			contentScale = ContentScale.Fit,
+		)
+
+		if (loading || isLoading) {
+			CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+		}
+		error?.let { e ->
+			Text(
+				text = e.getDisplayMessage(context.resources),
+				modifier = Modifier
+					.align(Alignment.Center)
+					.padding(24.dp),
+				style = MaterialTheme.typography.bodyMedium,
+			)
 		}
 
-		override fun hashCode() = view.hashCode()
-
-		override fun toString() = "SsivTarget(view=$view)"
-
-		private fun setImageDrawable(drawable: Drawable?) {
-			if (drawable != null) {
-				view.setImage(ImageSource.bitmap(drawable.toBitmap()))
-			} else {
-				view.recycle()
+		IconButton(
+			onClick = onBack,
+			modifier = Modifier
+				.align(Alignment.TopStart)
+				.statusBarsPadding()
+				.padding(8.dp),
+		) {
+			Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+		}
+		Box(
+			modifier = Modifier
+				.align(Alignment.TopEnd)
+				.statusBarsPadding()
+				.padding(8.dp),
+		) {
+			IconButton(onClick = { menuOpen = true }) {
+				Icon(Icons.Default.MoreVert, contentDescription = null)
+			}
+			DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
+				DropdownMenuItem(
+					text = { Text(stringResource(R.string.save)) },
+					onClick = {
+						menuOpen = false
+						onSave()
+					},
+				)
 			}
 		}
 	}
