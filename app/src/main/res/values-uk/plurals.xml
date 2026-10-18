@@ -54,4 +54,28 @@
         <item quantity="many">%1$d хвилин</item>
         <item quantity="other">%1$d хвилин</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d оцінка</item>
+		<item quantity="few">%d оцінки</item>
+		<item quantity="many">%d оцінок</item>
+		<item quantity="other">%d оцінки</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d коментар</item>
+		<item quantity="few">%d коментарі</item>
+		<item quantity="many">%d коментарів</item>
+		<item quantity="other">%d коментарі</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">Для нового облікового запису ліміт вичерпано. Спробуйте знову приблизно через %1$d хвилину.</item>
+		<item quantity="few">Для нового облікового запису ліміт вичерпано. Спробуйте знову приблизно через %1$d хвилини.</item>
+		<item quantity="many">Для нового облікового запису ліміт вичерпано. Спробуйте знову приблизно через %1$d хвилин.</item>
+		<item quantity="other">Для нового облікового запису ліміт вичерпано. Спробуйте знову приблизно через %1$d хвилин.</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d нова відповідь</item>
+		<item quantity="few">%d нові відповіді</item>
+		<item quantity="many">%d нових відповідей</item>
+		<item quantity="other">%d нові відповіді</item>
+	</plurals>
 </resources>
