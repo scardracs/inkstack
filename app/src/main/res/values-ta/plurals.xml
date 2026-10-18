@@ -36,4 +36,20 @@
         <item quantity="one">%1$d மணி</item>
         <item quantity="other">%1$d மணிநேரம்</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d மதிப்பீடு</item>
+		<item quantity="other">%d மதிப்பீடுகள்</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d கருத்து</item>
+		<item quantity="other">%d கருத்துகள்</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">புதிய கணக்கின் வரம்பு முடிந்துவிட்டது. சுமார் %1$d நிமிடத்தில் மீண்டும் முயலவும்.</item>
+		<item quantity="other">புதிய கணக்கின் வரம்பு முடிந்துவிட்டது. சுமார் %1$d நிமிடத்தில் மீண்டும் முயலவும்.</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d புதிய பதில்</item>
+		<item quantity="other">%d புதிய பதில்கள்</item>
+	</plurals>
 </resources>
