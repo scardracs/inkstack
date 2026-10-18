@@ -36,4 +36,20 @@
         <item quantity="one">%1$d ساعت</item>
         <item quantity="other">%1$d ساعت</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d امتیاز</item>
+		<item quantity="other">%d امتیاز</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d نظر</item>
+		<item quantity="other">%d نظر</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">به حد مجاز پست برای حساب جدید رسیدید. حدود %1$d دقیقه دیگر دوباره تلاش کنید.</item>
+		<item quantity="other">به حد مجاز پست برای حساب جدید رسیدید. حدود %1$d دقیقه دیگر دوباره تلاش کنید.</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d پاسخ جدید</item>
+		<item quantity="other">%d پاسخ جدید</item>
+	</plurals>
 </resources>
