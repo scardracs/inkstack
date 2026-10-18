@@ -523,10 +523,9 @@ class SourceReplacementViewModel @Inject constructor(
 							throw e
 						}
 						recordReplacement(target.source)
+						mangaQueue = mangaQueue.filterNot { it.id == seed.id }
 						_planningProgress.value = index + 1
 					}
-					val replacedIds = replacements.mapTo(hashSetOf()) { it.first.id }
-					mangaQueue = mangaQueue.filterNot { it.id in replacedIds }
 					val remaining = mangaQueue.size
 					if (remaining > 0) {
 						moveToFirstRemaining()
