@@ -54,4 +54,28 @@
         <item quantity="many">%1$dхвілін</item>
         <item quantity="other">%1$dхвілін</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d ацэнка</item>
+		<item quantity="few">%d ацэнкі</item>
+		<item quantity="many">%d ацэнак</item>
+		<item quantity="other">%d ацэнкі</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d каментар</item>
+		<item quantity="few">%d каментары</item>
+		<item quantity="many">%d каментароў</item>
+		<item quantity="other">%d каментары</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">Для новага ўліковага запісу ліміт вычарпаны. Паспрабуйце зноў прыблізна праз %1$d хвіліну.</item>
+		<item quantity="few">Для новага ўліковага запісу ліміт вычарпаны. Паспрабуйце зноў прыблізна праз %1$d хвіліны.</item>
+		<item quantity="many">Для новага ўліковага запісу ліміт вычарпаны. Паспрабуйце зноў прыблізна праз %1$d хвілін.</item>
+		<item quantity="other">Для новага ўліковага запісу ліміт вычарпаны. Паспрабуйце зноў прыблізна праз %1$d хвілін.</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d новы адказ</item>
+		<item quantity="few">%d новыя адказы</item>
+		<item quantity="many">%d новых адказаў</item>
+		<item quantity="other">%d новыя адказы</item>
+	</plurals>
 </resources>
