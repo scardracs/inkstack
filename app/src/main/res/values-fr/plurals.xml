@@ -55,4 +55,20 @@
         <item quantity="many">%1$d sources</item>
         <item quantity="other">%1$d sources</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d note</item>
+		<item quantity="other">%d notes</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d commentaire</item>
+		<item quantity="other">%d commentaires</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">Vous avez publié autant qu\'un nouveau compte le permet pour l\'instant. Réessayez dans environ %1$d minute.</item>
+		<item quantity="other">Vous avez publié autant qu\'un nouveau compte le permet pour l\'instant. Réessayez dans environ %1$d minutes.</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d nouvelle réponse</item>
+		<item quantity="other">%d nouvelles réponses</item>
+	</plurals>
 </resources>
