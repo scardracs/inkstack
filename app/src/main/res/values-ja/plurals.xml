@@ -27,4 +27,20 @@
     <plurals name="minutes">
         <item quantity="other">%1$d分</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">評価 %d 件</item>
+		<item quantity="other">評価 %d 件</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">コメント %d 件</item>
+		<item quantity="other">コメント %d 件</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">新規アカウントの投稿上限に達しました。約 %1$d 分後に再試行してください。</item>
+		<item quantity="other">新規アカウントの投稿上限に達しました。約 %1$d 分後に再試行してください。</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">新着返信 %d 件</item>
+		<item quantity="other">新着返信 %d 件</item>
+	</plurals>
 </resources>
