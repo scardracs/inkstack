@@ -153,7 +153,7 @@ class LocalMangaDirOutput(
 				append(it.toFileNameSafe())
 			}
 			if (length > 32) {
-				deleteRange(31, lastIndex)
+				setLength(32)
 			}
 		}
 		var i = 0
