@@ -45,4 +45,20 @@
         <item quantity="many">%1$d minuts</item>
         <item quantity="other">%1$d minuts</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d valoració</item>
+		<item quantity="other">%d valoracions</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d comentari</item>
+		<item quantity="other">%d comentaris</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">Has publicat el màxim que permet un compte nou per ara. Torna-ho a provar d\'aquí a uns %1$d minut.</item>
+		<item quantity="other">Has publicat el màxim que permet un compte nou per ara. Torna-ho a provar d\'aquí a uns %1$d minuts.</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d resposta nova</item>
+		<item quantity="other">%d respostes noves</item>
+	</plurals>
 </resources>
