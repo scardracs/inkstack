@@ -287,9 +287,11 @@ internal class AlucardScans(context: MangaLoaderContext) :
 
 	private fun parseDate(value: String?): Long {
 		value ?: return 0L
-		return utcDateFormat.parseSafe(value)
-			?: utcDateFormatNoMillis.parseSafe(value)
-			?: 0L
+		val withMillis = utcDateFormat.parseSafe(value)
+		if (withMillis > 0L) {
+			return withMillis
+		}
+		return utcDateFormatNoMillis.parseSafe(value).takeIf { it > 0L } ?: 0L
 	}
 
 	private fun resolveImageUrl(url: String?): String? {
