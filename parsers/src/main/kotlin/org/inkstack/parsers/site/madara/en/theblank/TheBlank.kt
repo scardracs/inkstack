@@ -45,6 +45,16 @@ internal class TheBlank(context: MangaLoaderContext) :
 
     private fun sessionKey(serieSlug: String, chapterSlug: String) = "tb-$serieSlug--$chapterSlug"
 
+    private fun coverImageUrl(img: String): String? {
+        if (img.isBlank()) return null
+        return when {
+            img.startsWith("http://", ignoreCase = true) || img.startsWith("https://", ignoreCase = true) -> img
+            img.startsWith("//") -> "https:$img"
+            img.startsWith("/") -> "https://$domain$img"
+            else -> "https://$domain/$img"
+        }
+    }
+
     override val availableSortOrders: Set<SortOrder> = setOf(
         SortOrder.UPDATED,
         SortOrder.POPULARITY,
@@ -181,7 +191,7 @@ internal class TheBlank(context: MangaLoaderContext) :
                     publicUrl = "https://$domain$href",
                     rating = RATING_UNKNOWN,
                     contentRating = null,
-                    coverUrl = if (img.startsWith("http")) img else "https://$domain$img",
+                    coverUrl = coverImageUrl(img),
                     tags = emptySet(),
                     state = null,
                     authors = emptySet(),
@@ -260,7 +270,7 @@ internal class TheBlank(context: MangaLoaderContext) :
                     publicUrl = "https://$domain$href",
                     rating = RATING_UNKNOWN,
                     contentRating = null,
-                    coverUrl = if (img.startsWith("http")) img else "https://$domain$img",
+                    coverUrl = coverImageUrl(img),
                     tags = emptySet(),
                     state = null,
                     authors = emptySet(),
@@ -302,7 +312,7 @@ internal class TheBlank(context: MangaLoaderContext) :
             description = serie.optString("description"),
             authors = setOfNotNull(serie.optString("author").takeIf { it.isNotBlank() }),
             state = if (serie.optString("status") == "ongoing") MangaState.ONGOING else MangaState.FINISHED,
-            coverUrl = "https://$domain" + serie.optString("cover_image"),
+            coverUrl = coverImageUrl(serie.optString("cover_image")),
             tags = tags,
             chapters = chapters
         )
