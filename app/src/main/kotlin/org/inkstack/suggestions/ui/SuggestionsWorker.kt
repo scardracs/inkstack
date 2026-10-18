@@ -456,6 +456,9 @@ class SuggestionsWorker @AssistedInject constructor(
 	private fun MangaHistory.isDropped(): Boolean = SuggestionRanking.isDropped(percent, updatedAt, Instant.now())
 
 	private fun computeRelevance(mangaTags: Set<MangaTag>, allTags: List<String>): Float {
+		if (allTags.isEmpty() || mangaTags.isEmpty()) {
+			return 0f
+		}
 		val maxWeight = (allTags.size + allTags.size + 1 - mangaTags.size) * mangaTags.size / 2.0
 		val weight = mangaTags.sumOf { tag ->
 			val index = allTags.inexactIndexOf(tag.title, TAG_EQ_THRESHOLD)
