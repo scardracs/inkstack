@@ -101,7 +101,12 @@ class CoverRestoreInterceptor @Inject constructor(
 		}
 		val repo = repositoryFactory.create(bookmark.manga.source)
 		val chapter = repo.getDetails(bookmark.manga).chapters?.findById(bookmark.chapterId) ?: return false
-		val page = repo.getPages(chapter)[bookmark.page]
+		val pages = repo.getPages(chapter)
+		val pageIndex = bookmark.page
+		if (pageIndex !in pages.indices) {
+			return false
+		}
+		val page = pages[pageIndex]
 		val imageUrl = page.preview.ifNullOrEmpty { page.url }
 		return if (imageUrl != bookmark.imageUrl) {
 			bookmarksRepository.updateBookmark(bookmark, imageUrl)
