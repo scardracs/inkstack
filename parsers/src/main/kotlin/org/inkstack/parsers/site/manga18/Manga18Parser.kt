@@ -71,24 +71,31 @@ internal abstract class Manga18Parser(
 				throw IllegalArgumentException("Search is not supported with tags")
 			}
 
-			if (filter.tags.isNotEmpty()) {
-				filter.tags.oneOrThrowIfMany()?.let {
+			when {
+				filter.tags.isNotEmpty() -> {
+					val tag = filter.tags.oneOrThrowIfMany() ?: return@buildString
 					append(tagUrl)
-					append(it.key)
+					append(tag.key)
 					append('/')
 					append(page.toString())
+					append("?order_by=")
+				}
+
+				!filter.query.isNullOrEmpty() -> {
+					append(listUrl)
+					append(page.toString())
+					append("?search=")
+					append(filter.query.urlEncoded())
+					append("&order_by=")
+				}
+
+				else -> {
+					append(listUrl)
+					append(page.toString())
+					append("?order_by=")
 				}
 			}
 
-			if (!filter.query.isNullOrEmpty()) {
-				append(listUrl)
-				append(page.toString())
-				append("?search=")
-				append(filter.query.urlEncoded())
-				append("&order_by=latest")
-			}
-
-			append("?order_by=")
 			when (order) {
 				SortOrder.POPULARITY -> append("views")
 				SortOrder.UPDATED -> append("lastest")
