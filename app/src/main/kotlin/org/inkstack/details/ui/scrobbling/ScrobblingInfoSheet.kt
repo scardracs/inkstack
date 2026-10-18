@@ -126,7 +126,10 @@ class ScrobblingInfoSheet :
 		binding.textViewTitle.text = scrobbling.title
 		binding.ratingBar.rating = scrobbling.rating * binding.ratingBar.numStars
 		binding.textViewDescription.text = scrobbling.description?.sanitize()
-		binding.spinnerStatus.setSelection(scrobbling.status?.ordinal ?: -1)
+		val spinner = binding.spinnerStatus
+		spinner.onItemSelectedListener = null
+		spinner.setSelection(scrobbling.status?.ordinal ?: -1, false)
+		spinner.onItemSelectedListener = this
 		binding.imageViewLogo.contentDescription = getString(scrobbling.scrobbler.titleResId)
 		binding.imageViewLogo.setImageResource(scrobbling.scrobbler.iconResId)
 		binding.imageViewCover.setImageAsync(scrobbling.coverUrl)
