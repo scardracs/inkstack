@@ -54,4 +54,28 @@
         <item quantity="many">%1$d minut</item>
         <item quantity="other">%1$d minut</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d ocena</item>
+		<item quantity="few">%d oceny</item>
+		<item quantity="many">%d ocen</item>
+		<item quantity="other">%d oceny</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d komentarz</item>
+		<item quantity="few">%d komentarze</item>
+		<item quantity="many">%d komentarzy</item>
+		<item quantity="other">%d komentarza</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">Nowe konto wykorzystało limit. Spróbuj ponownie za około %1$d minutę.</item>
+		<item quantity="few">Nowe konto wykorzystało limit. Spróbuj ponownie za około %1$d minuty.</item>
+		<item quantity="many">Nowe konto wykorzystało limit. Spróbuj ponownie za około %1$d minut.</item>
+		<item quantity="other">Nowe konto wykorzystało limit. Spróbuj ponownie za około %1$d minuty.</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d nowa odpowiedź</item>
+		<item quantity="few">%d nowe odpowiedzi</item>
+		<item quantity="many">%d nowych odpowiedzi</item>
+		<item quantity="other">%d nowej odpowiedzi</item>
+	</plurals>
 </resources>
