@@ -1,4 +1,5 @@
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
+import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Properties
@@ -94,9 +95,13 @@ android {
 
 	signingConfigs {
 		create("release") {
+			// Resolve relative store paths from the repo root (local.properties lives there).
 			val storePath = readSecret("RELEASE_STORE_FILE", "RELEASE_STORE_FILE")
-				.ifEmpty { rootProject.file("keystore/inkstack-release.jks").absolutePath }
-			val storeFileCandidate = file(storePath)
+			val storeFileCandidate = when {
+				storePath.isEmpty() -> rootProject.file("keystore/inkstack-release.jks")
+				File(storePath).isAbsolute -> file(storePath)
+				else -> rootProject.file(storePath)
+			}
 			if (storeFileCandidate.isFile) {
 				storeFile = storeFileCandidate
 				storePassword = readSecret("RELEASE_STORE_PASSWORD", "RELEASE_STORE_PASSWORD")
