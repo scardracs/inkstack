@@ -18,7 +18,7 @@ data class ScrobblingInfo(
 ) : ListModel {
 
 	override fun areItemsTheSame(other: ListModel): Boolean {
-		return other is ScrobblingInfo && other.scrobbler == scrobbler
+		return other is ScrobblingInfo && other.scrobbler == scrobbler && other.mangaId == mangaId
 	}
 
 	override fun getChangePayload(previousState: ListModel): Any? = when {
