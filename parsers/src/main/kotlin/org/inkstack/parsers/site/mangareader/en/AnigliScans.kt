@@ -1,0 +1,20 @@
+package org.inkstack.parsers.site.mangareader.en
+
+import org.inkstack.parsers.Broken
+import org.inkstack.parsers.MangaLoaderContext
+import org.inkstack.parsers.MangaSourceParser
+import org.inkstack.parsers.model.MangaListFilterCapabilities
+import org.inkstack.parsers.model.MangaParserSource
+import org.inkstack.parsers.site.mangareader.MangaReaderParser
+
+@Broken
+@MangaSourceParser("ANIGLISCANS", "AnigliScans", "en")
+internal class AnigliScans(context: MangaLoaderContext) :
+	MangaReaderParser(context, MangaParserSource.ANIGLISCANS, "anigliscans.xyz", pageSize = 47, searchPageSize = 47) {
+	override val listUrl = "/series"
+
+	override val filterCapabilities: MangaListFilterCapabilities
+		get() = super.filterCapabilities.copy(
+			isTagsExclusionSupported = false,
+		)
+}

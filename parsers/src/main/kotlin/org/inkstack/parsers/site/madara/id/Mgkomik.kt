@@ -1,0 +1,34 @@
+package org.inkstack.parsers.site.madara.id
+
+import okhttp3.Headers
+import org.inkstack.parsers.MangaLoaderContext
+import org.inkstack.parsers.MangaSourceParser
+import org.inkstack.parsers.config.ConfigKey
+import org.inkstack.parsers.model.MangaParserSource
+import org.inkstack.parsers.site.madara.MadaraParser
+import java.util.*
+
+@MangaSourceParser("MGKOMIK", "MgKomik", "id")
+internal class Mgkomik(context: MangaLoaderContext) :
+	MadaraParser(context, MangaParserSource.MGKOMIK, "id.mgkomik.cc", 20) {
+
+	override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {
+		super.onCreateConfig(keys)
+		keys.add(ConfigKey.InterceptCloudflare(defaultValue = true))
+	}
+
+	override val tagPrefix = "genres/"
+	override val listUrl = "komik/"
+	override val datePattern = "dd MMM yy"
+	override val stylePage = ""
+	override val sourceLocale: Locale = Locale.ENGLISH
+
+	// Cloudflare's WAF refuses admin-ajax.php outright; the plain list pages and
+	// /ajax/chapters/ only get its regular challenge, which the app solves.
+	override val withoutAjax = true
+
+	override fun getRequestHeaders(): Headers = super.getRequestHeaders().newBuilder()
+		.add("Accept-Language", "id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7")
+		.add("Referer", "https://$domain/")
+		.build()
+}

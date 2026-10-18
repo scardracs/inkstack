@@ -1,0 +1,73 @@
+package org.inkstack.core.util.ext
+
+import android.content.ContentResolver
+import android.content.Context
+import android.net.Uri
+import android.os.storage.StorageManager
+import android.provider.DocumentsContract
+import android.provider.OpenableColumns
+import androidx.core.net.toFile
+import org.inkstack.parsers.util.nullIfEmpty
+import org.inkstack.parsers.util.removeSuffix
+import java.io.File
+
+private const val PRIMARY_VOLUME_NAME = "primary"
+
+fun Uri.resolveFile(context: Context): File? {
+	val volumeId = getVolumeIdFromTreeUri(this) ?: return null
+	val volumePath = getVolumePath(volumeId, context)?.removeSuffix(File.separatorChar) ?: return null
+	val documentPath = getDocumentPathFromTreeUri(this)?.removeSuffix(File.separatorChar) ?: return null
+
+	return File(
+		if (documentPath.isNotEmpty()) {
+			if (documentPath.startsWith(File.separator)) {
+				volumePath + documentPath
+			} else {
+				volumePath + File.separator + documentPath
+			}
+		} else {
+			volumePath
+		},
+	)
+}
+
+fun ContentResolver.getFileDisplayName(uri: Uri): String? = runCatching {
+	if (uri.isFileUri()) {
+		return@runCatching uri.toFile().name
+	}
+	query(uri, null, null, null, null)?.use { cursor ->
+		if (cursor.moveToFirst()) {
+			cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
+		} else {
+			null
+		}
+	}
+}.onFailure { e ->
+	e.printStackTraceDebug()
+}.getOrNull()
+
+private fun getVolumePath(volumeId: String, context: Context): String? = runCatching {
+	val storageManager = context.getSystemService(Context.STORAGE_SERVICE) as StorageManager
+	storageManager.storageVolumes.firstNotNullOfOrNull { volume ->
+		if (volume.isPrimary && volumeId == PRIMARY_VOLUME_NAME) {
+			volume.directory?.path
+		} else {
+			val uuid = volume.uuid
+			if (uuid != null && uuid == volumeId) volume.directory?.path else null
+		}
+	}
+}.onFailure {
+	it.printStackTraceDebug()
+}.getOrNull()
+
+private fun getVolumeIdFromTreeUri(treeUri: Uri): String? {
+	val docId = DocumentsContract.getTreeDocumentId(treeUri)
+	val split = docId.split(":".toRegex())
+	return split.firstOrNull()?.nullIfEmpty()
+}
+
+private fun getDocumentPathFromTreeUri(treeUri: Uri): String? {
+	val docId = DocumentsContract.getTreeDocumentId(treeUri)
+	val split: Array<String?> = docId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+	return if (split.size >= 2 && split[1] != null) split[1] else File.separator
+}

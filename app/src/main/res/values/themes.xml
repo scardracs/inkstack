@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+	<!-- Base application theme. -->
+	<style name="Base.Theme.Inkstack" parent="Theme.Material3.DayNight.NoActionBar">
+
+		<!-- Theme Colors -->
+		<item name="colorPrimary">@color/inkstack_primary</item>
+		<item name="colorPrimaryContainer">@color/inkstack_primaryContainer</item>
+		<item name="colorOnPrimary">@color/inkstack_onPrimary</item>
+		<item name="colorOnPrimaryContainer">@color/inkstack_onPrimaryContainer</item>
+		<item name="colorPrimaryInverse">@color/inkstack_inversePrimary</item>
+		<item name="colorSecondary">@color/inkstack_secondary</item>
+		<item name="colorSecondaryContainer">@color/inkstack_secondaryContainer</item>
+		<item name="colorOnSecondary">@color/inkstack_onSecondary</item>
+		<item name="colorOnSecondaryContainer">@color/inkstack_onSecondaryContainer</item>
+		<item name="colorTertiary">@color/inkstack_tertiary</item>
+		<item name="colorTertiaryContainer">@color/inkstack_tertiaryContainer</item>
+		<item name="colorOnTertiary">@color/inkstack_onTertiary</item>
+		<item name="colorOnTertiaryContainer">@color/inkstack_onTertiaryContainer</item>
+		<item name="colorSurface">@color/inkstack_surface</item>
+		<item name="colorSurfaceDim">@color/inkstack_surfaceDim</item>
+		<item name="colorSurfaceBright">@color/inkstack_surfaceBright</item>
+		<item name="colorSurfaceContainerLowest">@color/inkstack_surfaceContainerLowest</item>
+		<item name="colorSurfaceContainerLow">@color/inkstack_surfaceContainerLow</item>
+		<item name="colorSurfaceContainer">@color/inkstack_surfaceContainer</item>
+		<item name="colorSurfaceContainerHigh">@color/inkstack_surfaceContainerHigh</item>
+		<item name="colorSurfaceContainerHighest">@color/inkstack_surfaceContainerHighest</item>
+		<item name="colorSurfaceVariant">@color/inkstack_surfaceVariant</item>
+		<item name="colorOnSurface">@color/inkstack_onSurface</item>
+		<item name="colorOnSurfaceVariant">@color/inkstack_onSurfaceVariant</item>
+		<item name="colorSurfaceInverse">@color/inkstack_inverseSurface</item>
+		<item name="colorOnSurfaceInverse">@color/inkstack_inverseOnSurface</item>
+		<item name="colorOnBackground">@color/inkstack_onSurface</item>
+		<item name="colorError">@color/error</item>
+		<item name="colorErrorContainer">@color/errorContainer</item>
+		<item name="colorOnError">@color/onError</item>
+		<item name="colorOnErrorContainer">@color/onErrorContainer</item>
+		<item name="colorOutline">@color/inkstack_outline</item>
+		<item name="colorOutlineVariant">@color/inkstack_outline</item>
+
+		<!-- Drawables (icons) -->
+		<item name="actionModeCloseDrawable">@drawable/abc_ic_clear_material</item>
+		<item name="actionModeWebSearchDrawable">@drawable/abc_ic_search_api_material</item>
+		<item name="expandCollapseIndicator">@drawable/m3_split_button_chevron_avd</item>
+
+		<!-- Base attributes -->
+		<item name="android:windowLightStatusBar">@bool/light_status_bar</item>
+		<item name="android:windowLightNavigationBar">@bool/light_navigation_bar</item>
+		<item name="android:statusBarColor">@android:color/transparent</item>
+		<item name="android:navigationBarColor">@android:color/transparent</item>
+		<item name="android:navigationBarDividerColor">@null</item>
+		<item name="android:enforceNavigationBarContrast">false</item>
+		<item name="android:enforceStatusBarContrast">false</item>
+		<item name="android:windowSplashScreenAnimatedIcon">@drawable/avd_splash</item>
+		<item name="android:windowSplashScreenAnimationDuration">@integer/splash_screen_duration</item>
+		<item name="android:windowSplashScreenBackground">@color/m3_sys_color_dynamic_light_surface</item>
+		<item name="windowActionModeOverlay">true</item>
+
+		<!-- System components styles -->
+		<item name="android:alertDialogTheme">@style/ThemeOverlay.Inkstack.AlertDialog</item>
+		<item name="alertDialogTheme">@style/ThemeOverlay.Inkstack.AlertDialog</item>
+		<item name="bottomSheetDialogTheme">@style/ThemeOverlay.Inkstack.BottomSheetDialog</item>
+		<item name="sideSheetDialogTheme">@style/ThemeOverlay.Inkstack.SideSheetDialog</item>
+		<item name="recyclerViewStyle">@style/Widget.Inkstack.RecyclerView</item>
+		<item name="android:dropDownSpinnerStyle">@style/Widget.Inkstack.Spinner.DropDown</item>
+		<!-- Centres the query text inside inline SearchViews; see the style for why it goes through
+		     autoCompleteTextViewStyle. -->
+		<item name="autoCompleteTextViewStyle">@style/Widget.Inkstack.AutoCompleteTextView</item>
+		<item name="switchPreferenceCompatStyle">@style/Preference.SwitchPreferenceCompat.M3</item>
+		<item name="circularProgressIndicatorStyle">@style/Widget.Inkstack.CircularProgressIndicator</item>
+		<item name="linearProgressIndicatorStyle">@style/Widget.Inkstack.LinearProgressIndicator</item>
+		<item name="bottomSheetDragHandleStyle">@style/Widget.Inkstack.BottomSheet.DragHandle</item>
+		<item name="preferenceTheme">@style/PreferenceThemeOverlay.Inkstack</item>
+		<!-- Fix crash in A15 -->
+		<item name="actionButtonStyle">@style/Widget.AppCompat.ActionButton</item>
+
+		<!-- Manga grid title under the cover; Expressive overrides both of these to move it on top -->
+		<item name="mangaGridTitleStyle">@style/Widget.Inkstack.MangaGridTitle</item>
+		<item name="mangaCoverTitleStyle">@style/Widget.Inkstack.MangaCoverTitle</item>
+		<item name="gridTitleTextAppearance">@style/TextAppearance.Inkstack.GridTitle</item>
+		<item name="gridTitleTextAppearanceSmall">@style/TextAppearance.Inkstack.GridTitle.Small</item>
+		<item name="readingProgressStyle">@style/ProgressDrawable</item>
+		<item name="mangaGridSpacing">@dimen/manga_grid_spacing</item>
+		<item name="detailsTitleTextAppearance">?attr/textAppearanceTitleLarge</item>
+		<item name="detailsMetadataLabelTextAppearance">?attr/textAppearanceTitleSmall</item>
+		<item name="detailsFavoriteChipStyle">@style/Widget.Inkstack.Chip.Dropdown</item>
+		<item name="detailsTagChipStyle">@style/Widget.Inkstack.Chip</item>
+		<item name="detailsChapterListItemStyle">@style/Widget.Inkstack.Details.ChapterCard</item>
+		<item name="detailsChapterGridItemStyle">@style/Widget.Inkstack.Details.ChapterGridCard</item>
+		<item name="detailsChapterTitleTextAppearance">?attr/textAppearanceBodyLarge</item>
+		<item name="detailsChapterSupportingTextAppearance">?attr/textAppearanceBodySmall</item>
+		<item name="detailsChapterBookmarkIconStyle">@style/Widget.Inkstack.Details.ChapterStatus.Bookmark</item>
+		<item name="detailsChapterDownloadIconStyle">@style/Widget.Inkstack.Details.ChapterStatus.Download</item>
+		<item name="detailsChapterNewIndicatorStyle">@style/Widget.Inkstack.Details.ChapterStatus.New</item>
+		<item name="detailsChapterItemMarginHorizontal">0dp</item>
+		<item name="detailsChapterItemMarginVertical">0dp</item>
+		<item name="detailsReadSplitButtonStyle">@style/Widget.Inkstack.Details.ReadSplitButton</item>
+		<item name="detailsReadLeadingButtonStyle">@style/Widget.Inkstack.Details.ReadButton</item>
+		<item name="detailsReadMenuButtonStyle">@style/Widget.Inkstack.Details.ReadMenuButton</item>
+
+		<!-- Custom views -->
+		<item name="fastScrollerStyle">@style/Widget.Inkstack.FastScroller</item>
+		<item name="listItemTextViewStyle">@style/Widget.Inkstack.ListItemTextView</item>
+		<item name="dotIndicatorStyle">@style/Widget.Inkstack.DotIndicator</item>
+		<item name="badgeViewStyle">@style/Widget.Inkstack.BadgeView</item>
+		<item name="coverImageViewStyle">@style/Widget.Inkstack.ImageView.Cover</item>
+	</style>
+
+	<!--== Default Theme ==-->
+	<style name="Theme.Inkstack" parent="Base.Theme.Inkstack" />
+
+	<!-- Focused, rendered window for automatic Cloudflare resolution without visible navigation. -->
+	<style name="Theme.Inkstack.CloudFlareHidden" parent="Theme.Inkstack">
+		<item name="android:windowBackground">@android:color/transparent</item>
+		<item name="android:windowIsTranslucent">true</item>
+		<item name="android:windowIsFloating">false</item>
+		<item name="android:windowNoTitle">true</item>
+		<item name="android:windowAnimationStyle">@null</item>
+		<item name="android:windowDisablePreview">true</item>
+		<item name="android:windowContentOverlay">@null</item>
+		<item name="android:colorBackground">@android:color/transparent</item>
+		<item name="android:statusBarColor">@android:color/transparent</item>
+		<item name="android:navigationBarColor">@android:color/transparent</item>
+		<item name="android:windowActionBar">false</item>
+		<item name="android:backgroundDimEnabled">false</item>
+	</style>
+
+	<!--
+		Host for the ACRA crash dialog. The activity itself is invisible; the AlertDialog inside draws
+		everything and provides its own scrim. Inherits Theme.Inkstack so the dialog picks up the app's
+		colours and follows dark mode, instead of ACRA's default light @android:style/Theme.Dialog.
+	-->
+	<style name="Theme.Inkstack.CrashDialog" parent="Theme.Inkstack">
+		<item name="android:windowBackground">@android:color/transparent</item>
+		<item name="android:windowIsTranslucent">true</item>
+		<item name="android:windowNoTitle">true</item>
+		<item name="android:windowContentOverlay">@null</item>
+		<item name="android:windowAnimationStyle">@null</item>
+		<item name="android:backgroundDimEnabled">false</item>
+	</style>
+
+	<!-- Base ThemeOverlay -->
+	<style name="ThemeOverlay.Inkstack" parent="ThemeOverlay.Material3.Light" />
+
+	<!-- Monet theme only support S+ -->
+	<style name="ThemeOverlay.Inkstack.Monet" parent="ThemeOverlay.Material3.DynamicColors.Light" />
+
+	<!-- Expressive Monet theme - Full Material 3 Expressive with bold components -->
+	<style name="ThemeOverlay.Inkstack.Expressive" parent="ThemeOverlay.Material3Expressive.DynamicColors.DayNight">
+
+		<!-- Expressive vibrant colors -->
+		<item name="elevationOverlayColor">?attr/colorPrimary</item>
+		<!-- Tinted background -->
+		<item name="colorSurface">?attr/colorSurfaceContainerLow</item>
+		<item name="android:colorBackground">?attr/colorSurfaceContainerLow</item>
+		<!-- Elevated elements jump to more chromatic tones for clear separation -->
+		<item name="colorSurfaceContainerHigh">?attr/colorSurfaceVariant</item>
+		<item name="colorSurfaceContainerHighest">?attr/colorSecondaryContainer</item>
+
+		<!-- Dialogs -->
+		<item name="alertDialogTheme">@style/ThemeOverlay.Material3Expressive.Dialog.Alert</item>
+		<item name="materialAlertDialogTheme">@style/ThemeOverlay.Material3Expressive.MaterialAlertDialog</item>
+
+		<!-- App Bar - Flexible app bars with multi-line support -->
+		<item name="appBarLayoutStyle">@style/Widget.Material3Expressive.AppBarLayout</item>
+		<item name="collapsingToolbarLayoutStyle">@style/Widget.Material3Expressive.CollapsingToolbar</item>
+		<item name="collapsingToolbarLayoutMediumStyle">@style/Widget.Material3Expressive.CollapsingToolbar.Medium</item>
+		<item name="collapsingToolbarLayoutLargeStyle">@style/Widget.Material3Expressive.CollapsingToolbar.Large</item>
+
+		<!-- Search - The "app bar with search" pattern. The SearchView variant is what finally turns
+		     containedAnimationEnabled on, so expanding search animates out of the bar instead of
+		     cross-fading over the whole screen; the bar itself uses the Inkstack subclass so the app
+		     keeps control of its margins and navigation icon. -->
+		<item name="materialSearchBarStyle">@style/Widget.Inkstack.SearchBar.AppBarWithSearch</item>
+		<item name="materialSearchViewStyle">@style/Widget.Material3Expressive.SearchView.AppBarWithSearch</item>
+
+		<!-- FAB - Expressive shapes with primary container colors -->
+		<item name="floatingActionButtonStyle">@style/Widget.Material3Expressive.FloatingActionButton</item>
+		<item name="floatingActionButtonMediumStyle">@style/Widget.Material3Expressive.FloatingActionButton.Medium</item>
+		<item name="floatingActionButtonLargeStyle">@style/Widget.Material3Expressive.FloatingActionButton.Large</item>
+
+		<!-- Extended FAB - Small, medium, large sizes -->
+		<item name="extendedFloatingActionButtonSmallStyle">
+			@style/Widget.Material3Expressive.ExtendedFloatingActionButton.Small
+		</item>
+		<item name="extendedFloatingActionButtonMediumStyle">
+			@style/Widget.Material3Expressive.ExtendedFloatingActionButton.Medium
+		</item>
+		<item name="extendedFloatingActionButtonLargeStyle">
+			@style/Widget.Material3Expressive.ExtendedFloatingActionButton.Large
+		</item>
+
+		<!-- Buttons - Expressive with shape morph on press, toggle support. The Inkstack subclasses
+		     only add includeFontPadding=false; see the note beside them in styles.xml. -->
+		<item name="materialButtonStyle">@style/Widget.Inkstack.Expressive.Button</item>
+		<item name="materialButtonTonalStyle">@style/Widget.Inkstack.Expressive.Button.Tonal</item>
+		<item name="materialButtonOutlinedStyle">@style/Widget.Inkstack.Expressive.Button.Outlined</item>
+		<item name="materialButtonElevatedStyle">@style/Widget.Inkstack.Expressive.Button.Elevated</item>
+		<item name="borderlessButtonStyle">@style/Widget.Inkstack.Expressive.Button.Text</item>
+		<item name="buttonBarButtonStyle">@style/Widget.Inkstack.Expressive.Button.Text.Dialog</item>
+		<item name="snackbarButtonStyle">@style/Widget.Inkstack.Expressive.Button.Text.Snackbar</item>
+		<item name="chipStyle">@style/Widget.Inkstack.Expressive.Chip.Assist</item>
+		<item name="tabStyle">@style/Widget.Inkstack.Expressive.TabLayout</item>
+
+		<!-- Icon Buttons - Expressive with round/square shape morph -->
+		<item name="materialIconButtonStyle">@style/Widget.Material3Expressive.Button.IconButton.Standard</item>
+		<item name="materialIconButtonOutlinedStyle">@style/Widget.Material3Expressive.Button.IconButton.Outlined</item>
+		<item name="materialIconButtonFilledStyle">@style/Widget.Material3Expressive.Button.IconButton.Filled</item>
+		<item name="materialIconButtonFilledTonalStyle">@style/Widget.Material3Expressive.Button.IconButton.Tonal</item>
+
+		<!-- Button Groups - Standard and connected variants -->
+		<item name="materialButtonGroupStyle">@style/Widget.Material3Expressive.MaterialButtonGroup</item>
+		<item name="materialButtonToggleGroupStyle">@style/Widget.Material3Expressive.MaterialButtonToggleGroup</item>
+
+		<!-- Navigation - Flexible nav bar with horizontal item support -->
+		<item name="bottomNavigationStyle">@style/Widget.Inkstack.BottomNavigationView.Expressive</item>
+		<item name="extendedFloatingActionButtonStyle">@style/Widget.Inkstack.ExtendedFab.Continue</item>
+		<item name="navigationRailStyle">@style/Widget.Material3Expressive.NavigationRailView</item>
+
+		<!-- Toolbar - Expressive with surface variants -->
+		<item name="toolbarStyle">@style/Widget.Material3Expressive.Toolbar</item>
+		<item name="toolbarSurfaceStyle">@style/Widget.Material3Expressive.Toolbar.Surface</item>
+
+		<!-- Floating Toolbar - Vibrant uses primaryContainer background for bold color -->
+		<item name="floatingToolbarStyle">@style/Widget.Material3.FloatingToolbar.Vibrant</item>
+
+		<!-- Progress Indicators - Bold wavy animation style -->
+		<item name="linearProgressIndicatorStyle">@style/Widget.Material3Expressive.LinearProgressIndicator.Wavy</item>
+		<item name="circularProgressIndicatorStyle">@style/Widget.Material3Expressive.CircularProgressIndicator.Wavy</item>
+
+		<!-- Loading Indicator - M3 shape morphing animation -->
+		<item name="loadingIndicatorStyle">@style/Widget.Material3.LoadingIndicator</item>
+
+		<!-- Slider - Medium size (40dp track) for bold, prominent controls -->
+		<item name="sliderStyle">@style/Widget.Material3Expressive.Slider.Medium</item>
+
+		<!-- Lists - Revealable/swipeable list items (alpha06+) -->
+		<item name="listItemRevealLayoutStyle">@style/Widget.Material3Expressive.ListItemRevealLayout</item>
+
+		<!-- App Bar dimensions - Flexible heights -->
+		<item name="collapsingToolbarLayoutMediumSize">@dimen/m3_comp_app_bar_medium_flexible_container_height</item>
+		<item name="collapsingToolbarLayoutLargeSize">@dimen/m3_comp_app_bar_large_flexible_container_height</item>
+		<item name="actionBarSize">@dimen/m3_comp_app_bar_small_container_height</item>
+
+		<!-- Google Sans across the type scale. Every role has to be listed: Material's own text
+		     appearances hard-code a font family, so there is no single attribute that covers them. -->
+		<item name="textAppearanceDisplayLarge">@style/TextAppearance.Inkstack.Sans.DisplayLarge</item>
+		<item name="textAppearanceDisplayMedium">@style/TextAppearance.Inkstack.Sans.DisplayMedium</item>
+		<item name="textAppearanceDisplaySmall">@style/TextAppearance.Inkstack.Sans.DisplaySmall</item>
+		<item name="textAppearanceHeadlineLarge">@style/TextAppearance.Inkstack.Sans.HeadlineLarge</item>
+		<item name="textAppearanceHeadlineMedium">@style/TextAppearance.Inkstack.Sans.HeadlineMedium</item>
+		<item name="textAppearanceHeadlineSmall">@style/TextAppearance.Inkstack.Sans.HeadlineSmall</item>
+		<item name="textAppearanceTitleLarge">@style/TextAppearance.Inkstack.Sans.TitleLarge</item>
+		<item name="textAppearanceTitleMedium">@style/TextAppearance.Inkstack.Sans.TitleMedium</item>
+		<item name="textAppearanceTitleSmall">@style/TextAppearance.Inkstack.Sans.TitleSmall</item>
+		<item name="textAppearanceBodyLarge">@style/TextAppearance.Inkstack.Sans.BodyLarge</item>
+		<item name="textAppearanceBodyMedium">@style/TextAppearance.Inkstack.Sans.BodyMedium</item>
+		<item name="textAppearanceBodySmall">@style/TextAppearance.Inkstack.Sans.BodySmall</item>
+		<item name="textAppearanceLabelLarge">@style/TextAppearance.Inkstack.Sans.LabelLarge</item>
+		<item name="textAppearanceLabelMedium">@style/TextAppearance.Inkstack.Sans.LabelMedium</item>
+		<item name="textAppearanceLabelSmall">@style/TextAppearance.Inkstack.Sans.LabelSmall</item>
+		<item name="detailsTitleTextAppearance">@style/TextAppearance.Inkstack.Details.Title.Expressive</item>
+		<item name="detailsMetadataLabelTextAppearance">@style/TextAppearance.Inkstack.Details.MetadataLabel.Expressive</item>
+		<item name="detailsFavoriteChipStyle">@style/Widget.Inkstack.Details.FavoriteChip.Expressive</item>
+		<item name="detailsTagChipStyle">@style/Widget.Inkstack.Details.TagChip.Expressive</item>
+		<item name="detailsChapterListItemStyle">@style/Widget.Inkstack.Details.ChapterCard.Expressive</item>
+		<item name="detailsChapterGridItemStyle">@style/Widget.Inkstack.Details.ChapterGridCard.Expressive</item>
+		<item name="detailsChapterTitleTextAppearance">?attr/textAppearanceTitleMedium</item>
+		<item name="detailsChapterSupportingTextAppearance">?attr/textAppearanceBodySmall</item>
+		<item name="detailsChapterBookmarkIconStyle">@style/Widget.Inkstack.Details.ChapterStatus.Bookmark.Expressive</item>
+		<item name="detailsChapterDownloadIconStyle">@style/Widget.Inkstack.Details.ChapterStatus.Download.Expressive</item>
+		<item name="detailsChapterNewIndicatorStyle">@style/Widget.Inkstack.Details.ChapterStatus.New.Expressive</item>
+		<item name="detailsChapterItemMarginHorizontal">8dp</item>
+		<item name="detailsChapterItemMarginVertical">3dp</item>
+		<item name="detailsReadSplitButtonStyle">@style/Widget.Inkstack.Details.ReadSplitButton.Expressive</item>
+		<item name="detailsReadLeadingButtonStyle">@style/Widget.Inkstack.Details.ReadButton.Expressive</item>
+		<item name="detailsReadMenuButtonStyle">@style/Widget.Inkstack.Details.ReadMenuButton.Expressive</item>
+		<item name="android:fontFamily">@font/google_sans</item>
+		<item name="fontFamily">@font/google_sans</item>
+		<!-- Strips the extra band Google Sans's metrics add above and below every line. -->
+		<item name="android:textViewStyle">@style/Widget.Inkstack.TextView</item>
+
+		<!-- Manga grid titles move onto the artwork, in white with a soft drop shadow so they stay
+		     legible over a bright cover. -->
+		<item name="mangaGridTitleStyle">@style/Widget.Inkstack.MangaGridTitle.Hidden</item>
+		<item name="mangaCoverTitleStyle">@style/Widget.Inkstack.MangaCoverTitle.Visible</item>
+		<item name="gridTitleTextAppearance">@style/TextAppearance.Inkstack.GridTitle.OnCover</item>
+		<item name="gridTitleTextAppearanceSmall">@style/TextAppearance.Inkstack.GridTitle.OnCover.Small</item>
+
+		<!-- Card status cluster: tonal progress ring and a red new-chapter badge. -->
+		<item name="readingProgressStyle">@style/ProgressDrawable.Expressive</item>
+		<item name="badgeViewStyle">@style/Widget.Inkstack.BadgeView.Expressive</item>
+		<!-- Covers sit nearly edge to edge, so each card gets as much of its cell as possible. -->
+		<item name="mangaGridSpacing">@dimen/manga_grid_spacing_tight</item>
+
+		<!-- Motion - The spring physics behind every expressive component.
+		     Base.Theme.Inkstack inherits Theme.Material3.DayNight, which pins these to the Standard
+		     springs. Without overriding them the expressive widgets above still animate with standard
+		     motion, so the bold shapes land but none of the bounce does. -->
+		<item name="motionSpringDefaultSpatial">@style/Motion.Material3.Spring.Expressive.Default.Spatial</item>
+		<item name="motionSpringDefaultEffects">@style/Motion.Material3.Spring.Expressive.Default.Effects</item>
+		<item name="motionSpringFastSpatial">@style/Motion.Material3.Spring.Expressive.Fast.Spatial</item>
+		<item name="motionSpringFastEffects">@style/Motion.Material3.Spring.Expressive.Fast.Effects</item>
+		<item name="motionSpringSlowSpatial">@style/Motion.Material3.Spring.Expressive.Slow.Spatial</item>
+		<item name="motionSpringSlowEffects">@style/Motion.Material3.Spring.Expressive.Slow.Effects</item>
+
+		<!-- Dynamic color theme -->
+		<item name="dynamicColorThemeOverlay">@style/ThemeOverlay.Material3Expressive.DynamicColors.DayNight</item>
+	</style>
+
+	<!-- Changes only for night -->
+	<style name="ThemeOverlay.Inkstack.Amoled" parent="" />
+
+	<!-- App Widgets -->
+
+	<style name="Theme.Inkstack.AppWidgetContainer" parent="@android:style/Theme.DeviceDefault.DayNight">
+		<item name="android:colorBackground">@color/m3_ref_palette_dynamic_secondary95</item>
+		<item name="android:panelColorBackground">@color/m3_ref_palette_dynamic_secondary90</item>
+		<item name="colorTertiary">@color/m3_ref_palette_dynamic_secondary70</item>
+	</style>
+</resources>

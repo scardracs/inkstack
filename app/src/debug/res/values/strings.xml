@@ -1,0 +1,4 @@
+<resources>
+	<string name="app_name" translatable="false">Inkstack Dev</string>
+	<string name="strict_mode">Strict mode</string>
+</resources>

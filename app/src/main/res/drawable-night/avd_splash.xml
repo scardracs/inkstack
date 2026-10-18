@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:aapt="http://schemas.android.com/aapt">
+	<aapt:attr name="android:drawable">
+		<vector
+			android:name="splash"
+			android:width="320dp"
+			android:height="320dp"
+			android:viewportWidth="320"
+			android:viewportHeight="320">
+			<group
+				android:name="scaleme"
+				android:pivotX="160"
+				android:pivotY="160"
+				android:scaleX="1"
+				android:scaleY="1">
+				<group android:name="bg">
+					<path
+						android:name="circle"
+						android:fillColor="@color/inkstack_primaryContainer"
+						android:fillAlpha="0"
+						android:pathData="M 160 110 C 146.744 110 134.018 115.271 124.645 124.645 C 115.271 134.018 110 146.744 110 160 C 110 173.256 115.271 185.982 124.645 195.355 C 134.018 204.729 146.744 210 160 210 C 173.256 210 185.982 204.729 195.355 195.355 C 204.729 185.982 210 173.256 210 160 C 210 146.744 204.729 134.018 195.355 124.645 C 185.982 115.271 173.256 110 160 110 Z" />
+				</group>
+				<group
+					android:name="fg"
+					android:pivotX="160"
+					android:pivotY="160"
+					android:scaleX="0"
+					android:scaleY="0">
+					<!-- stack bottom -->
+					<path
+						android:name="stack_back"
+						android:fillColor="@color/inkstack_primary"
+						android:fillAlpha="0"
+						android:pathData="M108,128 h104 a16,16 0 0 1 16,16 v72 a16,16 0 0 1 -16,16 h-104 a16,16 0 0 1 -16,-16 v-72 a16,16 0 0 1 16,-16 z" />
+					<!-- stack mid -->
+					<path
+						android:name="stack_mid"
+						android:fillColor="@color/inkstack_primaryContainer"
+						android:fillAlpha="0"
+						android:pathData="M100,118 h104 a16,16 0 0 1 16,16 v72 a16,16 0 0 1 -16,16 h-104 a16,16 0 0 1 -16,-16 v-72 a16,16 0 0 1 16,-16 z" />
+					<!-- stack top -->
+					<path
+						android:name="stack_top"
+						android:fillColor="#FFFFFF"
+						android:fillAlpha="0"
+						android:pathData="M92,108 h104 a16,16 0 0 1 16,16 v72 a16,16 0 0 1 -16,16 h-104 a16,16 0 0 1 -16,-16 v-72 a16,16 0 0 1 16,-16 z" />
+					<!-- ink drop -->
+					<path
+						android:name="ink_drop"
+						android:fillColor="@color/inkstack_primary"
+						android:fillAlpha="0"
+						android:pathData="M160,128 C160,128 140,152 140,168 C140,179.046 149.954,189 161,189 C172.046,189 182,179.046 182,168 C182,152 160,128 160,128 Z" />
+				</group>
+			</group>
+		</vector>
+	</aapt:attr>
+	<target android:name="circle">
+		<aapt:attr name="android:animation">
+			<set>
+				<objectAnimator
+					android:propertyName="pathData"
+					android:startOffset="160"
+					android:duration="320"
+					android:valueFrom="M 160 110 C 146.744 110 134.018 115.271 124.645 124.645 C 115.271 134.018 110 146.744 110 160 C 110 173.256 115.271 185.982 124.645 195.355 C 134.018 204.729 146.744 210 160 210 C 173.256 210 185.982 204.729 195.355 195.355 C 204.729 185.982 210 173.256 210 160 C 210 146.744 204.729 134.018 195.355 124.645 C 185.982 115.271 173.256 110 160 110 Z"
+					android:valueTo="M 160 60 C 133.489 60 108.036 70.543 89.289 89.289 C 70.543 108.036 60 133.489 60 160 C 60 186.511 70.543 211.964 89.289 230.711 C 108.036 249.457 133.489 260 160 260 C 186.511 260 211.964 249.457 230.711 230.711 C 249.457 211.964 260 186.511 260 160 C 260 133.489 249.457 108.036 230.711 89.289 C 211.964 70.543 186.511 60 160 60 Z"
+					android:valueType="pathType"
+					android:interpolator="@android:anim/overshoot_interpolator" />
+				<objectAnimator
+					android:propertyName="fillAlpha"
+					android:startOffset="160"
+					android:duration="120"
+					android:valueFrom="0"
+					android:valueTo="1"
+					android:valueType="floatType"
+					android:interpolator="@android:interpolator/fast_out_slow_in" />
+			</set>
+		</aapt:attr>
+	</target>
+	<target android:name="fg">
+		<aapt:attr name="android:animation">
+			<set>
+				<objectAnimator
+					android:propertyName="scaleX"
+					android:startOffset="200"
+					android:duration="320"
+					android:valueFrom="0.4"
+					android:valueTo="1"
+					android:valueType="floatType"
+					android:interpolator="@android:anim/overshoot_interpolator" />
+				<objectAnimator
+					android:propertyName="scaleY"
+					android:startOffset="200"
+					android:duration="320"
+					android:valueFrom="0.4"
+					android:valueTo="1"
+					android:valueType="floatType"
+					android:interpolator="@android:anim/overshoot_interpolator" />
+			</set>
+		</aapt:attr>
+	</target>
+	<target android:name="stack_back">
+		<aapt:attr name="android:animation">
+			<objectAnimator
+				android:propertyName="fillAlpha"
+				android:startOffset="220"
+				android:duration="140"
+				android:valueFrom="0"
+				android:valueTo="1"
+				android:valueType="floatType" />
+		</aapt:attr>
+	</target>
+	<target android:name="stack_mid">
+		<aapt:attr name="android:animation">
+			<objectAnimator
+				android:propertyName="fillAlpha"
+				android:startOffset="260"
+				android:duration="140"
+				android:valueFrom="0"
+				android:valueTo="1"
+				android:valueType="floatType" />
+		</aapt:attr>
+	</target>
+	<target android:name="stack_top">
+		<aapt:attr name="android:animation">
+			<objectAnimator
+				android:propertyName="fillAlpha"
+				android:startOffset="300"
+				android:duration="140"
+				android:valueFrom="0"
+				android:valueTo="1"
+				android:valueType="floatType" />
+		</aapt:attr>
+	</target>
+	<target android:name="ink_drop">
+		<aapt:attr name="android:animation">
+			<objectAnimator
+				android:propertyName="fillAlpha"
+				android:startOffset="340"
+				android:duration="160"
+				android:valueFrom="0"
+				android:valueTo="1"
+				android:valueType="floatType"
+				android:interpolator="@android:interpolator/fast_out_slow_in" />
+		</aapt:attr>
+	</target>
+</animated-vector>

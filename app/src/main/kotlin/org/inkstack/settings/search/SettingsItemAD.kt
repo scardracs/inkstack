@@ -1,0 +1,23 @@
+package org.inkstack.settings.search
+
+import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
+import org.inkstack.R
+import org.inkstack.core.ui.list.AdapterDelegateClickListenerAdapter
+import org.inkstack.core.ui.list.OnListItemClickListener
+import org.inkstack.core.util.ext.textAndVisible
+import org.inkstack.databinding.ItemPreferenceBinding
+
+fun settingsItemAD(
+	listener: OnListItemClickListener<SettingsItem>,
+) = adapterDelegateViewBinding<SettingsItem, SettingsItem, ItemPreferenceBinding>(
+	{ layoutInflater, parent -> ItemPreferenceBinding.inflate(layoutInflater, parent, false) },
+) {
+
+	AdapterDelegateClickListenerAdapter(this, listener).attach()
+	val breadcrumbsSeparator = getString(R.string.breadcrumbs_separator)
+
+	bind {
+		binding.textViewTitle.text = item.title
+		binding.textViewSummary.textAndVisible = item.breadcrumbs.joinToString(breadcrumbsSeparator)
+	}
+}
