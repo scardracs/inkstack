@@ -36,4 +36,20 @@
         <item quantity="one">%1$d मिनेट</item>
         <item quantity="other">%1$d मिनेट</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d मूल्याङ्कन</item>
+		<item quantity="other">%d मूल्याङ्कन</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d टिप्पणी</item>
+		<item quantity="other">%d टिप्पणीहरू</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">नयाँ खाताको सीमा सकियो। करिब %1$d मिनेटमा फेरि प्रयास गर्नुहोस्।</item>
+		<item quantity="other">नयाँ खाताको सीमा सकियो। करिब %1$d मिनेटमा फेरि प्रयास गर्नुहोस्।</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d नयाँ जवाफ</item>
+		<item quantity="other">%d नयाँ जवाफहरू</item>
+	</plurals>
 </resources>
