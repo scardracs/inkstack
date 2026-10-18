@@ -27,6 +27,9 @@ class LocalMangaZipOutput(
 	private val index = MangaIndex(null)
 	private val mutex = Mutex()
 
+	@Volatile
+	private var isCommitted = false
+
 	init {
 		if (!manga.isLocal) {
 			index.setMangaInfo(manga)
@@ -78,14 +81,15 @@ class LocalMangaZipOutput(
 				output.put(ENTRY_NAME_INDEX, index.toString())
 				output.finish()
 			}
+			commitTmpAsRoot(output.file, rootFile)
 		}
-		rootFile.deleteAwait()
-		output.file.renameTo(rootFile)
-		Unit
+		isCommitted = true
 	}
 
 	override suspend fun cleanup() = mutex.withLock {
-		output.file.deleteAwait()
+		if (!isCommitted) {
+			output.file.deleteAwait()
+		}
 		Unit
 	}
 
@@ -155,18 +159,51 @@ class LocalMangaZipOutput(
 						}
 						subject.output.finish()
 						subject.output.close()
-						subject.rootFile.delete()
-						subject.output.file.renameTo(subject.rootFile)
+						commitTmpAsRoot(subject.output.file, subject.rootFile)
+						subject.isCommitted = true
 					}
 				} catch (e: Throwable) {
 					subject.closeQuietly()
-					try {
-						subject.output.file.delete()
-					} catch (e2: Throwable) {
-						e.addSuppressed(e2)
+					if (!subject.isCommitted) {
+						try {
+							subject.output.file.delete()
+						} catch (e2: Throwable) {
+							e.addSuppressed(e2)
+						}
 					}
 					throw e
 				}
 			}
+
+		@WorkerThread
+		private fun commitTmpAsRoot(tmp: File, root: File) {
+			val backup = if (root.exists()) {
+				File(root.path + ".bak").also { bak ->
+					if (!root.renameTo(bak)) {
+						root.copyTo(bak, overwrite = true)
+						if (!root.delete()) {
+							bak.delete()
+							error("Unable to replace $root")
+						}
+					}
+				}
+			} else {
+				null
+			}
+			try {
+				if (!tmp.renameTo(root)) {
+					tmp.copyTo(root, overwrite = true)
+					if (!tmp.delete() && tmp.exists()) {
+						error("Unable to move $tmp to $root")
+					}
+				}
+				backup?.delete()
+			} catch (e: Throwable) {
+				if (backup != null && !root.exists()) {
+					backup.renameTo(root)
+				}
+				throw e
+			}
+		}
 	}
 }
