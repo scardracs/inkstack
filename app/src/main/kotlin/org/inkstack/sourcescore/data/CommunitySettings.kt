@@ -56,7 +56,12 @@ class CommunitySettings @Inject constructor(
 		set(value) = prefs.edit { putString(KEY_REPLY_CURSOR, value) }
 
 	var serverUrl: String
-		get() = prefs.getString(KEY_SERVER, null)?.takeIf { it.isNotBlank() } ?: DEFAULT_SERVER
+		get() {
+			val stored = prefs.getString(KEY_SERVER, null)?.takeIf { it.isNotBlank() }
+			// Migrate the old Inkstack placeholder host to the official Kotatsu-Redo instance.
+			if (stored == null || stored == LEGACY_INKSTACK_SERVER) return DEFAULT_SERVER
+			return stored
+		}
 		set(value) {
 			val normalized = value.trimEnd('/')
 			val changed = normalized != serverUrl
@@ -219,7 +224,9 @@ class CommunitySettings @Inject constructor(
 		const val KEY_ONBOARDED = "onboarded"
 		const val KEY_NICKNAME = "nickname"
 		const val KEY_SYNCED_NICKNAME = "nickname_synced"
-		const val DEFAULT_SERVER = "https://community.inkstack.app"
+		/** Official Kotatsu-Redo community instance (comments, ratings, source scores). */
+		const val DEFAULT_SERVER = "https://community.kotatsuredo.app"
+		private const val LEGACY_INKSTACK_SERVER = "https://community.inkstack.app"
 
 		val WIDEVINE_UUID: java.util.UUID =
 			java.util.UUID(-0x121074568629b532L, -0x5c37d8232ae2de13L)
