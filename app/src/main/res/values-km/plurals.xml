@@ -1,2 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>	<plurals name="community_rating_count">
+		<item quantity="other">%d ការវាយតម្លៃ</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="other">%d មតិយោបល់</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="other">អ្នកបានចុះផ្សាយអស់តាមដែលគណនីថ្មីអាចធ្វើបានសម្រាប់ពេលនេះ។ សូមព្យាយាមម្ដងទៀតក្នុងរយៈពេលប្រហែល %1$d នាទី។</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="other">%d ការឆ្លើយតបថ្មី</item>
+	</plurals>
+</resources>
