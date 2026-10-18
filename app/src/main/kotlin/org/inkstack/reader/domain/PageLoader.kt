@@ -394,7 +394,10 @@ class PageLoader @Inject constructor(
 		fun createPageRequest(pageUrl: String, mangaSource: MangaSource) = Request.Builder()
 			.url(pageUrl)
 			.get()
-			.header(CommonHeaders.ACCEPT, "image/webp,image/png;q=0.9,image/jpeg,*/*;q=0.8")
+			.header(
+				CommonHeaders.ACCEPT,
+				"image/jpeg,image/png;q=0.9,image/webp;q=0.8,image/avif,image/jxl,*/*;q=0.7",
+			)
 			.cacheControl(CommonHeaders.CACHE_CONTROL_NO_STORE)
 			.tag(MangaSource::class.java, mangaSource)
 			.build()
