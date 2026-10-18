@@ -94,7 +94,7 @@ internal class ManhwaBreakup(context: MangaLoaderContext) :
 
 	private fun unpackScript(packedScript: String): String {
 		val regex = Regex(
-			"""evalKATEX_INLINE_OPENfunctionKATEX_INLINE_OPENp,a,c,k,e,(?:r|d)KATEX_INLINE_CLOSE.*?KATEX_INLINE_OPEN'(.+?)'\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*'(.+?)'\.splitKATEX_INLINE_OPEN'\|'KATEX_INLINE_CLOSE""",
+			"""eval\(function\(p,a,c,k,e,(?:r|d)\).*?\('(.+?)'\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*'(.+?)'\.split\('\|'\)""",
 			RegexOption.DOT_MATCHES_ALL,
 		)
 		val match = regex.find(packedScript) ?: return ""
