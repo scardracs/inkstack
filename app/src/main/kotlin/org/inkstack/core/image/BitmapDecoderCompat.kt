@@ -8,7 +8,6 @@ import androidx.core.graphics.createBitmap
 import com.awxkee.jxlcoder.JxlCoder
 import com.awxkee.jxlcoder.PreferredColorConfig
 import com.awxkee.jxlcoder.ScaleMode
-import com.davemorrissey.labs.subscaleview.decoder.ImageDecodeException
 import okio.BufferedSource
 import okio.ByteString
 import okio.ByteString.Companion.toByteString

@@ -14,7 +14,6 @@ import coil3.request.Options
 import coil3.request.maxBitmapSize
 import coil3.util.component1
 import coil3.util.component2
-import com.davemorrissey.labs.subscaleview.decoder.ImageDecodeException
 import kotlinx.coroutines.runInterruptible
 import org.aomedia.avif.android.AvifDecoder
 import org.inkstack.core.util.ext.readByteBuffer
@@ -94,13 +93,18 @@ class AvifImageDecoder(
 				return true
 			}
 			// Sites may serve AVIF under a .jpg URL; peek a small header without consuming the source.
+			// isAvifImage() requires a direct ByteBuffer — heap wrap() makes GetDirectBufferAddress
+			// return null and SIGSEGV in libavif (seen on cover loads in MainActivity).
 			return runCatching {
 				val peek = result.source.source().peek()
 				if (!peek.request(64)) {
 					return@runCatching false
 				}
 				val bytes = peek.readByteArray(64)
-				AvifDecoder.isAvifImage(java.nio.ByteBuffer.wrap(bytes))
+				val direct = java.nio.ByteBuffer.allocateDirect(bytes.size)
+					.put(bytes)
+					.rewind() as java.nio.ByteBuffer
+				AvifDecoder.isAvifImage(direct)
 			}.getOrDefault(false)
 		}
 	}
