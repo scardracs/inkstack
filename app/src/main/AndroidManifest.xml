@@ -689,19 +689,19 @@
 				<data android:host="brakeout.xyz" />
 				<data android:host="cerberuseries.xyz" />
 				<data android:host="mangaesp.net" />
-				<data android:host="toomics.com/de" />
-				<data android:host="toomics.top/de" />
-				<data android:host="daycomics.me/en" />
-				<data android:host="hotcomics.me/en" />
-				<data android:host="toomics.com/en" />
-				<data android:host="toomics.com/es" />
-				<data android:host="toomics.com/mx" />
-				<data android:host="toomics.com/fr" />
-				<data android:host="toomics.com/it" />
-				<data android:host="toomics.com/ja" />
-				<data android:host="toomics.com/por" />
-				<data android:host="toomics.com/sc" />
-				<data android:host="toomics.com/tc" />
+				<data android:host="toomics.com" android:pathPrefix="/de" />
+				<data android:host="toomics.top" android:pathPrefix="/de" />
+				<data android:host="daycomics.me" android:pathPrefix="/en" />
+				<data android:host="hotcomics.me" android:pathPrefix="/en" />
+				<data android:host="toomics.com" android:pathPrefix="/en" />
+				<data android:host="toomics.com" android:pathPrefix="/es" />
+				<data android:host="toomics.com" android:pathPrefix="/mx" />
+				<data android:host="toomics.com" android:pathPrefix="/fr" />
+				<data android:host="toomics.com" android:pathPrefix="/it" />
+				<data android:host="toomics.com" android:pathPrefix="/ja" />
+				<data android:host="toomics.com" android:pathPrefix="/por" />
+				<data android:host="toomics.com" android:pathPrefix="/sc" />
+				<data android:host="toomics.com" android:pathPrefix="/tc" />
 				<data android:host="doujindesu.tv" />
 				<data android:host="hentaicrot.com" />
 				<data android:host="pixhentai.com" />
