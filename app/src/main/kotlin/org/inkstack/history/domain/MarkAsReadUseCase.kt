@@ -4,6 +4,7 @@ import dagger.Reusable
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
+import org.inkstack.core.model.getPreferredBranch
 import org.inkstack.core.parser.MangaRepository
 import org.inkstack.history.data.HistoryRepository
 import org.inkstack.parsers.model.Manga
@@ -22,7 +23,9 @@ class MarkAsReadUseCase @Inject constructor(
 		} else {
 			manga
 		}
-		val lastChapter = checkNotNull(details.chapters).last()
+		val history = historyRepository.getOne(details)
+		val branch = details.getPreferredBranch(history)
+		val lastChapter = details.getChapters(branch).lastOrNull() ?: return
 		val pages = repo.getPages(lastChapter)
 		historyRepository.addOrUpdate(
 			manga = details,
