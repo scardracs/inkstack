@@ -8,3 +8,10 @@ captures
 .cxx
 .kotlin/
 .idea/
+
+# Release signing material (fingerprint lives in AppValidator; never commit the private key)
+keystore/*.jks
+keystore/*.keystore
+keystore/*.p12
+!keystore/*.cer
+!keystore/README.md
