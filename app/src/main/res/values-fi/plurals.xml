@@ -36,4 +36,20 @@
         <item quantity="one">%1$d minuutti</item>
         <item quantity="other">%1$d minuuttia</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d arvio</item>
+		<item quantity="other">%d arviota</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d kommentti</item>
+		<item quantity="other">%d kommenttia</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">Uusi tili on saavuttanut toistaiseksi sallitun määrän viestejä. Yritä uudelleen noin %1$d minuutin kuluttua.</item>
+		<item quantity="other">Uusi tili on saavuttanut toistaiseksi sallitun määrän viestejä. Yritä uudelleen noin %1$d minuutin kuluttua.</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d uusi vastaus</item>
+		<item quantity="other">%d uutta vastausta</item>
+	</plurals>
 </resources>
