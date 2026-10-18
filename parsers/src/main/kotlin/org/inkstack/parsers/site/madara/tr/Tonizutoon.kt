@@ -10,5 +10,5 @@ import org.inkstack.parsers.site.madara.MadaraParser
 @MangaSourceParser("TONIZUTOON", "ToniZu.com", "tr", ContentType.HENTAI)
 internal class Tonizutoon(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.TONIZUTOON, "tonizu.top") {
-	override val datePattern = "dd/mm/yyyy"
+	override val datePattern = "dd/MM/yyyy"
 }
