@@ -47,10 +47,6 @@ internal class LeitorDeManga(context: MangaLoaderContext) :
 				filter.tags.isNotEmpty() -> "/$tagPrefix${filter.tags.oneOrThrowIfMany()?.key}/"
 				else -> "/$listUrl"
 			})
-
-			if (pages > 1 && filter.tags.isEmpty() && filter.query.isNullOrEmpty()) {
-				append("page/$pages/")
-			}
 		}
 
 		val doc = captureDocument(url)
