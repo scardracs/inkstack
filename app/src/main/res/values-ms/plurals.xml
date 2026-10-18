@@ -27,4 +27,16 @@
     <plurals name="minutes">
         <item quantity="other">%1$d minit</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="other">%d penilaian</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="other">%d komen</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="other">Akaun baharu sudah mencapai had siaran buat masa ini. Cuba lagi dalam kira-kira %1$d minit.</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="other">%d balasan baharu</item>
+	</plurals>
 </resources>
