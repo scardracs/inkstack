@@ -21,8 +21,12 @@ class CurlLoggingInterceptor(
 		RegexOption.IGNORE_CASE,
 	)
 
-	override fun intercept(chain: Interceptor.Chain): Response = chain.proceed(chain.request()).also {
-		logRequest(it.networkResponse?.request ?: it.request)
+	override fun intercept(chain: Interceptor.Chain): Response {
+		val response = chain.proceed(chain.request())
+		runCatching {
+			logRequest(response.networkResponse?.request ?: response.request)
+		}
+		return response
 	}
 
 	private fun logRequest(request: Request) {
