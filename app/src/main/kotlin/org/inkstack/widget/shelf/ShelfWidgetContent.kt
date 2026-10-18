@@ -3,7 +3,6 @@ package org.inkstack.widget.shelf
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
-import android.widget.RemoteViewsService
 import androidx.core.graphics.drawable.toBitmap
 import coil3.ImageLoader
 import coil3.executeBlocking
@@ -22,33 +21,16 @@ import org.inkstack.core.util.ext.getDrawableOrThrow
 import org.inkstack.core.util.ext.mangaExtra
 import org.inkstack.favourites.domain.FavouritesRepository
 import org.inkstack.parsers.model.Manga
-import org.inkstack.parsers.util.replaceWith
 
-class ShelfListFactory(
-	private val context: Context,
-	private val favouritesRepository: FavouritesRepository,
-	private val coilLazy: Lazy<ImageLoader>,
-	private val settings: AppSettings,
-	widgetId: Int,
-) : RemoteViewsService.RemoteViewsFactory {
+internal object ShelfWidgetContent {
 
-	private val dataSet = ArrayList<Manga>()
-	private val config = AppWidgetConfig(context, ShelfWidgetProvider::class.java, widgetId)
-	private val transformation = RoundedCornersTransformation(
-		context.resources.getDimension(R.dimen.appwidget_corner_radius_inner),
-	)
-	private val coverSize = Size(
-		context.resources.getDimensionPixelSize(R.dimen.widget_cover_width),
-		context.resources.getDimensionPixelSize(R.dimen.widget_cover_height),
-	)
-
-	override fun onCreate() = Unit
-
-	override fun getLoadingView() = null
-
-	override fun getItemId(position: Int) = dataSet.getOrNull(position)?.id ?: 0L
-
-	override fun onDataSetChanged() {
+	fun build(
+		context: Context,
+		config: AppWidgetConfig,
+		favouritesRepository: FavouritesRepository,
+		coilLazy: Lazy<ImageLoader>,
+		settings: AppSettings,
+	): RemoteViews.RemoteCollectionItems {
 		val data = if (settings.appPassword.isNullOrEmpty()) {
 			runBlocking {
 				val category = config.categoryId
@@ -61,14 +43,30 @@ class ShelfListFactory(
 		} else {
 			emptyList()
 		}
-		dataSet.replaceWith(data)
+		val transformation = RoundedCornersTransformation(
+			context.resources.getDimension(R.dimen.appwidget_corner_radius_inner),
+		)
+		val coverSize = Size(
+			context.resources.getDimensionPixelSize(R.dimen.widget_cover_width),
+			context.resources.getDimensionPixelSize(R.dimen.widget_cover_height),
+		)
+		val builder = RemoteViews.RemoteCollectionItems.Builder()
+			.setHasStableIds(true)
+			.setViewTypeCount(1)
+		for (item in data) {
+			builder.addItem(item.id, createItemView(context, item, coilLazy, transformation, coverSize))
+		}
+		return builder.build()
 	}
 
-	override fun hasStableIds() = true
-
-	override fun getViewAt(position: Int): RemoteViews {
+	private fun createItemView(
+		context: Context,
+		item: Manga,
+		coilLazy: Lazy<ImageLoader>,
+		transformation: RoundedCornersTransformation,
+		coverSize: Size,
+	): RemoteViews {
 		val views = RemoteViews(context.packageName, R.layout.item_shelf)
-		val item = dataSet.getOrNull(position) ?: return views
 		views.setTextViewText(R.id.textView_title, item.title)
 		runCatching {
 			coilLazy.get().executeBlocking(
@@ -89,10 +87,4 @@ class ShelfListFactory(
 		views.setOnClickFillInIntent(R.id.rootLayout, intent)
 		return views
 	}
-
-	override fun getCount() = dataSet.size
-
-	override fun getViewTypeCount() = 1
-
-	override fun onDestroy() = Unit
 }

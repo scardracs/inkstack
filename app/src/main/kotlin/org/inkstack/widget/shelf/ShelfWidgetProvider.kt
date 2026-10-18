@@ -7,23 +7,15 @@ import android.content.Intent
 import android.graphics.Color
 import android.widget.RemoteViews
 import androidx.core.app.PendingIntentCompat
-import androidx.core.net.toUri
+import dagger.hilt.android.EntryPointAccessors
 import org.inkstack.R
 import org.inkstack.core.nav.ReaderIntent
 import org.inkstack.core.prefs.AppWidgetConfig
 import org.inkstack.core.ui.BaseAppWidgetProvider
 import org.inkstack.reader.ui.ReaderActivity
+import org.inkstack.widget.WidgetDependencies
 
 class ShelfWidgetProvider : BaseAppWidgetProvider() {
-
-	override fun onUpdate(
-		context: Context,
-		appWidgetManager: AppWidgetManager,
-		appWidgetIds: IntArray
-	) {
-		super.onUpdate(context, appWidgetManager, appWidgetIds)
-		appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.gridView)
-	}
 
 	override fun onUpdateWidget(context: Context, config: AppWidgetConfig): RemoteViews {
 		val views = RemoteViews(context.packageName, R.layout.widget_shelf)
@@ -32,10 +24,17 @@ class ShelfWidgetProvider : BaseAppWidgetProvider() {
 		} else {
 			views.setInt(R.id.widget_root, "setBackgroundResource", R.drawable.bg_appwidget_root)
 		}
-		val adapter = Intent(context, ShelfWidgetService::class.java)
-		adapter.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, config.widgetId)
-		adapter.data = adapter.toUri(Intent.URI_INTENT_SCHEME).toUri()
-		views.setRemoteAdapter(R.id.gridView, adapter)
+		val deps = EntryPointAccessors.fromApplication(context, WidgetDependencies::class.java)
+		views.setRemoteAdapter(
+			R.id.gridView,
+			ShelfWidgetContent.build(
+				context = context,
+				config = config,
+				favouritesRepository = deps.favouritesRepository(),
+				coilLazy = deps.imageLoader(),
+				settings = deps.appSettings(),
+			),
+		)
 		val intent = Intent(context, ReaderActivity::class.java)
 		intent.action = ReaderIntent.ACTION_MANGA_READ
 		views.setPendingIntentTemplate(
