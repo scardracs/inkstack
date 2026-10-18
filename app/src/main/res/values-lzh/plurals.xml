@@ -36,4 +36,20 @@
         <item quantity="one">%1$d 分</item>
         <item quantity="other">%1$d 分</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d 評</item>
+		<item quantity="other">%d 評</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d 評</item>
+		<item quantity="other">%d 評</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">新帳暫不可再發。約 %1$d 分後再試。</item>
+		<item quantity="other">新帳暫不可再發。約 %1$d 分後再試。</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d 新覆</item>
+		<item quantity="other">%d 新覆</item>
+	</plurals>
 </resources>
