@@ -97,24 +97,14 @@ internal abstract class KeyoappParser(
 
 		doc.select("#searched_series_page button").ifEmpty {
 			doc.select("div.grid > div.group")
-		}.map { div ->
-
+		}.mapNotNull { div ->
 			val title = div.selectFirst("h3")?.text().orEmpty()
-			if (query.isNotEmpty() && title.contains(query, ignoreCase = true)) {
-				manga.add(addManga(div))
-			}
-
+			val matchesQuery = query.isEmpty() || title.contains(query, ignoreCase = true)
 			// Not all tags are present in UPDATED
-			val tags = div.attr("tags") ?: div.select("div.gap-1 a").joinToString()
-			if (tag.isNotEmpty() && tags.contains(tag, ignoreCase = true)) {
-				manga.add(addManga(div))
-			}
-
-			if (query.isEmpty() && tag.isEmpty()) {
-				manga.add(addManga(div))
-			}
-
-		}
+			val tags = div.attr("tags").ifEmpty { div.select("div.gap-1 a").joinToString() }
+			val matchesTag = tag.isEmpty() || tags.contains(tag, ignoreCase = true)
+			if (matchesQuery && matchesTag) addManga(div) else null
+		}.forEach { manga.add(it) }
 
 		return manga
 	}
