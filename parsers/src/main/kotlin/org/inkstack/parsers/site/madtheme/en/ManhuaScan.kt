@@ -1,8 +1,10 @@
 package org.inkstack.parsers.site.madtheme.en
 
 import org.jsoup.nodes.Document
+import org.inkstack.parsers.Broken
 import org.inkstack.parsers.MangaLoaderContext
 import org.inkstack.parsers.MangaSourceParser
+import org.inkstack.parsers.config.ConfigKey
 import org.inkstack.parsers.model.ContentRating
 import org.inkstack.parsers.model.Manga
 import org.inkstack.parsers.model.MangaChapter
@@ -20,21 +22,25 @@ import org.inkstack.parsers.util.generateUid
 import org.inkstack.parsers.util.mapChapters
 import org.inkstack.parsers.util.mapNotNullToSet
 import org.inkstack.parsers.util.mapToSet
+import org.inkstack.parsers.util.nullIfEmpty
 import org.inkstack.parsers.util.oneOrThrowIfMany
 import org.inkstack.parsers.util.parseHtml
 import org.inkstack.parsers.util.removeSuffix
-import org.inkstack.parsers.util.selectFirstOrThrow
+import org.inkstack.parsers.util.src
 import org.inkstack.parsers.util.toAbsoluteUrl
 import org.inkstack.parsers.util.toTitleCase
 import org.inkstack.parsers.util.urlEncoded
 import java.text.SimpleDateFormat
 import java.util.EnumSet
 
-@MangaSourceParser("MANHUASCAN", "kaliscan.io", "en")
+@Broken("kaliscans.org still broken in-app; needs further parser work")
+@MangaSourceParser("MANHUASCAN", "KaliScans", "en")
 internal class ManhuaScan(context: MangaLoaderContext) :
-	MadthemeParser(context, MangaParserSource.MANHUASCAN, "kaliscan.io") {
+	MadthemeParser(context, MangaParserSource.MANHUASCAN, "kaliscans.org") {
 
-	override val selectDesc = ".summary .content, .summary .content ~ p"
+	override val configKeyDomain = ConfigKey.Domain("kaliscans.org", "kaliscan.io", "kaliscan.com")
+
+	override val selectDesc = ".section-body.summary .content, .summary .content, .summary .content ~ p"
 	override val selectState = ".detail .meta > p > strong:contains(Status) ~ a"
 	override val selectAlt = ".detail h2"
 	override val selectTag = ".detail .meta > p > strong:contains(Genres) ~ a"
@@ -117,20 +123,22 @@ internal class ManhuaScan(context: MangaLoaderContext) :
 	}
 
 	private fun parseMangaList(doc: Document): List<Manga> {
-		return doc.select(".book-detailed-item").map { div ->
-			val link = div.selectFirstOrThrow("a")
+		return doc.select(".book-item").mapNotNull { div ->
+			val link = div.selectFirst("a") ?: return@mapNotNull null
 			val href = link.attrAsRelativeUrl("href")
-			val title = link.attr("title").ifEmpty {
-				div.selectFirst(".title")?.text() ?: ""
-			}
+			val json = div.selectFirst("script#json-data")?.data().orEmpty()
+			val title = div.selectFirst(".title")?.text()?.nullIfEmpty()
+				?: json.substringAfter("\"name\":\"", "").substringBefore("\"").nullIfEmpty()
+				?: link.attr("title").nullIfEmpty()
+				?: div.selectFirst("img")?.attr("alt")?.removePrefix("Read ")?.trim()?.nullIfEmpty()
+				?: ""
 
 			Manga(
 				id = generateUid(href),
 				url = href,
 				publicUrl = href.toAbsoluteUrl(domain),
-				coverUrl = div.selectFirst("img")?.attr("data-src")?.ifEmpty {
-					div.selectFirst("img")?.attr("src")
-				},
+				coverUrl = div.selectFirst("img")?.src()
+					?: json.substringAfter("\"cover\":\"", "").substringBefore("\"").nullIfEmpty(),
 				title = title,
 				altTitles = emptySet(),
 				rating = div.selectFirst("div.meta span.score")?.ownText()?.toFloatOrNull()?.div(5f) ?: RATING_UNKNOWN,
@@ -148,9 +156,12 @@ internal class ManhuaScan(context: MangaLoaderContext) :
 
 		val title = doc.selectFirst(".detail h1")?.text() ?: manga.title
 
-		val authors = doc.select(".detail .meta > p > strong:contains(Authors) ~ a")
-			.map { it.text().trim(',', ' ') }
-			.toSet()
+		val authors = doc.selectFirst(".detail .meta > p:has(strong:contains(Author)) span")
+			?.text()
+			?.split(',', ';')
+			?.mapNotNull { it.trim().nullIfEmpty() }
+			?.toSet()
+			?: emptySet()
 
 		val tags = doc.select(selectTag).mapToSet { a ->
 			MangaTag(
@@ -167,14 +178,15 @@ internal class ManhuaScan(context: MangaLoaderContext) :
 
 		val description = doc.select(selectDesc).text()
 		val statusText = doc.selectFirst(selectState)?.text()?.lowercase() ?: ""
-		val state = when (statusText) {
-			"ongoing" -> MangaState.ONGOING
-			"completed" -> MangaState.FINISHED
+		val state = when {
+			statusText.contains("ongoing") -> MangaState.ONGOING
+			statusText.contains("completed") || statusText.contains("finished") -> MangaState.FINISHED
 			else -> null
 		}
 		val nsfw = doc.selectFirst("#adt-warning") != null
 
 		val coverUrl = doc.selectFirst("#cover img")?.attr("data-src")
+			?: doc.selectFirst("#cover img")?.src()
 
 		val chapters = doc.select(selectChapter).mapChapters(reversed = true)
 		{ i, element ->
