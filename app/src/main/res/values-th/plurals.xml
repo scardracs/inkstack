@@ -27,4 +27,16 @@
     <plurals name="minutes">
         <item quantity="other">%1$d นาที</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="other">%d คะแนน</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="other">%d ความคิดเห็น</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="other">บัญชีใหม่โพสต์ครบโควต้าแล้ว ลองอีกครั้งในอีกประมาณ %1$d นาที</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="other">%d การตอบกลับใหม่</item>
+	</plurals>
 </resources>
