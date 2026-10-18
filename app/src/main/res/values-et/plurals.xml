@@ -36,4 +36,20 @@
         <item quantity="one">%1$d tund</item>
         <item quantity="other">%1$d tundi</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d hinnang</item>
+		<item quantity="other">%d hinnangut</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d kommentaar</item>
+		<item quantity="other">%d kommentaari</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">Uus konto on praeguseks postitamise piirini jõudnud. Proovi uuesti umbes %1$d minuti pärast.</item>
+		<item quantity="other">Uus konto on praeguseks postitamise piirini jõudnud. Proovi uuesti umbes %1$d minuti pärast.</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d uus vastus</item>
+		<item quantity="other">%d uut vastust</item>
+	</plurals>
 </resources>
