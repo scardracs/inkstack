@@ -1,5 +1,6 @@
 package org.inkstack.list.ui.compose
 
+import android.view.LayoutInflater
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -12,7 +13,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -20,14 +20,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import coil3.ImageLoader
 import coil3.request.ImageRequest
+import org.inkstack.R
 import org.inkstack.core.ui.compose.MangaCover
 import org.inkstack.core.util.ext.mangaExtra
+import org.inkstack.history.ui.util.ReadingProgressView
+import org.inkstack.list.domain.ReadingProgress
+import org.inkstack.list.ui.model.MangaDetailedListModel
 import org.inkstack.list.ui.model.MangaGridModel
 import org.inkstack.list.ui.model.MangaListModel
 
@@ -47,6 +52,7 @@ fun MangaGridItem(
 		.mangaExtra(item.manga)
 		.build()
 	val shape = RoundedCornerShape(16.dp)
+	val progress = item.readingProgress()
 	MangaCover(
 		model = request,
 		contentDescription = item.title,
@@ -66,14 +72,27 @@ fun MangaGridItem(
 			),
 		imageLoader = imageLoader,
 		overlay = {
-			val grid = item as? MangaGridModel
-			if (grid != null) {
-				ProgressBadge(
-					item = grid,
+			ReadingProgressBadge(
+				progress = progress,
+				modifier = Modifier
+					.align(Alignment.TopEnd)
+					.padding(dimensionResource(R.dimen.card_indicator_offset)),
+			)
+			if (item.counter > 0) {
+				Box(
 					modifier = Modifier
-						.align(Alignment.TopEnd)
-						.padding(8.dp),
-				)
+						.align(Alignment.TopStart)
+						.padding(dimensionResource(R.dimen.card_indicator_offset))
+						.size(dimensionResource(R.dimen.card_indicator_size_glyph))
+						.background(MaterialTheme.colorScheme.error, CircleShape),
+					contentAlignment = Alignment.Center,
+				) {
+					Text(
+						text = if (item.counter > 99) "99+" else item.counter.toString(),
+						color = MaterialTheme.colorScheme.onError,
+						style = MaterialTheme.typography.labelSmall,
+					)
+				}
 			}
 			if (selected) {
 				Box(
@@ -107,54 +126,25 @@ fun MangaGridItem(
 }
 
 @Composable
-private fun ProgressBadge(
-	item: MangaGridModel,
+private fun ReadingProgressBadge(
+	progress: ReadingProgress?,
 	modifier: Modifier = Modifier,
 ) {
-	val progress = item.progress
-	when {
-		progress != null && progress.isCompleted() -> {
-			Box(
-				modifier = modifier
-					.size(28.dp)
-					.background(MaterialTheme.colorScheme.primary, CircleShape),
-				contentAlignment = Alignment.Center,
-			) {
-				Icon(
-					imageVector = Icons.Filled.Check,
-					contentDescription = null,
-					tint = MaterialTheme.colorScheme.onPrimary,
-					modifier = Modifier.size(16.dp),
-				)
-			}
-		}
+	if (progress == null || !progress.isValid()) return
+	AndroidView(
+		factory = { context ->
+			LayoutInflater.from(context)
+				.inflate(R.layout.view_reading_progress, null, false) as ReadingProgressView
+		},
+		update = { view ->
+			view.setProgress(progress, animate = false)
+		},
+		modifier = modifier.size(dimensionResource(R.dimen.card_indicator_size)),
+	)
+}
 
-		progress != null && progress.isValid() -> {
-			Box(modifier = modifier.size(28.dp), contentAlignment = Alignment.Center) {
-				CircularProgressIndicator(
-					progress = { progress.percent.coerceIn(0f, 1f) },
-					modifier = Modifier.size(28.dp),
-					color = MaterialTheme.colorScheme.primary,
-					trackColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.45f),
-					strokeWidth = 2.5.dp,
-					strokeCap = StrokeCap.Round,
-				)
-			}
-		}
-
-		item.counter > 0 -> {
-			Box(
-				modifier = modifier
-					.size(28.dp)
-					.background(MaterialTheme.colorScheme.error, CircleShape),
-				contentAlignment = Alignment.Center,
-			) {
-				Text(
-					text = if (item.counter > 99) "99+" else item.counter.toString(),
-					color = MaterialTheme.colorScheme.onError,
-					style = MaterialTheme.typography.labelSmall,
-				)
-			}
-		}
-	}
+private fun MangaListModel.readingProgress(): ReadingProgress? = when (this) {
+	is MangaGridModel -> progress
+	is MangaDetailedListModel -> progress
+	else -> null
 }
