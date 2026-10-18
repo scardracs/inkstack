@@ -27,4 +27,20 @@
     <plurals name="minutes">
         <item quantity="other">%1$d 分钟</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d 条评分</item>
+		<item quantity="other">%d 条评分</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d 条评论</item>
+		<item quantity="other">%d 条评论</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">新账户暂时已达发帖上限。约 %1$d 分钟后可再试。</item>
+		<item quantity="other">新账户暂时已达发帖上限。约 %1$d 分钟后可再试。</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d 条新回复</item>
+		<item quantity="other">%d 条新回复</item>
+	</plurals>
 </resources>
