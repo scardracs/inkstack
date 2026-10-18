@@ -9,9 +9,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.inkstack.R
 import org.inkstack.core.prefs.AppWidgetConfig
 import org.inkstack.core.ui.BaseActivity
-import org.inkstack.core.util.ext.consumeAllSystemBarsInsets
-import org.inkstack.core.util.ext.systemBarsInsets
 import org.inkstack.databinding.ActivityAppwidgetRecentBinding
+import org.inkstack.core.util.ext.consumeAll
 
 @AndroidEntryPoint
 class RecentWidgetConfigActivity :
@@ -38,14 +37,14 @@ class RecentWidgetConfigActivity :
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val barsInsets = insets.systemBarsInsets
+		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 		viewBinding.root.setPadding(
 			barsInsets.left,
 			barsInsets.top,
 			barsInsets.right,
 			barsInsets.bottom,
 		)
-		return insets.consumeAllSystemBarsInsets()
+		return insets.consumeAll(WindowInsetsCompat.Type.systemBars())
 	}
 
 	override fun onClick(v: View) {

@@ -14,15 +14,14 @@ import org.inkstack.R
 import org.inkstack.core.nav.AppRouter
 import org.inkstack.core.ui.BaseActivity
 import org.inkstack.core.ui.util.DefaultTextWatcher
-import org.inkstack.core.util.ext.consumeAllSystemBarsInsets
 import org.inkstack.core.util.ext.getDisplayMessage
 import org.inkstack.core.util.ext.getDisplayName
 import org.inkstack.core.util.ext.observe
 import org.inkstack.core.util.ext.observeEvent
-import org.inkstack.core.util.ext.systemBarsInsets
 import org.inkstack.core.util.ext.toLocale
 import org.inkstack.databinding.ActivityPresetEditBinding
 import org.inkstack.explore.data.SourcePreset
+import org.inkstack.core.util.ext.consumeAll
 
 @AndroidEntryPoint
 class SourcePresetEditActivity :
@@ -49,14 +48,14 @@ class SourcePresetEditActivity :
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val barsInsets = insets.systemBarsInsets
+		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 		viewBinding.root.setPadding(
 			barsInsets.left,
 			barsInsets.top,
 			barsInsets.right,
 			barsInsets.bottom,
 		)
-		return insets.consumeAllSystemBarsInsets()
+		return insets.consumeAll(WindowInsetsCompat.Type.systemBars())
 	}
 
 	override fun onClick(v: View) {

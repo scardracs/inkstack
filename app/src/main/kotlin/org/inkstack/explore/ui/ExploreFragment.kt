@@ -31,11 +31,9 @@ import org.inkstack.core.ui.util.RecyclerViewOwner
 import org.inkstack.core.ui.util.ReversibleActionObserver
 import org.inkstack.core.ui.util.SpanSizeResolver
 import org.inkstack.core.util.ext.addMenuProvider
-import org.inkstack.core.util.ext.consumeAllSystemBarsInsets
 import org.inkstack.core.util.ext.findAppCompatDelegate
 import org.inkstack.core.util.ext.observe
 import org.inkstack.core.util.ext.observeEvent
-import org.inkstack.core.util.ext.systemBarsInsets
 import org.inkstack.databinding.FragmentExploreBinding
 import org.inkstack.explore.ui.adapter.ExploreAdapter
 import org.inkstack.explore.ui.preset.SourcePresetListActivity
@@ -45,6 +43,7 @@ import org.inkstack.list.ui.adapter.TypedListSpacingDecoration
 import org.inkstack.list.ui.model.ListHeader
 import org.inkstack.parsers.model.Manga
 import org.inkstack.parsers.model.MangaParserSource
+import org.inkstack.core.util.ext.consumeAll
 
 @AndroidEntryPoint
 class ExploreFragment :
@@ -94,7 +93,7 @@ class ExploreFragment :
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val barsInsets = insets.systemBarsInsets
+		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 		val basePadding = v.resources.getDimensionPixelOffset(R.dimen.list_spacing_normal)
 		viewBinding?.recyclerView?.setPadding(
 			/* left = */ barsInsets.left + basePadding,
@@ -102,7 +101,7 @@ class ExploreFragment :
 			/* right = */ barsInsets.right + basePadding,
 			/* bottom = */ barsInsets.bottom + basePadding,
 		)
-		return insets.consumeAllSystemBarsInsets()
+		return insets.consumeAll(WindowInsetsCompat.Type.systemBars())
 	}
 
 	override fun onDestroyView() {

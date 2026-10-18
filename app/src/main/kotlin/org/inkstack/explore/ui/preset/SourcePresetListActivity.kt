@@ -13,14 +13,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.inkstack.R
 import org.inkstack.core.exceptions.resolve.SnackbarErrorObserver
 import org.inkstack.core.ui.BaseActivity
-import org.inkstack.core.util.ext.consumeAllSystemBarsInsets
 import org.inkstack.core.util.ext.end
 import org.inkstack.core.util.ext.observe
 import org.inkstack.core.util.ext.observeEvent
-import org.inkstack.core.util.ext.systemBarsInsets
 import org.inkstack.databinding.ActivityPresetListBinding
 import org.inkstack.explore.data.SourcePreset
 import org.inkstack.list.ui.adapter.TypedListSpacingDecoration
+import org.inkstack.core.util.ext.consumeAll
 
 @AndroidEntryPoint
 class SourcePresetListActivity :
@@ -54,7 +53,7 @@ class SourcePresetListActivity :
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val barsInsets = insets.systemBarsInsets
+		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 		viewBinding.recyclerView.updatePadding(
 			left = barsInsets.left,
 			right = barsInsets.right,
@@ -69,7 +68,7 @@ class SourcePresetListActivity :
 			marginEnd = topMargin + barsInsets.end(v)
 			bottomMargin = topMargin + barsInsets.bottom
 		}
-		return insets.consumeAllSystemBarsInsets()
+		return insets.consumeAll(WindowInsetsCompat.Type.systemBars())
 	}
 
 	override fun onClick(v: View) {

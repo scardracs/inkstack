@@ -17,12 +17,11 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.inkstack.R
 import org.inkstack.core.ui.BaseActivity
 import org.inkstack.core.ui.util.DefaultTextWatcher
-import org.inkstack.core.util.ext.consumeAllSystemBarsInsets
 import org.inkstack.core.util.ext.getDisplayMessage
 import org.inkstack.core.util.ext.observe
 import org.inkstack.core.util.ext.observeEvent
-import org.inkstack.core.util.ext.systemBarsInsets
 import org.inkstack.databinding.ActivitySyncAuthResetBinding
+import org.inkstack.core.util.ext.consumeAll
 
 private const val PASSWORD_MIN_LENGTH = 4
 
@@ -63,7 +62,7 @@ class SyncAuthResetActivity : BaseActivity<ActivitySyncAuthResetBinding>(), View
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val barsInsets = insets.systemBarsInsets
+		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 		viewBinding.root.updatePadding(top = barsInsets.top)
 		viewBinding.dockedToolbarChild.updateLayoutParams<MarginLayoutParams> {
 			leftMargin = barsInsets.left
@@ -75,7 +74,7 @@ class SyncAuthResetActivity : BaseActivity<ActivitySyncAuthResetBinding>(), View
 			left = barsInsets.left + basePadding,
 			right = barsInsets.right + basePadding,
 		)
-		return insets.consumeAllSystemBarsInsets()
+		return insets.consumeAll(WindowInsetsCompat.Type.systemBars())
 	}
 
 	override fun onClick(v: View) {

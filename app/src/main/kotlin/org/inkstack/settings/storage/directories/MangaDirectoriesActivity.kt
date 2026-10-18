@@ -18,11 +18,11 @@ import org.inkstack.core.os.OpenDocumentTreeHelper
 import org.inkstack.core.ui.BaseActivity
 import org.inkstack.core.ui.list.OnListItemClickListener
 import org.inkstack.core.ui.list.decor.SpacingItemDecoration
-import org.inkstack.core.util.ext.consumeAllSystemBarsInsets
 import org.inkstack.core.util.ext.observe
 import org.inkstack.core.util.ext.observeEvent
 import org.inkstack.core.util.ext.tryLaunch
 import org.inkstack.databinding.ActivityMangaDirectoriesBinding
+import org.inkstack.core.util.ext.consumeAll
 
 @AndroidEntryPoint
 class MangaDirectoriesActivity : BaseActivity<ActivityMangaDirectoriesBinding>(),
@@ -86,6 +86,6 @@ class MangaDirectoriesActivity : BaseActivity<ActivityMangaDirectoriesBinding>()
 			right = barsInsets.right,
 			bottom = barsInsets.bottom,
 		)
-		return insets.consumeAllSystemBarsInsets()
+		return insets.consumeAll(WindowInsetsCompat.Type.systemBars())
 	}
 }

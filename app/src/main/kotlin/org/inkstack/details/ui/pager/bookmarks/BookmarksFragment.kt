@@ -28,12 +28,10 @@ import org.inkstack.core.ui.list.OnListItemClickListener
 import org.inkstack.core.ui.util.PagerNestedScrollHelper
 import org.inkstack.core.ui.util.RecyclerViewOwner
 import org.inkstack.core.ui.util.ReversibleActionObserver
-import org.inkstack.core.util.ext.consumeAllSystemBarsInsets
 import org.inkstack.core.util.ext.findAppCompatDelegate
 import org.inkstack.core.util.ext.findParentCallback
 import org.inkstack.core.util.ext.observe
 import org.inkstack.core.util.ext.observeEvent
-import org.inkstack.core.util.ext.systemBarsInsets
 import org.inkstack.databinding.FragmentMangaBookmarksBinding
 import org.inkstack.details.ui.pager.ChaptersPagesViewModel
 import org.inkstack.list.ui.GridSpanResolver
@@ -42,6 +40,7 @@ import org.inkstack.list.ui.adapter.TypedListSpacingDecoration
 import org.inkstack.reader.ui.PageSaveHelper
 import org.inkstack.reader.ui.ReaderNavigationCallback
 import javax.inject.Inject
+import org.inkstack.core.util.ext.consumeAll
 
 @AndroidEntryPoint
 class BookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
@@ -117,14 +116,14 @@ class BookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val barsInsets = insets.systemBarsInsets
+		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 		viewBinding?.recyclerView?.setPadding(
 			barsInsets.left,
 			barsInsets.top,
 			barsInsets.right,
 			barsInsets.bottom,
 		)
-		return insets.consumeAllSystemBarsInsets()
+		return insets.consumeAll(WindowInsetsCompat.Type.systemBars())
 	}
 
 	override fun onDestroyView() {

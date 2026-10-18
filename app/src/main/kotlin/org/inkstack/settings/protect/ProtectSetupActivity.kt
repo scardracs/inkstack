@@ -17,11 +17,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.inkstack.R
 import org.inkstack.core.ui.BaseActivity
 import org.inkstack.core.ui.util.DefaultTextWatcher
-import org.inkstack.core.util.ext.consumeAllSystemBarsInsets
 import org.inkstack.core.util.ext.observe
 import org.inkstack.core.util.ext.observeEvent
-import org.inkstack.core.util.ext.systemBarsInsets
 import org.inkstack.databinding.ActivitySetupProtectBinding
+import org.inkstack.core.util.ext.consumeAll
 
 private const val MIN_PASSWORD_LENGTH = 4
 
@@ -60,7 +59,7 @@ class ProtectSetupActivity :
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val barsInsets = insets.systemBarsInsets
+		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 		val basePadding = resources.getDimensionPixelOffset(R.dimen.screen_padding)
 		viewBinding.root.setPadding(
 			barsInsets.left + basePadding,
@@ -68,7 +67,7 @@ class ProtectSetupActivity :
 			barsInsets.right + basePadding,
 			barsInsets.bottom + basePadding,
 		)
-		return insets.consumeAllSystemBarsInsets()
+		return insets.consumeAll(WindowInsetsCompat.Type.systemBars())
 	}
 
 	override fun onClick(v: View) {

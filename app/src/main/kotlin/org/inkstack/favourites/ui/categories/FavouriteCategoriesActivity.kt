@@ -18,17 +18,16 @@ import org.inkstack.core.model.FavouriteCategory
 import org.inkstack.core.nav.router
 import org.inkstack.core.ui.BaseActivity
 import org.inkstack.core.ui.list.ListSelectionController
-import org.inkstack.core.util.ext.consumeAllSystemBarsInsets
 import org.inkstack.core.util.ext.end
 import org.inkstack.core.util.ext.observe
 import org.inkstack.core.util.ext.observeEvent
-import org.inkstack.core.util.ext.systemBarsInsets
 import org.inkstack.databinding.ActivityCategoriesBinding
 import org.inkstack.favourites.ui.categories.adapter.CategoriesAdapter
 import org.inkstack.list.ui.adapter.ListStateHolderListener
 import org.inkstack.list.ui.adapter.TypedListSpacingDecoration
 import org.inkstack.list.ui.model.ListModel
 import javax.inject.Inject
+import org.inkstack.core.util.ext.consumeAll
 
 @AndroidEntryPoint
 class FavouriteCategoriesActivity :
@@ -75,7 +74,7 @@ class FavouriteCategoriesActivity :
 		v: View,
 		insets: WindowInsetsCompat
 	): WindowInsetsCompat {
-		val barsInsets = insets.systemBarsInsets
+		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 		viewBinding.recyclerView.updatePadding(
 			left = barsInsets.left,
 			right = barsInsets.right,
@@ -90,7 +89,7 @@ class FavouriteCategoriesActivity :
 			marginEnd = topMargin + barsInsets.end(v)
 			bottomMargin = topMargin + barsInsets.bottom
 		}
-		return insets.consumeAllSystemBarsInsets()
+		return insets.consumeAll(WindowInsetsCompat.Type.systemBars())
 	}
 
 	override fun onClick(v: View) {

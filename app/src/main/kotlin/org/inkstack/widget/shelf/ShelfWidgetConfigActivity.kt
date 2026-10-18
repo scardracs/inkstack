@@ -13,13 +13,12 @@ import org.inkstack.core.exceptions.resolve.SnackbarErrorObserver
 import org.inkstack.core.prefs.AppWidgetConfig
 import org.inkstack.core.ui.BaseActivity
 import org.inkstack.core.ui.list.OnListItemClickListener
-import org.inkstack.core.util.ext.consumeAllSystemBarsInsets
 import org.inkstack.core.util.ext.observe
 import org.inkstack.core.util.ext.observeEvent
-import org.inkstack.core.util.ext.systemBarsInsets
 import org.inkstack.databinding.ActivityAppwidgetShelfBinding
 import org.inkstack.widget.shelf.adapter.CategorySelectAdapter
 import org.inkstack.widget.shelf.model.CategoryItem
+import org.inkstack.core.util.ext.consumeAll
 
 @AndroidEntryPoint
 class ShelfWidgetConfigActivity :
@@ -56,7 +55,7 @@ class ShelfWidgetConfigActivity :
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val barsInsets = insets.systemBarsInsets
+		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 		viewBinding.recyclerView.updatePadding(
 			left = barsInsets.left,
 			right = barsInsets.right,
@@ -67,7 +66,7 @@ class ShelfWidgetConfigActivity :
 			right = barsInsets.right,
 			top = barsInsets.top,
 		)
-		return insets.consumeAllSystemBarsInsets()
+		return insets.consumeAll(WindowInsetsCompat.Type.systemBars())
 	}
 
 	override fun onClick(v: View) {

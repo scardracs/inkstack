@@ -18,18 +18,17 @@ import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
 import org.inkstack.R
 import org.inkstack.core.ui.BaseActivity
-import org.inkstack.core.util.ext.consumeAllSystemBarsInsets
 import org.inkstack.core.util.ext.observe
 import org.inkstack.core.util.ext.observeEvent
 import org.inkstack.core.util.ext.setChecked
 import org.inkstack.core.util.ext.setValueRounded
-import org.inkstack.core.util.ext.systemBarsInsets
 import org.inkstack.core.util.progress.ImageRequestIndicatorListener
 import org.inkstack.databinding.ActivityColorFilterBinding
 import org.inkstack.parsers.model.MangaPage
 import org.inkstack.parsers.util.format
 import org.inkstack.reader.domain.ReaderColorFilter
 import javax.inject.Inject
+import org.inkstack.core.util.ext.consumeAll
 
 @AndroidEntryPoint
 class ColorFilterConfigActivity :
@@ -71,14 +70,14 @@ class ColorFilterConfigActivity :
 		v: View,
 		insets: WindowInsetsCompat
 	): WindowInsetsCompat {
-		val barsInsets = insets.systemBarsInsets
+		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 		viewBinding.root.setPadding(
 			barsInsets.left,
 			barsInsets.top,
 			barsInsets.right,
 			barsInsets.bottom,
 		)
-		return insets.consumeAllSystemBarsInsets()
+		return insets.consumeAll(WindowInsetsCompat.Type.systemBars())
 	}
 
 	override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {

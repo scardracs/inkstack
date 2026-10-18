@@ -18,18 +18,17 @@ import org.inkstack.core.ui.dialog.buildAlertDialog
 import org.inkstack.core.ui.dialog.setRecyclerViewList
 import org.inkstack.core.ui.list.OnListItemClickListener
 import org.inkstack.core.ui.util.RecyclerViewOwner
-import org.inkstack.core.util.ext.consumeAllSystemBarsInsets
 import org.inkstack.core.util.ext.container
 import org.inkstack.core.util.ext.end
 import org.inkstack.core.util.ext.observe
 import org.inkstack.core.util.ext.start
-import org.inkstack.core.util.ext.systemBarsInsets
 import org.inkstack.databinding.FragmentSettingsSourcesBinding
 import org.inkstack.list.ui.adapter.ListItemType
 import org.inkstack.list.ui.model.ListModel
 import org.inkstack.settings.nav.adapter.navAddAD
 import org.inkstack.settings.nav.adapter.navAvailableAD
 import org.inkstack.settings.nav.adapter.navConfigAD
+import org.inkstack.core.util.ext.consumeAll
 
 @AndroidEntryPoint
 class NavConfigFragment : BaseFragment<FragmentSettingsSourcesBinding>(), RecyclerViewOwner,
@@ -67,7 +66,7 @@ class NavConfigFragment : BaseFragment<FragmentSettingsSourcesBinding>(), Recycl
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val barsInsets = insets.systemBarsInsets
+		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 		val isTablet = !resources.getBoolean(R.bool.is_tablet)
 		val isMaster = container?.id == R.id.container_master
 		v.setPaddingRelative(
@@ -76,7 +75,7 @@ class NavConfigFragment : BaseFragment<FragmentSettingsSourcesBinding>(), Recycl
 			if (isTablet && isMaster) 0 else barsInsets.end(v),
 			barsInsets.bottom,
 		)
-		return insets.consumeAllSystemBarsInsets()
+		return insets.consumeAll(WindowInsetsCompat.Type.systemBars())
 	}
 
 	override fun onResume() {

@@ -25,11 +25,9 @@ import org.inkstack.core.ui.list.ListSelectionController
 import org.inkstack.core.ui.list.OnListItemClickListener
 import org.inkstack.core.ui.list.fastscroll.FastScroller
 import org.inkstack.core.ui.util.ReversibleActionObserver
-import org.inkstack.core.util.ext.consumeAllSystemBarsInsets
 import org.inkstack.core.util.ext.findAppCompatDelegate
 import org.inkstack.core.util.ext.observe
 import org.inkstack.core.util.ext.observeEvent
-import org.inkstack.core.util.ext.systemBarsInsets
 import org.inkstack.databinding.FragmentListSimpleBinding
 import org.inkstack.list.ui.GridSpanResolver
 import org.inkstack.list.ui.adapter.ListHeaderClickListener
@@ -41,6 +39,7 @@ import org.inkstack.main.ui.owners.AppBarOwner
 import org.inkstack.parsers.model.Manga
 import org.inkstack.reader.ui.PageSaveHelper
 import javax.inject.Inject
+import org.inkstack.core.util.ext.consumeAll
 
 @AndroidEntryPoint
 class AllBookmarksFragment :
@@ -112,7 +111,7 @@ class AllBookmarksFragment :
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val barsInsets = insets.systemBarsInsets
+		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 		val basePadding = resources.getDimensionPixelOffset(R.dimen.list_spacing_normal)
 		viewBinding?.recyclerView?.setPadding(
 			barsInsets.left + basePadding,
@@ -120,7 +119,7 @@ class AllBookmarksFragment :
 			barsInsets.right + basePadding,
 			barsInsets.bottom + basePadding,
 		)
-		return insets.consumeAllSystemBarsInsets()
+		return insets.consumeAll(WindowInsetsCompat.Type.systemBars())
 	}
 
 	override fun onDestroyView() {

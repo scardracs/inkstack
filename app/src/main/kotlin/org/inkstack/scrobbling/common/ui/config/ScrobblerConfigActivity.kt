@@ -13,17 +13,16 @@ import org.inkstack.core.exceptions.resolve.SnackbarErrorObserver
 import org.inkstack.core.nav.router
 import org.inkstack.core.ui.BaseActivity
 import org.inkstack.core.ui.list.OnListItemClickListener
-import org.inkstack.core.util.ext.consumeAllSystemBarsInsets
 import org.inkstack.core.util.ext.observe
 import org.inkstack.core.util.ext.observeEvent
 import org.inkstack.core.util.ext.showOrHide
-import org.inkstack.core.util.ext.systemBarsInsets
 import org.inkstack.databinding.ActivityScrobblerConfigBinding
 import org.inkstack.list.ui.adapter.TypedListSpacingDecoration
 import org.inkstack.scrobbling.common.domain.model.ScrobblerUser
 import org.inkstack.scrobbling.common.domain.model.ScrobblingInfo
 import org.inkstack.scrobbling.common.ui.config.adapter.ScrobblingMangaAdapter
 import androidx.appcompat.R as appcompatR
+import org.inkstack.core.util.ext.consumeAll
 
 @AndroidEntryPoint
 class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
@@ -64,7 +63,7 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val barsInsets = insets.systemBarsInsets
+		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 		val basePadding = v.resources.getDimensionPixelOffset(R.dimen.list_spacing_normal)
 		viewBinding.appbar.updatePadding(
 			top = barsInsets.top,
@@ -77,7 +76,7 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 			barsInsets.right + basePadding,
 			barsInsets.bottom + basePadding,
 		)
-		return insets.consumeAllSystemBarsInsets()
+		return insets.consumeAll(WindowInsetsCompat.Type.systemBars())
 	}
 
 	override fun onItemClick(item: ScrobblingInfo, view: View) {

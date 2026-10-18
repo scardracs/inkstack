@@ -24,14 +24,12 @@ import org.inkstack.core.ui.BaseFragment
 import org.inkstack.core.ui.util.RecyclerViewOwner
 import org.inkstack.core.ui.util.ReversibleActionObserver
 import org.inkstack.core.util.ext.addMenuProvider
-import org.inkstack.core.util.ext.consumeAllSystemBarsInsets
 import org.inkstack.core.util.ext.container
 import org.inkstack.core.util.ext.end
 import org.inkstack.core.util.ext.getItem
 import org.inkstack.core.util.ext.observe
 import org.inkstack.core.util.ext.observeEvent
 import org.inkstack.core.util.ext.start
-import org.inkstack.core.util.ext.systemBarsInsets
 import org.inkstack.core.util.ext.viewLifecycleScope
 import org.inkstack.databinding.FragmentSettingsSourcesBinding
 import org.inkstack.main.ui.owners.AppBarOwner
@@ -41,6 +39,7 @@ import org.inkstack.settings.sources.adapter.SourceConfigAdapter
 import org.inkstack.settings.sources.adapter.SourceConfigListener
 import org.inkstack.settings.sources.model.SourceConfigItem
 import javax.inject.Inject
+import org.inkstack.core.util.ext.consumeAll
 
 @AndroidEntryPoint
 class SourcesManageFragment :
@@ -88,7 +87,7 @@ class SourcesManageFragment :
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val barsInsets = insets.systemBarsInsets
+		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 		val isTablet = !resources.getBoolean(R.bool.is_tablet)
 		val isMaster = container?.id == R.id.container_master
 		v.setPaddingRelative(
@@ -97,7 +96,7 @@ class SourcesManageFragment :
 			if (isTablet && isMaster) 0 else barsInsets.end(v),
 			barsInsets.bottom,
 		)
-		return insets.consumeAllSystemBarsInsets()
+		return insets.consumeAll(WindowInsetsCompat.Type.systemBars())
 	}
 
 	override fun onResume() {

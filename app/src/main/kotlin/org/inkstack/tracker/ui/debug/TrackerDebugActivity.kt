@@ -10,12 +10,11 @@ import org.inkstack.core.nav.router
 import org.inkstack.core.ui.BaseActivity
 import org.inkstack.core.ui.BaseListAdapter
 import org.inkstack.core.ui.list.OnListItemClickListener
-import org.inkstack.core.util.ext.consumeAllSystemBarsInsets
 import org.inkstack.core.util.ext.observe
-import org.inkstack.core.util.ext.systemBarsInsets
 import org.inkstack.databinding.ActivityTrackerDebugBinding
 import org.inkstack.list.ui.adapter.ListItemType
 import org.inkstack.list.ui.adapter.TypedListSpacingDecoration
+import org.inkstack.core.util.ext.consumeAll
 
 @AndroidEntryPoint
 class TrackerDebugActivity : BaseActivity<ActivityTrackerDebugBinding>(), OnListItemClickListener<TrackDebugItem> {
@@ -37,7 +36,7 @@ class TrackerDebugActivity : BaseActivity<ActivityTrackerDebugBinding>(), OnList
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val barsInsets = insets.systemBarsInsets
+		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 		viewBinding.recyclerView.updatePadding(
 			left = barsInsets.left,
 			right = barsInsets.right,
@@ -48,7 +47,7 @@ class TrackerDebugActivity : BaseActivity<ActivityTrackerDebugBinding>(), OnList
 			right = barsInsets.right,
 			top = barsInsets.top,
 		)
-		return insets.consumeAllSystemBarsInsets()
+		return insets.consumeAll(WindowInsetsCompat.Type.systemBars())
 	}
 
 	override fun onItemClick(item: TrackDebugItem, view: View) {

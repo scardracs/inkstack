@@ -26,16 +26,15 @@ import org.inkstack.core.github.AppVersion
 import org.inkstack.core.nav.router
 import org.inkstack.core.ui.BaseActivity
 import org.inkstack.core.util.FileSize
-import org.inkstack.core.util.ext.consumeAllSystemBarsInsets
 import org.inkstack.core.util.ext.getDisplayMessage
 import org.inkstack.core.util.ext.observe
 import org.inkstack.core.util.ext.observeEvent
 import org.inkstack.core.util.ext.printStackTraceDebug
 import org.inkstack.core.util.ext.setTextAndVisible
 import org.inkstack.core.util.ext.showOrHide
-import org.inkstack.core.util.ext.systemBarsInsets
 import org.inkstack.core.util.ext.textAndVisible
 import org.inkstack.databinding.ActivityAppUpdateBinding
+import org.inkstack.core.util.ext.consumeAll
 
 @AndroidEntryPoint
 class AppUpdateActivity : BaseActivity<ActivityAppUpdateBinding>(), View.OnClickListener {
@@ -79,7 +78,7 @@ class AppUpdateActivity : BaseActivity<ActivityAppUpdateBinding>(), View.OnClick
 		v: View,
 		insets: WindowInsetsCompat
 	): WindowInsetsCompat {
-		val barsInsets = insets.systemBarsInsets
+		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 		viewBinding.root.updatePadding(top = barsInsets.top)
 		viewBinding.dockedToolbarChild.updateLayoutParams<MarginLayoutParams> {
 			leftMargin = barsInsets.left
@@ -90,7 +89,7 @@ class AppUpdateActivity : BaseActivity<ActivityAppUpdateBinding>(), View.OnClick
 			left = barsInsets.left,
 			right = barsInsets.right,
 		)
-		return insets.consumeAllSystemBarsInsets()
+		return insets.consumeAll(WindowInsetsCompat.Type.systemBars())
 	}
 
 	override fun onClick(v: View) {

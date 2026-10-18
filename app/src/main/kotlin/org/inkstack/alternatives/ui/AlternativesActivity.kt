@@ -24,11 +24,9 @@ import org.inkstack.core.ui.dialog.buildAlertDialog
 import org.inkstack.core.ui.list.OnListItemClickListener
 import org.inkstack.core.ui.util.OptionsMenuBadgeHelper
 import org.inkstack.core.ui.widgets.ChipsView
-import org.inkstack.core.util.ext.consumeAllSystemBarsInsets
 import org.inkstack.core.util.ext.getQuantityStringSafe
 import org.inkstack.core.util.ext.observe
 import org.inkstack.core.util.ext.observeEvent
-import org.inkstack.core.util.ext.systemBarsInsets
 import org.inkstack.databinding.ActivityAlternativesBinding
 import org.inkstack.list.ui.adapter.ListItemType
 import org.inkstack.list.ui.adapter.ListStateHolderListener
@@ -41,6 +39,7 @@ import org.inkstack.parsers.model.Manga
 import org.inkstack.parsers.model.MangaParserSource
 import javax.inject.Inject
 import androidx.appcompat.R as appcompatR
+import org.inkstack.core.util.ext.consumeAll
 
 @AndroidEntryPoint
 class AlternativesActivity : BaseActivity<ActivityAlternativesBinding>(),
@@ -105,7 +104,7 @@ class AlternativesActivity : BaseActivity<ActivityAlternativesBinding>(),
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val barsInsets = insets.systemBarsInsets
+		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 		viewBinding.recyclerView.updatePadding(
 			left = barsInsets.left,
 			right = barsInsets.right,
@@ -116,7 +115,7 @@ class AlternativesActivity : BaseActivity<ActivityAlternativesBinding>(),
 			right = barsInsets.right,
 			top = barsInsets.top,
 		)
-		return insets.consumeAllSystemBarsInsets()
+		return insets.consumeAll(WindowInsetsCompat.Type.systemBars())
 	}
 
 	override fun onItemClick(item: MangaAlternativeModel, view: View) {

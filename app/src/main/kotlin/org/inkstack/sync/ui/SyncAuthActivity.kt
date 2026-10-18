@@ -23,15 +23,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.inkstack.R
 import org.inkstack.core.ui.BaseActivity
 import org.inkstack.core.ui.util.DefaultTextWatcher
-import org.inkstack.core.util.ext.consumeAllSystemBarsInsets
 import org.inkstack.core.util.ext.getDisplayMessage
 import org.inkstack.core.util.ext.getParcelableExtraCompat
 import org.inkstack.core.util.ext.observe
 import org.inkstack.core.util.ext.observeEvent
-import org.inkstack.core.util.ext.systemBarsInsets
 import org.inkstack.databinding.ActivitySyncAuthBinding
 import org.inkstack.sync.data.SyncSettings
 import org.inkstack.sync.domain.SyncAuthResult
+import org.inkstack.core.util.ext.consumeAll
 
 private const val PAGE_EMAIL = 0
 private const val PAGE_PASSWORD = 1
@@ -83,7 +82,7 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val barsInsets = insets.systemBarsInsets
+		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 		viewBinding.root.updatePadding(top = barsInsets.top)
 		viewBinding.dockedToolbarChild.updateLayoutParams<MarginLayoutParams> {
 			leftMargin = barsInsets.left
@@ -95,7 +94,7 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 			left = barsInsets.left + basePadding,
 			right = barsInsets.right + basePadding,
 		)
-		return insets.consumeAllSystemBarsInsets()
+		return insets.consumeAll(WindowInsetsCompat.Type.systemBars())
 	}
 
 	override fun onClick(v: View) {

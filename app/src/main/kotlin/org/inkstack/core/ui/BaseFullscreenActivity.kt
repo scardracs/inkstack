@@ -1,6 +1,5 @@
 package org.inkstack.core.ui
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.viewbinding.ViewBinding
@@ -15,8 +14,6 @@ abstract class BaseFullscreenActivity<B : ViewBinding> :
 		super.onCreate(savedInstanceState)
 		with(window) {
 			systemUiController = SystemUiController(this)
-			statusBarColor = Color.TRANSPARENT
-			navigationBarColor = Color.TRANSPARENT
 			attributes.layoutInDisplayCutoutMode =
 				WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
 		}

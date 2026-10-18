@@ -1,6 +1,5 @@
 package org.inkstack.core.ui.util
 
-import android.graphics.Color
 import android.view.ViewGroup
 import android.view.Window
 import androidx.activity.OnBackPressedCallback
@@ -11,6 +10,7 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import org.inkstack.core.util.ext.getThemeColor
@@ -20,8 +20,6 @@ class ActionModeDelegate : OnBackPressedCallback(false) {
 
 	private var activeActionMode: ActionMode? = null
 	private var listeners: MutableList<ActionModeListener>? = null
-	private var defaultStatusBarColor = Color.TRANSPARENT
-
 	val isActionModeStarted: Boolean
 		get() = activeActionMode != null
 
@@ -39,15 +37,14 @@ class ActionModeDelegate : OnBackPressedCallback(false) {
 				ContextCompat.getColor(ctx, materialR.color.m3_appbar_overlay_color),
 				ctx.getThemeColor(materialR.attr.colorSurface),
 			)
-			defaultStatusBarColor = window.statusBarColor
-			window.statusBarColor = actionModeColor
 			val insets = ViewCompat.getRootWindowInsets(window.decorView)
 				?.getInsets(WindowInsetsCompat.Type.systemBars()) ?: return
 			window.decorView.findViewById<ActionBarContextView?>(androidx.appcompat.R.id.action_mode_bar)?.apply {
 				setBackgroundColor(actionModeColor)
 				updateLayoutParams<ViewGroup.MarginLayoutParams> {
-					topMargin = insets.top
+					topMargin = 0
 				}
+				updatePadding(top = insets.top)
 			}
 		}
 	}
@@ -56,9 +53,7 @@ class ActionModeDelegate : OnBackPressedCallback(false) {
 		activeActionMode = null
 		isEnabled = false
 		listeners?.forEach { it.onActionModeFinished(mode) }
-		if (window != null) {
-			window.statusBarColor = defaultStatusBarColor
-		}
+		window?.decorView?.findViewById<ActionBarContextView?>(androidx.appcompat.R.id.action_mode_bar)?.updatePadding(top = 0)
 	}
 
 	fun addListener(listener: ActionModeListener) {

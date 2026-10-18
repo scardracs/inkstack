@@ -3,6 +3,7 @@ package org.inkstack.core.ui
 import android.os.Bundle
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.graphics.Insets
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
@@ -10,7 +11,6 @@ import androidx.fragment.app.commit
 import com.google.android.material.appbar.AppBarLayout
 import dagger.hilt.android.AndroidEntryPoint
 import org.inkstack.R
-import org.inkstack.core.util.ext.consumeSystemBarsInsets
 import org.inkstack.databinding.ActivityContainerBinding
 import org.inkstack.main.ui.owners.AppBarOwner
 import org.inkstack.main.ui.owners.SnackbarOwner
@@ -47,7 +47,9 @@ abstract class FragmentContainerActivity(private val fragmentClass: Class<out Fr
 			right = bars.right,
 			top = bars.top,
 		)
-		return insets.consumeSystemBarsInsets(top = true)
+		return WindowInsetsCompat.Builder(insets)
+			.setInsets(WindowInsetsCompat.Type.systemBars(), Insets.of(bars.left, 0, bars.right, bars.bottom))
+			.build()
 	}
 
 	protected open fun getFragmentExtras(): Bundle? = intent.extras
