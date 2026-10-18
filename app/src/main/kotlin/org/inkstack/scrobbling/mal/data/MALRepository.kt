@@ -59,12 +59,15 @@ class MALRepository @Inject constructor(
 
 	override suspend fun authorize(code: String?) {
 		val body = FormBody.Builder()
+		body.add("client_id", clientId)
 		if (code != null) {
-			body.add("client_id", clientId)
 			body.add("grant_type", "authorization_code")
 			body.add("code", code)
 			body.add("redirect_uri", REDIRECT_URI)
 			body.add("code_verifier", codeVerifier)
+		} else {
+			body.add("grant_type", "refresh_token")
+			body.add("refresh_token", checkNotNull(storage.refreshToken))
 		}
 		val request = Request.Builder()
 			.post(body.build())
