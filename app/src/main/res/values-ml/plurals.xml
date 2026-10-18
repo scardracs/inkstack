@@ -8,4 +8,20 @@
         <item quantity="one">%1$d മിനിറ്റ്</item>
         <item quantity="other">%1$d മിനിറ്റ്</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d റേറ്റിംഗ്</item>
+		<item quantity="other">%d റേറ്റിംഗുകൾ</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d അഭിപ്രായം</item>
+		<item quantity="other">%d അഭിപ്രായങ്ങൾ</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">പുതിയ അക്കൗണ്ടിന് ഇപ്പോൾ ഇത്രയേ പോസ്റ്റ് ചെയ്യാൻ പാടുള്ളൂ. ഏകദേശം %1$d മിനിറ്റ് കഴിഞ്ഞ് വീണ്ടും ശ്രമിക്കുക.</item>
+		<item quantity="other">പുതിയ അക്കൗണ്ടിന് ഇപ്പോൾ ഇത്രയേ പോസ്റ്റ് ചെയ്യാൻ പാടുള്ളൂ. ഏകദേശം %1$d മിനിറ്റ് കഴിഞ്ഞ് വീണ്ടും ശ്രമിക്കുക.</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d പുതിയ മറുപടി</item>
+		<item quantity="other">%d പുതിയ മറുപടികൾ</item>
+	</plurals>
 </resources>
