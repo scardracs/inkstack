@@ -46,7 +46,6 @@ import org.inkstack.core.model.parcelable.ParcelableMangaPage
 import org.inkstack.core.network.CommonHeaders
 import org.inkstack.core.parser.external.ExternalMangaSource
 import org.inkstack.core.prefs.AppSettings
-import org.inkstack.core.prefs.ReaderMode
 import org.inkstack.core.prefs.TriStateOption
 import org.inkstack.core.ui.dialog.BigButtonsAlertDialog
 import org.inkstack.core.ui.dialog.ErrorDetailsDialog
@@ -516,10 +515,8 @@ class AppRouter private constructor(
         }.showDistinct()
     }
 
-    fun showReaderConfigSheet(mode: ReaderMode) {
-        ReaderConfigSheet().withArgs(1) {
-            putInt(KEY_READER_MODE, mode.id)
-        }.showDistinct()
+    fun showReaderConfigSheet() {
+        ReaderConfigSheet().showDistinct()
     }
 
     fun showWelcomeSheet() {
@@ -848,7 +845,6 @@ class AppRouter private constructor(
         const val KEY_PAGES = "pages"
         const val KEY_PREVIEW = "preview"
         const val KEY_QUERY = "query"
-        const val KEY_READER_MODE = "reader_mode"
         const val KEY_SORT_ORDER = "sort_order"
         const val KEY_SOURCE = "source"
         const val KEY_TAB = "tab"

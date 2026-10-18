@@ -70,7 +70,6 @@ import org.inkstack.parsers.util.ifNullOrEmpty
 import org.inkstack.parsers.util.runCatchingCancellable
 import org.inkstack.parsers.util.sizeOrZero
 import org.inkstack.reader.domain.ChaptersLoader
-import org.inkstack.reader.domain.DetectReaderModeUseCase
 import org.inkstack.reader.domain.PageLoader
 import org.inkstack.reader.ui.config.ReaderSettings
 import org.inkstack.reader.ui.pager.ReaderUiState
@@ -98,7 +97,6 @@ class ReaderViewModel @Inject constructor(
     private val appShortcutManager: AppShortcutManager,
     private val detailsLoadUseCase: DetailsLoadUseCase,
     private val historyUpdateUseCase: HistoryUpdateUseCase,
-    private val detectReaderModeUseCase: DetectReaderModeUseCase,
     private val statsCollector: StatsCollector,
     private val discordRpc: DiscordRpc,
     @LocalStorageChanges localStorageChanges: SharedFlow<LocalManga?>,
@@ -232,20 +230,6 @@ class ReaderViewModel @Inject constructor(
         discordRpc.setIdle()
     }
 
-    fun switchMode(newMode: ReaderMode) {
-        launchJob {
-            val manga = checkNotNull(getMangaOrNull())
-            dataRepository.saveReaderMode(
-                manga = manga,
-                mode = newMode,
-            )
-            readerMode.value = newMode
-            content.update {
-                it.copy(state = getCurrentState())
-            }
-        }
-    }
-
     fun saveCurrentState(state: ReaderState? = null) {
         if (state != null) {
             readingState.value = state
@@ -356,8 +340,7 @@ class ReaderViewModel @Inject constructor(
                 return@launchJob
             }
             ensureActive()
-            val autoLoadAllowed = readerMode.value != ReaderMode.WEBTOON || !isWebtoonPullGestureEnabled.value
-            if (autoLoadAllowed) {
+            if (!isWebtoonPullGestureEnabled.value) {
                 if (upperPos >= pages.lastIndex - BOUNDS_PAGE_OFFSET) {
                     loadPrevNextChapter(pages.last().chapterId, isNext = true)
                 }
@@ -433,12 +416,10 @@ class ReaderViewModel @Inject constructor(
                                 return@collect // manga not loaded yet if cannot get state
                             }
                             readingState.value = newState
-                            val mode = runCatchingCancellable {
-                                detectReaderModeUseCase(manga, newState)
-                            }.getOrDefault(settings.defaultReaderMode)
+                            dataRepository.saveReaderMode(manga, ReaderMode.WEBTOON)
                             val branch = chaptersLoader.peekChapter(newState.chapterId)?.branch
                             selectedBranch.value = branch
-                            readerMode.value = mode
+                            readerMode.value = ReaderMode.WEBTOON
                             try {
                                 chaptersLoader.loadSingleChapter(newState.chapterId)
                             } catch (e: Exception) {

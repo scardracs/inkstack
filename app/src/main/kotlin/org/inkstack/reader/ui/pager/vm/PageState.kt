@@ -16,6 +16,8 @@ sealed class PageState {
 		val uri: Uri,
 		val crop: Rect?,
 		val isConverted: Boolean,
+		val width: Int = 0,
+		val height: Int = 0,
 	) : PageState()
 
 	class Converting() : PageState()
@@ -24,6 +26,8 @@ sealed class PageState {
 		val uri: Uri,
 		val crop: Rect?,
 		val isConverted: Boolean,
+		val width: Int = 0,
+		val height: Int = 0,
 	) : PageState()
 
 	data class Error(

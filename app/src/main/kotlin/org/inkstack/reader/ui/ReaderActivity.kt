@@ -21,7 +21,6 @@ import org.inkstack.core.nav.AppRouter
 import org.inkstack.core.nav.router
 import org.inkstack.core.os.NetworkState
 import org.inkstack.core.prefs.AppSettings
-import org.inkstack.core.prefs.ReaderMode
 import org.inkstack.core.ui.BaseComposeFullscreenActivity
 import org.inkstack.core.ui.dialog.buildAlertDialog
 import org.inkstack.core.ui.dialog.setCheckbox
@@ -58,9 +57,6 @@ class ReaderActivity :
 	private var uiVisible by mutableStateOf(true)
 	private var pagerSwitch: ((Int) -> Unit)? = null
 
-	override val readerMode: ReaderMode?
-		get() = viewModel.readerMode.value
-
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		pageSaveHelper = pageSaveHelperFactory.create(this)
@@ -92,7 +88,6 @@ class ReaderActivity :
 				networkState = networkState,
 				exceptionResolver = exceptionResolver,
 				imageLoader = imageLoader,
-				settings = settings,
 				onBack = { dispatchNavigateUp() },
 				onOpenMenu = { openMenu() },
 				onComments = { onCommentsClick() },
@@ -179,8 +174,7 @@ class ReaderActivity :
 
 	override fun openMenu() {
 		viewModel.saveCurrentState()
-		val currentMode = viewModel.readerMode.value ?: return
-		router.showReaderConfigSheet(currentMode)
+		router.showReaderConfigSheet()
 	}
 
 	override fun onSavePageClick() = viewModel.saveCurrentPage(pageSaveHelper)
@@ -196,14 +190,6 @@ class ReaderActivity :
 	}
 
 	override fun isReaderResumed(): Boolean = lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
-
-	override fun onReaderModeChanged(mode: ReaderMode) {
-		viewModel.switchMode(mode)
-	}
-
-	override fun onDoubleModeChanged(isEnabled: Boolean) {
-		settings.isReaderDoubleOnLandscape = isEnabled
-	}
 
 	private fun setUiIsVisible(visible: Boolean) {
 		uiVisible = visible

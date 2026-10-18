@@ -16,7 +16,6 @@ import org.inkstack.core.prefs.EInkFlashColor
 import org.inkstack.core.prefs.ReaderAnimation
 import org.inkstack.core.prefs.ReaderBackground
 import org.inkstack.core.prefs.ReaderControl
-import org.inkstack.core.prefs.ReaderMode
 import org.inkstack.core.ui.BasePreferenceFragment
 import org.inkstack.core.util.ext.getQuantityStringSafe
 import org.inkstack.core.util.ext.setDefaultValueCompat
@@ -33,10 +32,6 @@ class ReaderSettingsFragment :
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_reader)
-		findPreference<ListPreference>(AppSettings.KEY_READER_MODE)?.run {
-			entryValues = ReaderMode.entries.names()
-			setDefaultValueCompat(ReaderMode.STANDARD.name)
-		}
 		findPreference<ListPreference>(AppSettings.KEY_READER_ORIENTATION)?.run {
 			entryValues = arrayOf(
 				ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED.toString(),
@@ -79,7 +74,6 @@ class ReaderSettingsFragment :
 			entryValues = EInkFlashColor.entries.names()
 			setDefaultValueCompat(EInkFlashColor.WHITE.name)
 		}
-		updateReaderModeDependency()
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -103,17 +97,7 @@ class ReaderSettingsFragment :
 		}
 	}
 
-	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-		when (key) {
-			AppSettings.KEY_READER_MODE -> updateReaderModeDependency()
-		}
-	}
-
-	private fun updateReaderModeDependency() {
-		findPreference<Preference>(AppSettings.KEY_READER_MODE_DETECT)?.run {
-			isEnabled = settings.defaultReaderMode != ReaderMode.WEBTOON
-		}
-	}
+	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) = Unit
 
 	private object FlashDurationSummaryProvider : Preference.SummaryProvider<SliderPreference> {
 

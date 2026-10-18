@@ -5,25 +5,10 @@
 	android:title="@string/reader_settings">
 
 	<ListPreference
-		android:entries="@array/reader_modes"
-		android:icon="@drawable/ic_reader_ltr"
-		android:key="reader_mode"
-		android:title="@string/default_mode"
-		app:useSimpleSummaryProvider="true" />
-
-	<SwitchPreferenceCompat
-		android:defaultValue="true"
-		android:icon="@drawable/ic_auto_fix"
-		android:key="reader_mode_detect"
-		android:summary="@string/detect_reader_mode_summary"
-		android:title="@string/detect_reader_mode" />
-
-	<ListPreference
 		android:entries="@array/zoom_modes"
 		android:icon="@drawable/ic_zoom_in"
 		android:key="zoom_mode"
 		android:title="@string/scale_mode"
-		app:allowDividerAbove="true"
 		app:useSimpleSummaryProvider="true" />
 
 	<SwitchPreferenceCompat

@@ -18,7 +18,6 @@ import org.inkstack.core.model.ZoomMode
 import org.inkstack.core.parser.MangaDataRepository
 import org.inkstack.core.prefs.AppSettings
 import org.inkstack.core.prefs.ReaderBackground
-import org.inkstack.core.prefs.ReaderMode
 import org.inkstack.core.util.MediatorStateFlow
 import org.inkstack.core.util.ext.processLifecycleScope
 import org.inkstack.reader.domain.ReaderColorFilter
@@ -31,7 +30,6 @@ data class ReaderSettings(
 	val isReaderOptimizationEnabled: Boolean,
 	val bitmapConfig: Bitmap.Config,
 	val isPagesNumbersEnabled: Boolean,
-	val isPagesCropEnabledStandard: Boolean,
 	val isPagesCropEnabledWebtoon: Boolean,
 ) {
 
@@ -46,15 +44,10 @@ data class ReaderSettings(
 			Bitmap.Config.RGB_565
 		},
 		isPagesNumbersEnabled = settings.isPagesNumbersEnabled,
-		isPagesCropEnabledStandard = settings.isPagesCropEnabled(ReaderMode.STANDARD),
-		isPagesCropEnabledWebtoon = settings.isPagesCropEnabled(ReaderMode.WEBTOON),
+		isPagesCropEnabledWebtoon = settings.isPagesCropEnabled(),
 	)
 
-	fun isPagesCropEnabled(isWebtoon: Boolean) = if (isWebtoon) {
-		isPagesCropEnabledWebtoon
-	} else {
-		isPagesCropEnabledStandard
-	}
+	fun isPagesCropEnabled(isWebtoon: Boolean) = isPagesCropEnabledWebtoon
 
 	fun composeColorFilter(): androidx.compose.ui.graphics.ColorFilter? {
 		val cf = colorFilter?.takeUnless { it.isEmpty } ?: return null

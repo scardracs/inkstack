@@ -220,6 +220,26 @@ class PageLoader @Inject constructor(
 		error.printStackTraceDebug()
 	}.getOrNull()
 
+	suspend fun getImageSize(uri: Uri): Pair<Int, Int> = runInterruptible(Dispatchers.IO) {
+		val options = android.graphics.BitmapFactory.Options().apply {
+			inJustDecodeBounds = true
+		}
+		when {
+			uri.isZipUri() -> ZipFile(uri.schemeSpecificPart).use { zip ->
+				val entry = zip.getEntry(uri.fragment)
+				zip.getInputStream(entry).use { input ->
+					android.graphics.BitmapFactory.decodeStream(input, null, options)
+				}
+			}
+			uri.isFileUri() -> {
+				android.graphics.BitmapFactory.decodeFile(uri.toFile().path, options)
+			}
+		}
+		val w = options.outWidth
+		val h = options.outHeight
+		if (w > 0 && h > 0) w to h else 0 to 0
+	}
+
 	suspend fun getPageUrl(page: MangaPage): String {
 		return getRepository(page.source).getPageUrl(page)
 	}

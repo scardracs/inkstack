@@ -3,9 +3,11 @@ package org.inkstack.reader.ui.compose
 import android.graphics.Rect
 import android.net.Uri
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -19,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -27,13 +28,8 @@ import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
-import me.saket.telephoto.zoomable.ZoomSpec
-import me.saket.telephoto.zoomable.coil3.ZoomableAsyncImage
-import me.saket.telephoto.zoomable.rememberZoomableImageState
-import me.saket.telephoto.zoomable.rememberZoomableState
 import org.inkstack.R
 import org.inkstack.core.exceptions.resolve.ExceptionResolver
-import org.inkstack.core.model.ZoomMode
 import org.inkstack.core.os.NetworkState
 import org.inkstack.core.util.ext.getDisplayMessage
 import org.inkstack.core.util.ext.mangaSourceExtra
@@ -43,6 +39,8 @@ import org.inkstack.reader.ui.pager.ReaderPage
 import org.inkstack.reader.ui.pager.vm.PageState
 import org.inkstack.reader.ui.pager.vm.PageViewModel
 
+private const val DEFAULT_ASPECT = 1f / 1.6f
+
 @Composable
 fun ReaderPageImage(
 	page: ReaderPage,
@@ -51,13 +49,13 @@ fun ReaderPageImage(
 	networkState: NetworkState,
 	exceptionResolver: ExceptionResolver,
 	imageLoader: ImageLoader,
-	isWebtoon: Boolean,
-	gesturesEnabled: Boolean,
+	knownAspectRatio: Float?,
+	onAspectRatio: (Float) -> Unit,
 	modifier: Modifier = Modifier,
 	onClick: (() -> Unit)? = null,
 ) {
-	val pageVm = remember(page.id, isWebtoon) {
-		PageViewModel(loader, settingsProducer, networkState, exceptionResolver, isWebtoon)
+	val pageVm = remember(page.id) {
+		PageViewModel(loader, settingsProducer, networkState, exceptionResolver, isWebtoon = true)
 	}
 	DisposableEffect(pageVm, page.id) {
 		pageVm.onBind(page.toMangaPage())
@@ -66,12 +64,21 @@ fun ReaderPageImage(
 	val state by pageVm.state.collectAsState()
 	val settings by settingsProducer.collectAsState()
 	val colorFilter = remember(settings.colorFilter) { settings.composeColorFilter() }
-	val (contentScale, alignment) = zoomModeToScale(settings.zoomMode)
+
+	val aspect = knownAspectRatio
+		?: stateAspect(state)
+		?: DEFAULT_ASPECT
+
+	LaunchedEffect(state) {
+		stateAspect(state)?.let(onAspectRatio)
+	}
 
 	Box(
 		modifier = modifier
-			.fillMaxSize()
-			.background(MaterialTheme.colorScheme.surface),
+			.fillMaxWidth()
+			.aspectRatio(aspect)
+			.background(MaterialTheme.colorScheme.surface)
+			.then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier),
 		contentAlignment = Alignment.Center,
 	) {
 		when (val s = state) {
@@ -84,8 +91,8 @@ fun ReaderPageImage(
 						model = preview,
 						contentDescription = null,
 						imageLoader = imageLoader,
-						modifier = Modifier.fillMaxSize(),
-						contentScale = ContentScale.Fit,
+						modifier = Modifier.fillMaxWidth(),
+						contentScale = ContentScale.FillWidth,
 						colorFilter = colorFilter,
 					)
 				}
@@ -107,33 +114,21 @@ fun ReaderPageImage(
 				val uri = when (s) {
 					is PageState.Loaded -> s.uri
 					is PageState.Shown -> s.uri
-					else -> error("unreachable")
 				}
 				val crop = when (s) {
 					is PageState.Loaded -> s.crop
 					is PageState.Shown -> s.crop
-					else -> null
 				}
-				val zoomableState = rememberZoomableState(
-					zoomSpec = ZoomSpec(maxZoomFactor = 5f),
-				)
-				val imageState = rememberZoomableImageState(zoomableState)
-				ZoomableAsyncImage(
-					model = coilModel(uri, page, imageLoader, crop),
+				AsyncImage(
+					model = coilModel(uri, page, crop),
 					contentDescription = null,
 					imageLoader = imageLoader,
-					state = imageState,
-					modifier = Modifier.fillMaxSize(),
-					contentScale = contentScale,
-					alignment = alignment,
-					gesturesEnabled = gesturesEnabled,
+					modifier = Modifier.fillMaxWidth(),
+					contentScale = ContentScale.FillWidth,
 					colorFilter = colorFilter,
-					onClick = onClick?.let { { _ -> it() } },
 				)
-				LaunchedEffect(imageState.isImageDisplayed) {
-					if (imageState.isImageDisplayed) {
-						pageVm.onImageShown()
-					}
+				LaunchedEffect(uri) {
+					pageVm.onImageShown()
 				}
 			}
 
@@ -141,6 +136,7 @@ fun ReaderPageImage(
 				Box(
 					modifier = Modifier
 						.fillMaxWidth()
+						.height(240.dp)
 						.padding(24.dp),
 					contentAlignment = Alignment.Center,
 				) {
@@ -160,11 +156,19 @@ fun ReaderPageImage(
 	}
 }
 
+private fun stateAspect(state: PageState): Float? {
+	val (w, h) = when (state) {
+		is PageState.Loaded -> state.width to state.height
+		is PageState.Shown -> state.width to state.height
+		else -> return null
+	}
+	return if (w > 0 && h > 0) w.toFloat() / h.toFloat() else null
+}
+
 @Composable
 private fun coilModel(
 	uri: Uri,
 	page: ReaderPage,
-	imageLoader: ImageLoader,
 	crop: Rect?,
 ): ImageRequest {
 	val context = LocalContext.current
@@ -174,11 +178,4 @@ private fun coilModel(
 			.mangaSourceExtra(page.source)
 			.build()
 	}
-}
-
-private fun zoomModeToScale(mode: ZoomMode): Pair<ContentScale, Alignment> = when (mode) {
-	ZoomMode.FIT_CENTER -> ContentScale.Fit to Alignment.Center
-	ZoomMode.FIT_WIDTH -> ContentScale.FillWidth to Alignment.TopCenter
-	ZoomMode.FIT_HEIGHT -> ContentScale.FillHeight to Alignment.Center
-	ZoomMode.KEEP_START -> ContentScale.Fit to Alignment.TopStart
 }

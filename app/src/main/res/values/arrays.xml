@@ -43,12 +43,6 @@
 		<item>wsrv.nl</item>
 		<item>0ms.dev</item>
 	</string-array>
-	<string-array name="reader_modes" translatable="false">
-		<item>@string/standard</item>
-		<item>@string/right_to_left</item>
-		<item>@string/vertical</item>
-		<item>@string/webtoon</item>
-	</string-array>
 	<string-array name="scrobbling_statuses" translatable="false">
 		<item>@string/status_planned</item>
 		<item>@string/status_reading</item>
@@ -100,7 +94,6 @@
 		<item>@string/more_frequently</item>
 	</string-array>
 	<string-array name="reader_crop" translatable="false">
-		<item>@string/pages</item>
 		<item>@string/webtoon</item>
 	</string-array>
 	<string-array name="progress_indicators" translatable="false">

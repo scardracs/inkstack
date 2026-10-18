@@ -80,7 +80,13 @@ class PageViewModel(
 	fun onImageShown() {
 		state.update { currentState ->
 			if (currentState is PageState.Loaded) {
-				PageState.Shown(currentState.uri, currentState.crop, currentState.isConverted)
+				PageState.Shown(
+					uri = currentState.uri,
+					crop = currentState.crop,
+					isConverted = currentState.isConverted,
+					width = currentState.width,
+					height = currentState.height,
+				)
 			} else {
 				currentState
 			}
@@ -115,7 +121,14 @@ class PageViewModel(
 				} else {
 					null
 				}
-				state.value = PageState.Loaded(newUri, cachedBounds, isConverted = true)
+				val size = loader.getImageSize(newUri)
+				state.value = PageState.Loaded(
+					uri = newUri,
+					crop = cachedBounds,
+					isConverted = true,
+					width = size.first,
+					height = size.second,
+				)
 			} catch (ce: CancellationException) {
 				throw ce
 			} catch (e2: Throwable) {
@@ -146,7 +159,16 @@ class PageViewModel(
 			} else {
 				null
 			}
-			state.value = PageState.Loaded(uri, cachedBounds, isConverted = false)
+			val size = loader.getImageSize(uri)
+			val width = cachedBounds?.width()?.takeIf { it > 0 } ?: size.first
+			val height = cachedBounds?.height()?.takeIf { it > 0 } ?: size.second
+			state.value = PageState.Loaded(
+				uri = uri,
+				crop = cachedBounds,
+				isConverted = false,
+				width = width,
+				height = height,
+			)
 		} catch (e: CancellationException) {
 			throw e
 		} catch (e: Throwable) {

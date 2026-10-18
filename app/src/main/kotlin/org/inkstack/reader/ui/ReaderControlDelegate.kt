@@ -5,7 +5,6 @@ import android.view.KeyEvent
 import android.view.View
 import org.inkstack.R
 import org.inkstack.core.prefs.AppSettings
-import org.inkstack.core.prefs.ReaderMode
 import org.inkstack.reader.data.TapGridSettings
 import org.inkstack.reader.domain.TapGridArea
 import org.inkstack.reader.ui.tapgrid.TapAction
@@ -104,10 +103,6 @@ class ReaderControlDelegate(
 		}
 	}
 
-	private fun isReaderTapsReversed(): Boolean {
-		return settings.isReaderControlAlwaysLTR && listener.readerMode == ReaderMode.REVERSED
-	}
-
 	private fun switchBy(delta: Int, event: KeyEvent?, scroll: Boolean) {
 		if (event?.isCtrlPressed == true) {
 			listener.switchChapterBy(delta)
@@ -121,12 +116,10 @@ class ReaderControlDelegate(
 	}
 
 	private fun switchByRelative(delta: Int, event: KeyEvent?) {
-		return switchBy(if (isReaderTapsReversed()) -delta else delta, event, scroll = false)
+		switchBy(delta, event, scroll = false)
 	}
 
 	interface OnInteractionListener {
-
-		val readerMode: ReaderMode?
 
 		fun switchPageBy(delta: Int)
 

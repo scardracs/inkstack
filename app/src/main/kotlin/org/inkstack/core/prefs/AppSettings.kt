@@ -234,12 +234,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val readerBackground: ReaderBackground
 		get() = prefs.getEnumValue(KEY_READER_BACKGROUND, ReaderBackground.DEFAULT)
 
-	val defaultReaderMode: ReaderMode
-		get() = prefs.getEnumValue(KEY_READER_MODE, ReaderMode.STANDARD)
-
-	val isReaderModeDetectionEnabled: Boolean
-		get() = prefs.getBoolean(KEY_READER_MODE_DETECT, true)
-
 	var isHistoryGroupingEnabled: Boolean
 		get() = prefs.getBoolean(KEY_HISTORY_GROUPING, true)
 		set(value) = prefs.edit { putBoolean(KEY_HISTORY_GROUPING, value) }
@@ -629,13 +623,12 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isAutoLocalChaptersCleanupEnabled: Boolean
 		get() = prefs.getBoolean(KEY_CHAPTERS_CLEAR_AUTO, false)
 
-	fun isPagesCropEnabled(mode: ReaderMode): Boolean {
+	fun isPagesCropEnabled(): Boolean {
 		val rawValue = prefs.getStringSet(KEY_READER_CROP, emptySet())
 		if (rawValue.isNullOrEmpty()) {
 			return false
 		}
-		val needle = if (mode == ReaderMode.WEBTOON) READER_CROP_WEBTOON else READER_CROP_PAGED
-		return needle.toString() in rawValue
+		return READER_CROP_WEBTOON.toString() in rawValue
 	}
 
 	fun isTipEnabled(tip: String): Boolean {
@@ -815,8 +808,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_NOTIFICATIONS_SETTINGS = "notifications_settings"
 		const val KEY_READER_ANIMATION = "reader_animation2"
 		const val KEY_READER_CONTROLS = "reader_controls"
-		const val KEY_READER_MODE = "reader_mode"
-		const val KEY_READER_MODE_DETECT = "reader_mode_detect"
 		const val KEY_READER_CROP = "reader_crop"
 		const val KEY_APP_PASSWORD = "app_password"
 		const val KEY_APP_PASSWORD_NUMERIC = "app_password_num"
@@ -955,7 +946,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		private const val KEY_IMAGES_PROXY_OLD = "images_proxy"
 
 		// values
-		private const val READER_CROP_PAGED = 1
 		private const val READER_CROP_WEBTOON = 2
 	}
 }
