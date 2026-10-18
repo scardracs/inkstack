@@ -6,6 +6,8 @@ import androidx.collection.ArrayMap
 import androidx.core.content.edit
 import androidx.core.util.Predicate
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import okhttp3.Cookie
 import okhttp3.HttpUrl
@@ -19,12 +21,12 @@ class PreferencesCookieJar(
 
 	private val cache = ArrayMap<String, CookieWrapper>()
 	private val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+	private val mutex = Mutex()
 	private var isLoaded = false
 
 	@WorkerThread
-	@Synchronized
-	override fun loadForRequest(url: HttpUrl): List<Cookie> {
-		loadPersistent()
+	override fun loadForRequest(url: HttpUrl): List<Cookie> = synchronized(cache) {
+		loadPersistentLocked()
 		val expired = HashSet<String>()
 		val result = ArrayList<Cookie>()
 		for ((key, cookie) in cache) {
@@ -42,8 +44,7 @@ class PreferencesCookieJar(
 	}
 
 	@WorkerThread
-	@Synchronized
-	override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
+	override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) = synchronized(cache) {
 		val wrapped = cookies.map { CookieWrapper(it) }
 		prefs.edit(commit = true) {
 			for (cookie in wrapped) {
@@ -56,10 +57,9 @@ class PreferencesCookieJar(
 		}
 	}
 
-	@Synchronized
 	@WorkerThread
-	override fun removeCookies(url: HttpUrl, predicate: Predicate<Cookie>?) {
-		loadPersistent()
+	override fun removeCookies(url: HttpUrl, predicate: Predicate<Cookie>?) = synchronized(cache) {
+		loadPersistentLocked()
 		val toRemove = HashSet<String>()
 		for ((key, cookie) in cache) {
 			if (cookie.isExpired() || cookie.cookie.matches(url)) {
@@ -74,17 +74,18 @@ class PreferencesCookieJar(
 		}
 	}
 
-	@Synchronized
-	override suspend fun clear(): Boolean {
-		cache.clear()
+	override suspend fun clear(): Boolean = mutex.withLock {
+		synchronized(cache) {
+			cache.clear()
+		}
 		withContext(Dispatchers.IO) {
 			prefs.edit(commit = true) { clear() }
 		}
-		return true
+		true
 	}
 
-	@Synchronized
-	private fun loadPersistent() {
+	/** Caller must hold [cache] monitor. */
+	private fun loadPersistentLocked() {
 		if (!isLoaded) {
 			val map = prefs.all
 			cache.ensureCapacity(map.size)
