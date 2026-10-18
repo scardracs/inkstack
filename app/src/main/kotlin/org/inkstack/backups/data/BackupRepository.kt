@@ -65,6 +65,17 @@ class BackupRepository @Inject constructor(
     private companion object {
         const val KEY_IDENTITY_SECRET = "secret"
         const val KEY_IDENTITY_NICKNAME = "nickname"
+
+        /** Settings that refer to this device only and must not travel with a backup. */
+        val DEVICE_LOCAL_SETTING_KEYS = setOf(
+            AppSettings.KEY_LOCAL_STORAGE,
+            AppSettings.KEY_LOCAL_MANGA_DIRS,
+            AppSettings.KEY_BACKUP_PERIODICAL_OUTPUT,
+            AppSettings.KEY_BACKUP_PERIODICAL_LAST,
+            AppSettings.KEY_PAGES_SAVE_DIR,
+            AppSettings.KEY_PAGES_SAVE_ASK,
+            AppSettings.KEY_BACKUP_TG_CHAT,
+        )
     }
 
     private val json = Json {
@@ -193,7 +204,7 @@ class BackupRepository @Inject constructor(
                     }
 
                     BackupSection.SETTINGS -> input.readMap().let {
-                        settings.upsertAll(it)
+                        settings.upsertAll(it.filterKeys { key -> key !in DEVICE_LOCAL_SETTING_KEYS })
                         CompositeResult.success()
                     }
 
@@ -330,6 +341,7 @@ class BackupRepository @Inject constructor(
         map.remove(AppSettings.KEY_PROXY_PASSWORD)
         map.remove(AppSettings.KEY_PROXY_LOGIN)
         map.remove(AppSettings.KEY_INCOGNITO_MODE)
+        DEVICE_LOCAL_SETTING_KEYS.forEach(map::remove)
         return JSONObject(map).toString()
     }
 
