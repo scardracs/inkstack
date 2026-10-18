@@ -131,7 +131,7 @@ public fun String.substringBetween(from: String, to: String, fallbackValue: Stri
 	if (fromIndex == -1) {
 		return fallbackValue
 	}
-	val toIndex = lastIndexOf(to)
+	val toIndex = indexOf(to, fromIndex + from.length)
 	return if (toIndex == -1) {
 		fallbackValue
 	} else {
