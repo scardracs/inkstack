@@ -36,4 +36,20 @@
         <item quantity="one">%1$d Stunde</item>
         <item quantity="other">%1$d Stunden</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d Bewertung</item>
+		<item quantity="other">%d Bewertungen</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d Kommentar</item>
+		<item quantity="other">%d Kommentare</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">Du hast so viel gepostet, wie ein neues Konto vorerst darf. Versuche es in etwa %1$d Minute erneut.</item>
+		<item quantity="other">Du hast so viel gepostet, wie ein neues Konto vorerst darf. Versuche es in etwa %1$d Minuten erneut.</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d neue Antwort</item>
+		<item quantity="other">%d neue Antworten</item>
+	</plurals>
 </resources>
