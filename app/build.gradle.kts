@@ -10,7 +10,7 @@ plugins {
 	alias(libs.plugins.kotlin.parcelize)
 	alias(libs.plugins.hilt)
 	alias(libs.plugins.room)
-	alias(libs.plugins.kotlinx.serizliation)
+	alias(libs.plugins.kotlinx.serialization)
 	alias(libs.plugins.compose.compiler)
 	alias(libs.plugins.sentry)
 	// enable if needed

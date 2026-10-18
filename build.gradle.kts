@@ -13,7 +13,7 @@ plugins {
 	alias(libs.plugins.hilt) apply false
 	alias(libs.plugins.ksp) apply false
 	alias(libs.plugins.room) apply false
-	alias(libs.plugins.kotlinx.serizliation) apply false
+	alias(libs.plugins.kotlinx.serialization) apply false
 	alias(libs.plugins.compose.compiler) apply false
 	alias(libs.plugins.sentry) apply false
 	// alias(libs.plugins.decoroutinator) apply false
