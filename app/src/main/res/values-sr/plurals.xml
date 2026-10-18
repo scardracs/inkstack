@@ -45,4 +45,24 @@
         <item quantity="few">%1$d минута</item>
         <item quantity="other">%1$d минута</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d оцена</item>
+		<item quantity="few">%d оцене</item>
+		<item quantity="other">%d оцена</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d коментар</item>
+		<item quantity="few">%d коментара</item>
+		<item quantity="other">%d коментара</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">Нови налог је исцрпио лимит. Покушај поновно за око %1$d минут.</item>
+		<item quantity="few">Нови налог је исцрпио лимит. Покушај поновно за око %1$d минута.</item>
+		<item quantity="other">Нови налог је исцрпио лимит. Покушај поновно за око %1$d минута.</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d нови одговор</item>
+		<item quantity="few">%d нова одговора</item>
+		<item quantity="other">%d нових одговора</item>
+	</plurals>
 </resources>
