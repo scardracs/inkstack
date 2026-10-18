@@ -54,7 +54,7 @@ class RegionBitmapDecoder(
 		val bitmapOptions = BitmapFactory.Options()
 		return try {
 			val rect = bitmapOptions.configureScale(regionDecoder.width, regionDecoder.height)
-			bitmapOptions.configureConfig()
+			bitmapOptions.configureConfig(fetchResult.mimeType)
 			val bitmap = regionDecoder.decodeRegion(rect, bitmapOptions)
 			bitmap.density = options.context.resources.displayMetrics.densityDpi
 			DecodeResult(
@@ -130,7 +130,7 @@ class RegionBitmapDecoder(
 		return rect
 	}
 
-	private fun BitmapFactory.Options.configureConfig() {
+	private fun BitmapFactory.Options.configureConfig(mimeType: String?) {
 		var config = options.bitmapConfig
 
 		inMutable = false
@@ -140,8 +140,9 @@ class RegionBitmapDecoder(
 		}
 		inPremultiplied = options.premultipliedAlpha
 
-		// Decode the image as RGB_565 as an optimization if allowed.
-		if (options.allowRgb565 && config == Bitmap.Config.ARGB_8888 && outMimeType == "image/jpeg") {
+		// outMimeType is still null before decodeRegion; use the fetch MIME instead.
+		val isJpeg = mimeType == "image/jpeg" || outMimeType == "image/jpeg"
+		if (options.allowRgb565 && config == Bitmap.Config.ARGB_8888 && isJpeg) {
 			config = Bitmap.Config.RGB_565
 		}
 
