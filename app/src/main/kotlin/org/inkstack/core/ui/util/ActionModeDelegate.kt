@@ -37,14 +37,16 @@ class ActionModeDelegate : OnBackPressedCallback(false) {
 				ContextCompat.getColor(ctx, materialR.color.m3_appbar_overlay_color),
 				ctx.getThemeColor(materialR.attr.colorSurface),
 			)
+			// Push the whole bar below the status bar via margin — not padding. Padding stretches
+			// ActionBarContextView and leaves menu icons vertically off-center relative to close/title.
 			val insets = ViewCompat.getRootWindowInsets(window.decorView)
 				?.getInsets(WindowInsetsCompat.Type.systemBars()) ?: return
 			window.decorView.findViewById<ActionBarContextView?>(androidx.appcompat.R.id.action_mode_bar)?.apply {
 				setBackgroundColor(actionModeColor)
+				updatePadding(top = 0)
 				updateLayoutParams<ViewGroup.MarginLayoutParams> {
-					topMargin = 0
+					topMargin = insets.top
 				}
-				updatePadding(top = insets.top)
 			}
 		}
 	}
@@ -53,7 +55,12 @@ class ActionModeDelegate : OnBackPressedCallback(false) {
 		activeActionMode = null
 		isEnabled = false
 		listeners?.forEach { it.onActionModeFinished(mode) }
-		window?.decorView?.findViewById<ActionBarContextView?>(androidx.appcompat.R.id.action_mode_bar)?.updatePadding(top = 0)
+		window?.decorView?.findViewById<ActionBarContextView?>(androidx.appcompat.R.id.action_mode_bar)?.apply {
+			updatePadding(top = 0)
+			updateLayoutParams<ViewGroup.MarginLayoutParams> {
+				topMargin = 0
+			}
+		}
 	}
 
 	fun addListener(listener: ActionModeListener) {
