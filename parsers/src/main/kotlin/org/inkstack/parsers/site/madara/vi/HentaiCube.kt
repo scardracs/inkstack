@@ -18,7 +18,7 @@ internal class HentaiCube(context: MangaLoaderContext) :
 	override val datePattern = "dd/MM/yyyy"
 	override val postReq = true
 	override val authorSearchSupported = true
-	override val postDataReq = "action=manga_views&manga="
+	override val postDataReq = "action=manga_get_chapters&manga="
 
 	private val availableTags = suspendLazy(initializer = ::fetchTags)
 
