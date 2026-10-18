@@ -89,7 +89,6 @@ import org.inkstack.parsers.model.MangaChapter
 import org.inkstack.parsers.model.MangaSource
 import org.inkstack.parsers.util.ifNullOrEmpty
 import org.inkstack.parsers.util.mapToSet
-import org.inkstack.parsers.util.requireBody
 import org.inkstack.parsers.util.runCatchingCancellable
 import org.inkstack.reader.domain.PageLoader
 import java.io.File
@@ -396,7 +395,7 @@ class DownloadWorker @AssistedInject constructor(
 			.use { response ->
 				var file: File? = null
 				try {
-					response.requireBody().use { body ->
+					response.body.use { body ->
 						file = destination.createTempFile(
 							ext = MimeTypes.getExtension(body.contentType()?.toMimeType())
 						).also { tempFiles += it }

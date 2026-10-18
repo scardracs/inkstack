@@ -692,7 +692,7 @@ class CommunityApi @Inject constructor(
 	 * bare `HTTP 422` here would lose exactly the part the user needs.
 	 */
 	private fun okhttp3.Response.requireBody(): String {
-		val text = body?.string().orEmpty()
+		val text = body.string()
 		if (isSuccessful) return text
 		val parsed = runCatching { json.decodeFromString<ApiErrorDto>(text) }.getOrNull()
 		throw CommunityApiException(code, parsed ?: ApiErrorDto(error = "internal_error"))

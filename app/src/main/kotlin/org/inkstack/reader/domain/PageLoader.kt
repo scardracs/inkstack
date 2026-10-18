@@ -71,7 +71,6 @@ import org.inkstack.local.data.LocalStorageCache
 import org.inkstack.local.data.PageCache
 import org.inkstack.parsers.model.MangaPage
 import org.inkstack.parsers.model.MangaSource
-import org.inkstack.parsers.util.requireBody
 import org.inkstack.parsers.util.runCatchingCancellable
 import org.inkstack.reader.ui.pager.ReaderPage
 import java.io.File
@@ -351,7 +350,7 @@ class PageLoader @Inject constructor(
 				}
 				val request = createPageRequest(pageUrl, page.source)
 				imageProxyInterceptor.interceptPageRequest(request, okHttp).ensureSuccess().use { response ->
-					response.requireBody().withProgress(progress).use {
+					response.body.withProgress(progress).use {
 						cache.set(pageUrl, it.source(), it.contentType()?.toMimeType())
 					}
 				}.toUri()

@@ -28,7 +28,6 @@ import org.inkstack.local.data.LocalStorageCache
 import org.inkstack.local.data.PageCache
 import org.inkstack.parsers.model.MangaPage
 import org.inkstack.parsers.util.mimeType
-import org.inkstack.parsers.util.requireBody
 import org.inkstack.parsers.util.runCatchingCancellable
 import org.inkstack.reader.domain.PageLoader
 import javax.inject.Inject
@@ -78,7 +77,7 @@ class MangaPageFetcher(
 				throw HttpException(response.toNetworkResponse())
 			}
 			val mimeType = response.mimeType?.toMimeTypeOrNull()
-			val file = response.requireBody().use {
+			val file = response.body.use {
 				pagesCache.set(pageUrl, it.source(), mimeType)
 			}
 			SourceFetchResult(

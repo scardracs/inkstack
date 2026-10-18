@@ -184,7 +184,7 @@ class CommunityCommentsSheet : BaseAdaptiveSheet<SheetCommunityCommentsBinding>(
 		if (replying) {
 			binding.textViewReplying.text = getString(
 				if (target.isEditing) R.string.community_comment_editing else R.string.community_comment_replying_to,
-				target.comment?.author.orEmpty(),
+				target.comment.author,
 			)
 		} else {
 			// Nothing is being replied to or edited any more, so the box goes back to empty. Cancelling

@@ -18,8 +18,6 @@ import okio.Source
 import okio.source
 import org.inkstack.core.util.CancellableSource
 import org.inkstack.core.util.progress.ProgressResponseBody
-import java.io.ByteArrayOutputStream
-import java.io.InputStream
 import java.nio.ByteBuffer
 
 fun ResponseBody.withProgress(progressState: MutableStateFlow<Float>): ResponseBody {
@@ -40,14 +38,6 @@ fun BufferedSource.readByteBuffer(): ByteBuffer {
 	return ByteBuffer.allocateDirect(bytes.size)
 		.put(bytes)
 		.rewind() as ByteBuffer
-}
-
-@Deprecated("")
-fun InputStream.toByteBuffer(): ByteBuffer {
-	val outStream = ByteArrayOutputStream(available())
-	copyTo(outStream)
-	val bytes = outStream.toByteArray()
-	return ByteBuffer.allocateDirect(bytes.size).put(bytes).position(0) as ByteBuffer
 }
 
 fun FileSystem.isDirectory(path: Path) = try {

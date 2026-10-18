@@ -185,7 +185,7 @@ class CheckNewChaptersUseCase @Inject constructor(
 			Log.i(
 				TAG,
 				"[${manga.id}] \"${manga.title}\": no baseline yet, re-baselining without reporting updates " +
-					"(chapters=${chapters?.size ?: 0} in branch \"$branch\", historyChapterId=$historyChapterId)",
+					"(chapters=${chapters.size} in branch \"$branch\", historyChapterId=$historyChapterId)",
 			)
 			return MangaUpdates.Success(manga, branch, emptyList(), isValid = false)
 		}
@@ -291,7 +291,9 @@ class CheckNewChaptersUseCase @Inject constructor(
 				"[${manga.id}] \"${manga.title}\": dropped ${dropped.size} of ${newChapters.size} new chapter(s) " +
 					"as read/stale (readChapters=$readChapters, historyChapterId=${history?.chapterId}, " +
 					"similarHistories=${similarHistories.size}): " +
-					dropped.joinToString(limit = DROPPED_CHAPTERS_LOG_LIMIT) { x -> x.name },
+					dropped.joinToString(limit = DROPPED_CHAPTERS_LOG_LIMIT) { x ->
+						x.title ?: x.numberString()?.let { n -> "Chapter $n" } ?: "Unnamed"
+					},
 			)
 			copy(newChapters = filtered)
 		}
