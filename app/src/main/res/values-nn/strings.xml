@@ -193,7 +193,7 @@
     <string name="disable_all">Slå av alle</string>
     <string name="appwidget_recent_description">Mangaar du har nyleg lese</string>
     <string name="data_deletion">Sletting av data</string>
-    <string name="show_reading_indicators_summary">Vis % lesen i historikken og likerlista</string>
+    <string name="show_reading_indicators_summary">Vis lesen i historikken og likerlista</string>
     <string name="clear_cookies_summary">Kan løysa nokre feil. Alle godkjenningar vert ugilde</string>
     <string name="show_all">Vis alle</string>
     <string name="invalid_domain_message">Ugildt domene</string>
