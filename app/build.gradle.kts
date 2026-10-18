@@ -53,7 +53,7 @@ android {
 
 	defaultConfig {
 		applicationId = "org.inkstack"
-		minSdk = 36
+		minSdk = 28
 		targetSdk = 37
 		versionCode = 1
 		versionName = "0.1.0"
@@ -92,6 +92,21 @@ android {
 		buildConfigField("String", "APP_LINK_HOST", "\"$appLinkHost\"")
 	}
 
+	signingConfigs {
+		create("release") {
+			val storePath = readSecret("RELEASE_STORE_FILE", "RELEASE_STORE_FILE")
+				.ifEmpty { rootProject.file("keystore/inkstack-release.jks").absolutePath }
+			val storeFileCandidate = file(storePath)
+			if (storeFileCandidate.isFile) {
+				storeFile = storeFileCandidate
+				storePassword = readSecret("RELEASE_STORE_PASSWORD", "RELEASE_STORE_PASSWORD")
+				keyAlias = readSecret("RELEASE_KEY_ALIAS", "RELEASE_KEY_ALIAS").ifEmpty { "inkstack" }
+				keyPassword = readSecret("RELEASE_KEY_PASSWORD", "RELEASE_KEY_PASSWORD")
+					.ifEmpty { storePassword }
+			}
+		}
+	}
+
 	buildTypes {
 		debug {
 			applicationIdSuffix = ".debug"
@@ -103,6 +118,9 @@ android {
 				getDefaultProguardFile("proguard-android-optimize.txt"),
 				"proguard-rules.pro",
 			)
+			signingConfigs.findByName("release")?.takeIf { it.storeFile?.isFile == true }?.let {
+				signingConfig = it
+			}
 		}
 		create("nightly") {
 			initWith(getByName("release"))
