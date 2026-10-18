@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
+
 package org.inkstack.parsers.util
 
 import org.inkstack.parsers.model.MangaListFilter
@@ -100,13 +102,12 @@ internal fun MangaSearchQueryCapabilities.toMangaListFilterCapabilities() = Mang
 internal fun MangaListFilterCapabilities.toMangaSearchQueryCapabilities(): MangaSearchQueryCapabilities =
 	MangaSearchQueryCapabilities(
 		capabilities = setOfNotNull(
-			isMultipleTagsSupported.takeIf { it }?.let {
-				SearchCapability(
-					field = TAG,
-					criteriaTypes = setOf(Include::class),
-					isMultiple = true,
-				)
-			},
+			// Always advertise TAG Include so single-tag filters validate; isMultiple mirrors the UI flag.
+			SearchCapability(
+				field = TAG,
+				criteriaTypes = setOf(Include::class),
+				isMultiple = isMultipleTagsSupported,
+			),
 			isTagsExclusionSupported.takeIf { it }?.let {
 				SearchCapability(
 					field = TAG,

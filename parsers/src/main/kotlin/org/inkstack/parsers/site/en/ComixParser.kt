@@ -480,10 +480,10 @@ internal class Comix(context: MangaLoaderContext) :
             return response
         }
 
-        val contentType = response.body?.contentType()
-        val originalBytes = response.body?.bytes() ?: return response
+        val contentType = response.body.contentType()
+        val originalBytes = response.body.bytes()
         val bytes = if (needsXor) {
-            decodeEncodedBytes(originalBytes, encSeed!!, encLen!!, rawEncAlgo)
+            decodeEncodedBytes(originalBytes, encSeed, encLen, rawEncAlgo)
         } else {
             originalBytes
         }
@@ -499,7 +499,7 @@ internal class Comix(context: MangaLoaderContext) :
         }
 
         return context.redrawImageResponse(decodedResponse) { bitmap ->
-            descramble(bitmap, scrambleSeed!! xor scrambleHash, rawScrambleAlgo)
+            descramble(bitmap, scrambleSeed xor scrambleHash, rawScrambleAlgo)
         }
     }
 

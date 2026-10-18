@@ -33,9 +33,9 @@ internal class HoloEarthParser(context: MangaLoaderContext) :
 
 	override suspend fun getFilterOptions() = MangaListFilterOptions(
 		availableLocales = setOf(
-            Locale("en"),
+            Locale.forLanguageTag("en"),
             Locale.JAPANESE,
-            Locale("id"),
+            Locale.forLanguageTag("id"),
         ),
 	)
 
@@ -46,9 +46,9 @@ internal class HoloEarthParser(context: MangaLoaderContext) :
 			filter.locale?.let {
                 append(
                     when (it) {
-                        Locale("en") -> "/en"
+                        Locale.forLanguageTag("en") -> "/en"
 						Locale.JAPANESE -> ""
-                        Locale("id") -> "/id"
+                        Locale.forLanguageTag("id") -> "/id"
                         else -> "" // default
                     }
                 )
@@ -98,7 +98,7 @@ internal class HoloEarthParser(context: MangaLoaderContext) :
 			val url = li.selectFirstOrThrow(".manga-detail__list-link").attr("href")
 			val title = li.selectFirstOrThrow(".manga-detail__list-title").text()
 			val dateStr = li.selectFirstOrThrow(".manga-detail__list-date").text()
-			val uploadDate = dateFormat.parseSafe(dateStr) ?: 0L
+			val uploadDate = dateFormat.parseSafe(dateStr)
 			val scanlator = root.selectFirst(".manga-detail__person")?.text()
 
 			MangaChapter(

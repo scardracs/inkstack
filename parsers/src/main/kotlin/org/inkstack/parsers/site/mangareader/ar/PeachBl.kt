@@ -140,8 +140,8 @@ internal class PeachBl(context: MangaLoaderContext) :
 		}
 
 		// Extract manga details
-		val title = docs.selectFirst("h1.webtoon-title, h1")?.text()?.trim() ?: manga.title
-		val description = docs.select(".webtoon-summary, .description, .summary").text()?.takeIf { it.isNotBlank() }
+		val title = docs.selectFirst("h1.webtoon-title, h1")?.text()?.trim()?.takeIf { it.isNotEmpty() } ?: manga.title
+		val description = docs.select(".webtoon-summary, .description, .summary").text().takeIf { it.isNotBlank() }
 		val coverUrl = docs.selectFirst(".webtoon-cover img, .cover-image")?.attrAsAbsoluteUrlOrNull("src")
 
 		// Extract tags if available

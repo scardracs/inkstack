@@ -51,7 +51,7 @@ internal abstract class UzayMangaParser(
 	private val tagMutex = Mutex()
 	private var cachedTags: Set<MangaTag>? = null
 
-	private val chapterDateFormat = SimpleDateFormat("MMM d ,yyyy", Locale("tr"))
+	private val chapterDateFormat = SimpleDateFormat("MMM d ,yyyy", )
 
 	override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {
 		super.onCreateConfig(keys)
@@ -378,7 +378,7 @@ internal abstract class UzayMangaParser(
 	}
 
 	private fun parseStatus(statusText: String?): MangaState? {
-		val value = statusText?.trim()?.lowercase(Locale("tr")) ?: return null
+		val value = statusText?.trim()?.lowercase() ?: return null
 		return when {
 			value.contains("devam ediyor") -> MangaState.ONGOING
 			value.contains("tamamlandi") || value.contains("tamamlandı") -> MangaState.FINISHED
@@ -428,7 +428,7 @@ internal abstract class UzayMangaParser(
 	}
 
 	private fun slugify(title: String): String {
-		return title.lowercase(Locale("tr"))
+		return title.lowercase()
 			.replace("ı", "i")
 			.replace("ğ", "g")
 			.replace("ü", "u")

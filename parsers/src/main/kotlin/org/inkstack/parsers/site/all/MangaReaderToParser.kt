@@ -267,7 +267,7 @@ internal class MangaReaderToParser(context: MangaLoaderContext) :
 	private fun createBranchName(lang: String, type: String): String {
 		val langCode = lang.substringBefore("-")
 
-		return Locale(langCode).displayLanguage + " " + type
+		return Locale.forLanguageTag(langCode).displayLanguage + " " + type
 	}
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {

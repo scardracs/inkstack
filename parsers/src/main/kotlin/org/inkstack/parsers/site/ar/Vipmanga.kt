@@ -107,7 +107,7 @@ internal class Vipmanga(context: MangaLoaderContext) :
 			val genresArray = item.optJSONArray("genres")
 			val tags = if (genresArray != null) {
 				genresArray.mapJSONToSet { genreObj ->
-					val genre = genreObj as JSONObject
+					val genre = genreObj
 					MangaTag(
 						key = genre.optString("slug"),
 						title = genre.optString("name"),
@@ -146,7 +146,7 @@ internal class Vipmanga(context: MangaLoaderContext) :
 
 	private fun parseChaptersFromArray(array: JSONArray, mangaId: Int): List<MangaChapter> {
 		return array.mapJSONNotNull { item ->
-			val chapterObj = item as JSONObject
+			val chapterObj = item
 			val chapterId = chapterObj.optInt("chapter_id")
 			val chapterTitle = chapterObj.optString("name")
 			val chapterNumber = chapterTitle.toFloatOrNull()
@@ -207,7 +207,7 @@ internal class Vipmanga(context: MangaLoaderContext) :
 		val genresArray = data.optJSONArray("genres")
 		val tags = if (genresArray != null) {
 			genresArray.mapJSONToSet { genreObj ->
-				val genre = genreObj as JSONObject
+				val genre = genreObj
 				MangaTag(
 					key = genre.optString("slug"),
 					title = genre.optString("name"),
@@ -245,7 +245,7 @@ internal class Vipmanga(context: MangaLoaderContext) :
 
 		fun parseChapters(data: JSONArray): List<MangaChapter> {
 			return data.mapJSONNotNull { item ->
-				val chapterObj = item as JSONObject
+				val chapterObj = item
 				val chapterId = chapterObj.optString("id")
 				val chapterTitle = chapterObj.optString("title")
 				val chapterNumber = chapterObj.optInt("number", 0).toFloat()

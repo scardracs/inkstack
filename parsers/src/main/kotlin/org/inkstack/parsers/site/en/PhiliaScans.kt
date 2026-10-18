@@ -318,7 +318,7 @@ internal class PhiliaScans(context: MangaLoaderContext) :
 		val pageIndex = parts[6].toIntOrNull() ?: return response
 		val chapterKey = resolveChapterKey(parts[2], parts[4], parts[5]) ?: return response
 
-		val body = response.body ?: return response
+		val body = response.body
 		val raw = body.bytes()
 		if (raw.size < 6) {
 			return response

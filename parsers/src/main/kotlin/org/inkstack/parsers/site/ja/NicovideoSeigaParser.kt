@@ -77,7 +77,8 @@ internal class NicovideoSeigaParser(context: MangaLoaderContext) :
 		}
 
 		val doc = webClient.httpGet(url).parseHtml()
-		val comicList = doc.body().select("#comic_list > ul > li") ?: doc.parseFailed("Container not found")
+		val comicList = doc.body().select("#comic_list > ul > li")
+		if (comicList.isEmpty()) doc.parseFailed("Container not found")
 		val items = comicList.select("div > .description > div > div")
 		return items.mapNotNull { item ->
 			val href =

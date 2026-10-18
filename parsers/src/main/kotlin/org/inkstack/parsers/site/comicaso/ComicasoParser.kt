@@ -20,7 +20,7 @@ internal abstract class ComicasoParser(
 
 	override val configKeyDomain = ConfigKey.Domain(domain)
 
-	override val sourceLocale: Locale = Locale("id")
+	override val sourceLocale: Locale = Locale.forLanguageTag("id")
 
 	override val availableSortOrders: Set<SortOrder> = EnumSet.of(
 		SortOrder.UPDATED,

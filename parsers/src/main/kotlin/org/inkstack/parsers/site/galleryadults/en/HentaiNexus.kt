@@ -112,7 +112,7 @@ internal class HentaiNexus(context: MangaLoaderContext) :
                 !filter.query.isNullOrEmpty() -> {
                     val query = filter.query
                     append("?q=")
-                    append(query?.urlEncoded())
+                    append(query.urlEncoded())
                 }
 
                 else -> {

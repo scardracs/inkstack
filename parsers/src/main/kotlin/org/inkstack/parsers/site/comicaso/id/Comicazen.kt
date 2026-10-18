@@ -45,7 +45,7 @@ internal class Comicazen(context: MangaLoaderContext) :
 
 	override val configKeyDomain = ConfigKey.Domain(WEB_DOMAIN)
 
-	override val sourceLocale: Locale = Locale("id")
+	override val sourceLocale: Locale = Locale.forLanguageTag("id")
 
 	override val availableSortOrders: Set<SortOrder> = EnumSet.of(
 		SortOrder.UPDATED,

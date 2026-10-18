@@ -70,7 +70,7 @@ internal abstract class InitMangaParser(
 	private val tagMutex = Mutex()
 	private var tagCache: Set<MangaTag>? = null
 
-	private val chapterTooltipDateFormat = SimpleDateFormat("d MMMM yyyy HH:mm", Locale("tr"))
+	private val chapterTooltipDateFormat = SimpleDateFormat("d MMMM yyyy HH:mm", )
 	private val chapterIsoDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.ROOT)
 	private val fallbackEnglishDateFormat = SimpleDateFormat("MMMM d, yyyy h:mm a", Locale.ENGLISH)
 

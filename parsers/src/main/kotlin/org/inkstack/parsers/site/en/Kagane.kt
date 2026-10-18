@@ -287,7 +287,7 @@ internal class Kagane(context: MangaLoaderContext) :
             .add("Referer", "https://$domain/")
             .build()
         val resp = webClient.httpGet(url, headers)
-        val respBody = resp.body?.string() ?: ""
+        val respBody = resp.body.string()
         if (!resp.isSuccessful) throw Exception("Details error ${resp.code}: $respBody")
         val json = try {
             JSONObject(respBody)
@@ -642,7 +642,7 @@ internal class Kagane(context: MangaLoaderContext) :
             dbg("bin.bin http ${response.code}")
             return null
         }
-        val bytes = response.body?.bytes()?.takeIf { it.isNotEmpty() }
+        val bytes = response.body.bytes().takeIf { it.isNotEmpty() }
         if (bytes == null) {
             dbg("bin.bin empty body")
             return null

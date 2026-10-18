@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
+
 package org.inkstack.parsers.site.mangabox.en
 
 import kotlinx.coroutines.async
@@ -8,10 +10,8 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.config.ConfigKey
 import org.inkstack.parsers.model.*
 import org.inkstack.parsers.model.search.MangaSearchQuery
-import org.inkstack.parsers.model.search.MangaSearchQueryCapabilities
 import org.inkstack.parsers.model.search.QueryCriteria.Include
 import org.inkstack.parsers.model.search.QueryCriteria.Match
-import org.inkstack.parsers.model.search.SearchCapability
 import org.inkstack.parsers.model.search.SearchableField.*
 import org.inkstack.parsers.site.mangabox.MangaboxParser
 import org.inkstack.parsers.util.*
@@ -40,25 +40,9 @@ internal class Mangairo(context: MangaLoaderContext) :
 		SortOrder.NEWEST,
 	)
 
-	override val searchQueryCapabilities: MangaSearchQueryCapabilities
-		get() = MangaSearchQueryCapabilities(
-			SearchCapability(
-				field = TAG,
-				criteriaTypes = setOf(Include::class),
-				isMultiple = false,
-			),
-			SearchCapability(
-				field = TITLE_NAME,
-				criteriaTypes = setOf(Match::class),
-				isMultiple = false,
-				isExclusive = true,
-			),
-			SearchCapability(
-				field = STATE,
-				criteriaTypes = setOf(Include::class),
-				isMultiple = false,
-			),
-		)
+	override val filterCapabilities = MangaListFilterCapabilities(
+		isSearchSupported = true,
+	)
 
 	private fun Any?.toQueryParam(): String = when (this) {
 		is String -> replace(" ", "_").urlEncoded()

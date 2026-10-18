@@ -106,7 +106,7 @@ internal class Kumapage(context: MangaLoaderContext) :
 		return doc.select("div#daftar-komik a.ui.link").map { item ->
 			val title = item.selectFirst("p.nama-full")?.text() ?: ""
 			val img = item.selectFirst("img")?.attr("src") ?: ""
-			val url = item.attr("href") ?: ""
+			val url = item.attr("href")
 
 			Manga(
 				id = generateUid(url),

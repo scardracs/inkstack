@@ -63,7 +63,7 @@ internal class EleceedTurkiye(context: MangaLoaderContext) :
 				MangaChapter(
 					id = generateUid(href),
 					title = title,
-					number = title?.let { Regex("\\d+").find(it)?.value?.toFloatOrNull() } ?: 0f,
+					number = Regex("\\d+").find(title)?.value?.toFloatOrNull() ?: 0f,
 					url = href,
 					uploadDate = dateFormat.parseSafe(div.selectFirst("span.chapterdate")?.text()),
 					scanlator = null,
@@ -103,5 +103,5 @@ internal class EleceedTurkiye(context: MangaLoaderContext) :
 	}
 
 	private val mangaId = "eleceed"
-	private val dateFormat = SimpleDateFormat("MMMM d, yyyy", Locale("tr"))
+	private val dateFormat = SimpleDateFormat("MMMM d, yyyy", )
 }

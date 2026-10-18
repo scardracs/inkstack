@@ -129,7 +129,7 @@ internal class Waveteamy(context: MangaLoaderContext) :
         val scriptSrc = mainPage.select("script[src*='layout-']").attr("src")
         
         if (scriptSrc.isNotEmpty()) {
-            val scriptContent = webClient.httpGet(scriptSrc.toAbsoluteUrl(domain)).body?.string() ?: ""
+            val scriptContent = webClient.httpGet(scriptSrc.toAbsoluteUrl(domain)).body.string() ?: ""
             val tokenMatch = Regex("""["']?token["']?\s*:\s*["']([^"']+)["']""").find(scriptContent)
             if (tokenMatch != null) {
                 val token = tokenMatch.groupValues[1]

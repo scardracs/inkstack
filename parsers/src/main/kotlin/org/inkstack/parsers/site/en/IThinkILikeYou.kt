@@ -24,7 +24,7 @@ internal class IThinkILikeYou(context: MangaLoaderContext) :
 		get() = MangaListFilterCapabilities()
 
 	override suspend fun getFilterOptions() = MangaListFilterOptions(
-		availableLocales = setOf(Locale.ENGLISH, Locale("es")),
+		availableLocales = setOf(Locale.ENGLISH, ),
 	)
 
 	override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {

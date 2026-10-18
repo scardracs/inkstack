@@ -35,10 +35,10 @@ internal class Hentai3(context: MangaLoaderContext) :
 			Locale.ENGLISH,
 			Locale.FRENCH,
 			Locale.JAPANESE,
-			Locale("es"),
-			Locale("ru"),
+			Locale.forLanguageTag("es"),
+			Locale.forLanguageTag("ru"),
 			Locale.ITALIAN,
-			Locale("pt"),
+			Locale.forLanguageTag("pt"),
 		),
 	)
 

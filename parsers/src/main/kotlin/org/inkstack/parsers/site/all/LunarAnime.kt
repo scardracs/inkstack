@@ -344,7 +344,7 @@ internal class LunarAnime(context: MangaLoaderContext) :
 		val url = "$apiBaseUrl/api/manga/recent?page=1&limit=1"
 		val root = apiGetJson(url)
 		return parseStringArray(root.optJSONArray("available_languages"))
-			.mapTo(LinkedHashSet()) { Locale(normalizeLanguageCode(it)) }
+			.mapTo(LinkedHashSet()) { Locale.forLanguageTag(normalizeLanguageCode(it)) }
 	}
 
 	private suspend fun fetchTags(): Set<MangaTag> {

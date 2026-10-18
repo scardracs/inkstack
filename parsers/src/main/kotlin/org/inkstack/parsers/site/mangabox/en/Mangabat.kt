@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
+
 package org.inkstack.parsers.site.mangabox.en
 
 import okhttp3.Interceptor
@@ -10,10 +12,8 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.config.ConfigKey
 import org.inkstack.parsers.model.*
 import org.inkstack.parsers.model.search.MangaSearchQuery
-import org.inkstack.parsers.model.search.MangaSearchQueryCapabilities
 import org.inkstack.parsers.model.search.QueryCriteria.Include
 import org.inkstack.parsers.model.search.QueryCriteria.Match
-import org.inkstack.parsers.model.search.SearchCapability
 import org.inkstack.parsers.model.search.SearchableField
 import org.inkstack.parsers.model.search.SearchableField.*
 import org.inkstack.parsers.site.mangabox.MangaboxParser
@@ -39,25 +39,9 @@ internal class Mangabat(context: MangaLoaderContext) :
 		SortOrder.NEWEST,
 	)
 
-	override val searchQueryCapabilities: MangaSearchQueryCapabilities
-		get() = MangaSearchQueryCapabilities(
-			SearchCapability(
-				field = TAG,
-				criteriaTypes = setOf(Include::class),
-				isMultiple = false,
-			),
-			SearchCapability(
-				field = TITLE_NAME,
-				criteriaTypes = setOf(Match::class),
-				isMultiple = false,
-				isExclusive = true,
-			),
-			SearchCapability(
-				field = STATE,
-				criteriaTypes = setOf(Include::class),
-				isMultiple = false,
-			),
-		)
+	override val filterCapabilities = MangaListFilterCapabilities(
+		isSearchSupported = true,
+	)
 
     override suspend fun getListPage(query: MangaSearchQuery, page: Int): List<Manga> {
         val titleQuery = query.criteria.filterIsInstance<Match<*>>()
@@ -248,23 +232,19 @@ internal class Mangabat(context: MangaLoaderContext) :
 		return 0L
 	}
 
-    override fun getRequestHeaders() = super.getRequestHeaders().newBuilder()
-        .set("Referer", "https://www.mangabats.com/")
-        .build()
-
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
+		val builder = originalRequest.newBuilder()
+			.header("Referer", "https://www.mangabats.com/")
 
         // Remove encoding headers from requests to avoid gzip compression issues
         if (originalRequest.method == "GET" || originalRequest.method == "POST") {
-            val newRequest = originalRequest.newBuilder()
-                .removeHeader("Content-Encoding")
+            builder.removeHeader("Content-Encoding")
                 .removeHeader("Accept-Encoding")
-                .build()
-            return chain.proceed(newRequest)
         }
-
-        return chain.proceed(originalRequest)
+		return super.intercept(object : Interceptor.Chain by chain {
+			override fun request() = builder.build()
+		})
     }
 
 	companion object {

@@ -102,7 +102,7 @@ internal class MadaraDex(context: MangaLoaderContext) :
     }
 
     private fun isCloudflareDocument(doc: Document): Boolean {
-        val title = (doc.title() ?: "").lowercase(Locale.ROOT)
+        val title = doc.title().lowercase(Locale.ROOT)
         val hasBlockedTitle = title.contains("access denied")
 
         val hasActiveChallengeForm = doc.selectFirst("""form[action*="__cf_chl"]""") != null

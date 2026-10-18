@@ -43,7 +43,7 @@ internal class MangaGeko(context: MangaLoaderContext) :
 	override suspend fun getListPage(page: Int, order: SortOrder, filter: MangaListFilter): List<Manga> {
 		// Use autocomplete API for search queries
 		if (!filter.query.isNullOrEmpty()) {
-			return getSearchResults(filter.query!!)
+			return getSearchResults(filter.query)
 		}
 
 		// Use regular browse for non-search requests

@@ -369,7 +369,7 @@ internal abstract class MangaPlusParser(
 	/** Returns the `success` message, or throws with the popup the api supplies. */
 	private suspend fun apiCall(url: String): ProtoMessage {
 		val response = webClient.httpGet("$apiUrl$url".toHttpUrl(), extraHeaders)
-		val body = response.requireBody().bytes()
+		val body = response.body.bytes()
 		val root = ProtoMessage.parse(body)
 
 		root.message(FIELD_SUCCESS)?.let { return it }

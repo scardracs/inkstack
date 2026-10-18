@@ -28,7 +28,7 @@ internal class AsmHentai(context: MangaLoaderContext) :
 			Locale.ENGLISH,
 			Locale.JAPANESE,
 			Locale.CHINESE,
-			Locale("tr"),
+			Locale.forLanguageTag("tr"),
 		),
 	)
 

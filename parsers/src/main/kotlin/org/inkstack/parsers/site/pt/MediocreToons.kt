@@ -260,7 +260,7 @@ internal class MediocreToons(context: MangaLoaderContext) : PagedMangaParser(
 
 	private suspend fun fetchAvailableTags(): Set<MangaTag> {
 		val url = "$apiUrl/tags"
-		val body = webClient.httpGet(url).body?.string()?.trim()
+		val body = webClient.httpGet(url).body.string()?.trim()
 
 		if (body == null) return emptySet()
 

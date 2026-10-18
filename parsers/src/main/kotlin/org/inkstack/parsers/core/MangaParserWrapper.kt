@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
+
 package org.inkstack.parsers.core
 
 import kotlinx.coroutines.Dispatchers

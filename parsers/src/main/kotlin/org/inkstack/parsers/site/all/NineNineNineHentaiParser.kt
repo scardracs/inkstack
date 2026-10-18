@@ -48,7 +48,7 @@ internal class NineNineNineHentaiParser(context: MangaLoaderContext) :
 			Locale.ENGLISH,
 			Locale.CHINESE,
 			Locale.JAPANESE,
-			Locale("es"),
+			Locale.forLanguageTag("es"),
 		),
 	)
 
@@ -59,7 +59,7 @@ internal class NineNineNineHentaiParser(context: MangaLoaderContext) :
 			equals(Locale.ENGLISH) -> "en"
 			equals(Locale.CHINESE) -> "cn"
 			equals(Locale.JAPANESE) -> "jp"
-			equals(Locale("es")) -> "es"
+			equals(Locale.forLanguageTag("es")) -> "es"
 			else -> "all"
 		}
 	}
@@ -296,7 +296,7 @@ internal class NineNineNineHentaiParser(context: MangaLoaderContext) :
 							"en" -> Locale.ENGLISH
 							"jp" -> Locale.JAPANESE
 							"cn" -> Locale.CHINESE
-							"es" -> Locale("es")
+							"es" -> Locale.forLanguageTag("es")
 							else -> Locale.ROOT
 						}
 

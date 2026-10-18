@@ -277,7 +277,7 @@ internal class DemonSect(context: MangaLoaderContext) :
 		val doc = webClient.httpGet(chapter.url.toAbsoluteUrl(domain)).parseHtml()
 
 		return doc.select(".reading-content img, .page-break img, #readerarea img").mapIndexed { index, img ->
-			val imageUrl = img.src() ?: img.attr("data-src") ?: img.attr("data-lazy-src")
+			val imageUrl = img.src().orEmpty().ifEmpty { img.attr("data-src") }.ifEmpty { img.attr("data-lazy-src") }
 
 			MangaPage(
 				id = generateUid(imageUrl),

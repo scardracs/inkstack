@@ -56,7 +56,7 @@ internal class AinzScans(context: MangaLoaderContext) :
 	private suspend fun fetchGenreMap(): Map<String, MangaTag> {
 		genreCache?.let { return it }
 		val url = "https://$domain/api/genres"
-		val jsonStr = webClient.httpGet(url).body?.string() ?: return emptyMap()
+		val jsonStr = webClient.httpGet(url).body.string() ?: return emptyMap()
 		val map = mutableMapOf<String, MangaTag>()
 		try {
 			val array = org.json.JSONArray(jsonStr)
@@ -132,7 +132,7 @@ internal class AinzScans(context: MangaLoaderContext) :
 			}
 		}
 
-		val json = webClient.httpGet(url).body?.string() ?: return emptyList()
+		val json = webClient.httpGet(url).body.string() ?: return emptyList()
 		return parseListJson(json)
 	}
 
@@ -182,7 +182,7 @@ internal class AinzScans(context: MangaLoaderContext) :
 		val slug = manga.url.substringAfter("/series/")
 		val url = "https://$domain/api/series/comic/$slug"
 
-		val json = webClient.httpGet(url).body?.string()
+		val json = webClient.httpGet(url).body.string()
 			?: throw Exception("Failed to fetch manga details")
 		return parseDetailsJson(json, manga)
 	}
@@ -266,7 +266,7 @@ internal class AinzScans(context: MangaLoaderContext) :
 		val chapterSlug = chapter.url.substringAfter("/chapter/")
 		val url = "https://$domain/api/series/comic/$seriesSlug/chapter/$chapterSlug"
 
-		val json = webClient.httpGet(url).body?.string()
+		val json = webClient.httpGet(url).body.string()
 			?: throw Exception("Failed to fetch chapter pages")
 		return parsePagesJson(json)
 	}

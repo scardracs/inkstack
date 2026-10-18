@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
+
 package org.inkstack.parsers.core
 
 import androidx.annotation.CallSuper
@@ -31,7 +33,7 @@ public abstract class AbstractMangaParser @InternalParsersApi constructor(
 	public override val config: MangaSourceConfig by lazy { context.getConfig(source) }
 
 	public open val sourceLocale: Locale
-		get() = if (source.locale.isEmpty()) Locale.ROOT else Locale(source.locale)
+		get() = if (source.locale.isEmpty()) Locale.ROOT else Locale.forLanguageTag(source.locale)
 
 	protected val sourceContentRating: ContentRating?
 		get() = if (source.contentType == ContentType.HENTAI) {

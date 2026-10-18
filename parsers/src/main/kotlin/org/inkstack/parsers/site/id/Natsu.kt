@@ -174,7 +174,7 @@ internal class Natsu(context: MangaLoaderContext) :
 		return parseMangaList(doc)
 	}
 
-	protected open fun parseMangaList(doc: Document): List<Manga> {
+	protected fun parseMangaList(doc: Document): List<Manga> {
 		return doc.select("div").mapNotNull { div ->
 			val link = div.selectFirst("a[href*='/manga/']") ?: return@mapNotNull null
 			val href = link.attrAsRelativeUrl("href")
@@ -286,7 +286,7 @@ internal class Natsu(context: MangaLoaderContext) :
 		)
 	}
 
-	protected open suspend fun loadChapters(
+	protected suspend fun loadChapters(
 		mangaId: String,
 		mangaAbsoluteUrl: String,
 	): List<MangaChapter> {
@@ -346,7 +346,7 @@ internal class Natsu(context: MangaLoaderContext) :
 		}
 	}
 
-	protected open suspend fun fetchAvailableTags(): Set<MangaTag> {
+	protected suspend fun fetchAvailableTags(): Set<MangaTag> {
 		val doc = webClient.httpGet("https://${domain}/library/").parseHtml()
 
 		return doc.select("button[data-genre]").mapNotNullToSet { button ->
@@ -361,7 +361,7 @@ internal class Natsu(context: MangaLoaderContext) :
 		}
 	}
 
-	protected open fun parseDate(dateStr: String?): Long {
+	protected fun parseDate(dateStr: String?): Long {
 		if (dateStr.isNullOrEmpty()) return 0
 
 		return try {

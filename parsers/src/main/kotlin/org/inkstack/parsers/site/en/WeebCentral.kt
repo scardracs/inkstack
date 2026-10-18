@@ -158,7 +158,6 @@ internal class WeebCentral(context: MangaLoaderContext) : AbstractMangaParser(co
 				value = when (order) {
 					RELEVANCE, ALPHABETICAL, POPULARITY_ASC, RATING_ASC, ADDED_ASC, UPDATED_ASC -> "Ascending"
 					ALPHABETICAL_DESC, POPULARITY, RATING, ADDED, UPDATED -> "Descending"
-					else -> throw UnsupportedOperationException("unsupported order: $order")
 				},
 			)
 			addQueryParameter("official", "Any")

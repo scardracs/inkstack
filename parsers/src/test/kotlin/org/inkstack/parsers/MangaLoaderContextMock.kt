@@ -11,7 +11,6 @@ import org.inkstack.parsers.config.MangaSourceConfig
 import org.inkstack.parsers.model.MangaSource
 import org.inkstack.parsers.network.UserAgents
 import org.inkstack.parsers.util.await
-import org.inkstack.parsers.util.requireBody
 import org.inkstack.test_util.BitmapTestImpl
 import java.awt.image.BufferedImage
 import java.security.SecureRandom
@@ -56,7 +55,7 @@ internal object MangaLoaderContextMock : MangaLoaderContext() {
 	override fun getDefaultUserAgent(): String = UserAgents.FIREFOX_MOBILE
 
 	override fun redrawImageResponse(response: Response, redraw: (Bitmap) -> Bitmap): Response {
-		val srcImage = response.requireBody().byteStream().use(ImageIO::read)
+		val srcImage = response.body.byteStream().use(ImageIO::read)
 		checkNotNull(srcImage) { "Cannot decode image" }
 		val resImage = (redraw(BitmapTestImpl(srcImage)) as BitmapTestImpl)
 		return response.newBuilder()

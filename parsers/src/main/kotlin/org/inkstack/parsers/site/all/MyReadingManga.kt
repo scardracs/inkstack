@@ -75,34 +75,34 @@ internal class MyReadingManga(context: MangaLoaderContext) :
 			Locale.ITALIAN,
 			Locale.KOREAN,
 			Locale.TRADITIONAL_CHINESE,
-			Locale("es"), // Spanish
-			Locale("pt"), // Portuguese
-			Locale("ru"), // Russian
-			Locale("tr"), // Turkish
-			Locale("vi"), // Vietnamese
-			Locale("ar"), // Arabic
-			Locale("id"), // Indonesian (Bahasa)
-			Locale("th"), // Thai
-			Locale("pl"), // Polish
-			Locale("sv"), // Swedish
-			Locale("nl"), // Dutch (Flemish Dutch)
-			Locale("hu"), // Hungarian
-			Locale("hi"), // Hindi
-			Locale("he"), // Hebrew
-			Locale("el"), // Greek
-			Locale("fi"), // Finnish
-			Locale("fil"), // Filipino
-			Locale("da"), // Danish
-			Locale("cs"), // Czech
-			Locale("hr"), // Croatian
-			Locale("bg"), // Bulgarian
-			Locale("zh", "HK"), // Cantonese
-			Locale("fa"), // Persian
-			Locale("sk"), // Slovak
-			Locale("ro"), // Romanian
-			Locale("no"), // Norwegian
-			Locale("ms"), // Malay
-			Locale("lt"), // Lithuanian
+			Locale.forLanguageTag("es"), // Spanish
+			Locale.forLanguageTag("pt"), // Portuguese
+			Locale.forLanguageTag("ru"), // Russian
+			Locale.forLanguageTag("tr"), // Turkish
+			Locale.forLanguageTag("vi"), // Vietnamese
+			Locale.forLanguageTag("ar"), // Arabic
+			Locale.forLanguageTag("id"), // Indonesian (Bahasa)
+			Locale.forLanguageTag("th"), // Thai
+			Locale.forLanguageTag("pl"), // Polish
+			Locale.forLanguageTag("sv"), // Swedish
+			Locale.forLanguageTag("nl"), // Dutch (Flemish Dutch)
+			Locale.forLanguageTag("hu"), // Hungarian
+			Locale.forLanguageTag("hi"), // Hindi
+			Locale.forLanguageTag("he"), // Hebrew
+			Locale.forLanguageTag("el"), // Greek
+			Locale.forLanguageTag("fi"), // Finnish
+			Locale.forLanguageTag("fil"), // Filipino
+			Locale.forLanguageTag("da"), // Danish
+			Locale.forLanguageTag("cs"), // Czech
+			Locale.forLanguageTag("hr"), // Croatian
+			Locale.forLanguageTag("bg"), // Bulgarian
+			Locale.forLanguageTag("zh-HK"), // Cantonese
+			Locale.forLanguageTag("fa"), // Persian
+			Locale.forLanguageTag("sk"), // Slovak
+			Locale.forLanguageTag("ro"), // Romanian
+			Locale.forLanguageTag("no"), // Norwegian
+			Locale.forLanguageTag("ms"), // Malay
+			Locale.forLanguageTag("lt"), // Lithuanian
 		),
 	)
 

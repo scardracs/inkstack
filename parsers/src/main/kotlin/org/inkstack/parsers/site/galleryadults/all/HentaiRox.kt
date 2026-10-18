@@ -27,9 +27,9 @@ internal class HentaiRox(context: MangaLoaderContext) :
 				Locale.ENGLISH,
 				Locale.FRENCH,
 				Locale.JAPANESE,
-				Locale("es"),
-				Locale("ru"),
-				Locale("ko"),
+				Locale.forLanguageTag("es"),
+				Locale.forLanguageTag("ru"),
+				Locale.forLanguageTag("ko"),
 				Locale.GERMAN,
 			),
 		)

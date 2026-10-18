@@ -55,7 +55,7 @@ internal class Ryzukomik(context: MangaLoaderContext) :
 			append(apiBase)
 			
 			if (!filter.query.isNullOrEmpty()) {
-				append("?s=").append(filter.query!!.urlEncoded()).append("&page=").append(page)
+				append("?s=").append(filter.query.urlEncoded()).append("&page=").append(page)
 			} else {
 				val tag = filter.tags.oneOrThrowIfMany()
 				if (tag != null) {

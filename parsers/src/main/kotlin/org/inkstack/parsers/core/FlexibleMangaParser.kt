@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
+
 package org.inkstack.parsers.core
 
 import androidx.annotation.CallSuper
@@ -11,6 +13,7 @@ import org.inkstack.parsers.MangaParser
 import org.inkstack.parsers.config.ConfigKey
 import org.inkstack.parsers.config.MangaSourceConfig
 import org.inkstack.parsers.model.*
+import org.inkstack.parsers.model.search.MangaSearchQueryCapabilities
 import org.inkstack.parsers.network.OkHttpWebClient
 import org.inkstack.parsers.network.WebClient
 import org.inkstack.parsers.util.*
@@ -25,12 +28,15 @@ internal abstract class FlexibleMangaParser @InternalParsersApi constructor(
 	override val config: MangaSourceConfig by lazy { context.getConfig(source) }
 
 	open val sourceLocale: Locale
-		get() = if (source.locale.isEmpty()) Locale.ROOT else Locale(source.locale)
+		get() = if (source.locale.isEmpty()) Locale.ROOT else Locale.forLanguageTag(source.locale)
 
 	protected open val userAgentKey: ConfigKey.UserAgent = ConfigKey.UserAgent(context.getDefaultUserAgent())
 
-	final override val filterCapabilities: MangaListFilterCapabilities
-		get() = searchQueryCapabilities.toMangaListFilterCapabilities()
+	abstract override val filterCapabilities: MangaListFilterCapabilities
+
+	@Deprecated("Too complex. Use filterCapabilities instead")
+	final override val searchQueryCapabilities: MangaSearchQueryCapabilities
+		get() = filterCapabilities.toMangaSearchQueryCapabilities()
 
 	protected val sourceContentRating: ContentRating?
 		get() = if (source.contentType == ContentType.HENTAI) {

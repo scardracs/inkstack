@@ -262,13 +262,13 @@ internal class MangaBuff(context: MangaLoaderContext) :
 		doc.selectFirst(".manga__description")?.text()?.takeIf { it.isNotBlank() }?.let(lines::add)
 
 		doc.selectFirst(".manga__rating")?.text()?.replace(',', '.')?.toDoubleOrNull()?.let {
-			lines.add("Рейтинг: %.0f%%".format(Locale("ru"), it * 10))
+			lines.add("Рейтинг: %.0f%%".format(Locale.forLanguageTag("ru"), it * 10))
 		}
 		doc.selectFirst(".manga__views")?.text()?.replace(" ", "")?.toIntOrNull()?.let {
-			lines.add("Просмотров: %,d".format(Locale("ru"), it))
+			lines.add("Просмотров: %,d".format(Locale.forLanguageTag("ru"), it))
 		}
 		doc.selectFirst(".manga")?.attrOrNull("data-fav-count")?.toIntOrNull()?.let {
-			lines.add("Избранное: %,d".format(Locale("ru"), it))
+			lines.add("Избранное: %,d".format(Locale.forLanguageTag("ru"), it))
 		}
 		val alt = doc.select(".manga__name-alt > span, .manga-mobile__name-alt > span")
 			.eachText()

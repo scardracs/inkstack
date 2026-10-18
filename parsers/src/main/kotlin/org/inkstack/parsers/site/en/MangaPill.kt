@@ -92,7 +92,7 @@ internal class MangaPill(context: MangaLoaderContext) : PagedMangaParser(context
 
 	private fun parseMangaList(doc: Document): List<Manga> {
 		return doc.select("a.relative.block").mapNotNull { element ->
-			val href = element.attrAsRelativeUrl("href") ?: return@mapNotNull null
+			val href = element.attrAsRelativeUrl("href").ifEmpty { return@mapNotNull null }
 			val img = element.selectFirst("img") ?: return@mapNotNull null
 			val coverUrl = img.attr("data-src").orEmpty()
 			val title = element.parent()?.selectFirst("div.mt-3.font-black.leading-tight.line-clamp-2")?.text() ?: return@mapNotNull null

@@ -291,7 +291,8 @@ internal class AlucardScans(context: MangaLoaderContext) :
 		if (withMillis > 0L) {
 			return withMillis
 		}
-		return utcDateFormatNoMillis.parseSafe(value).takeIf { it > 0L } ?: 0L
+		val withoutMillis = utcDateFormatNoMillis.parseSafe(value)
+		return if (withoutMillis > 0L) withoutMillis else 0L
 	}
 
 	private fun resolveImageUrl(url: String?): String? {

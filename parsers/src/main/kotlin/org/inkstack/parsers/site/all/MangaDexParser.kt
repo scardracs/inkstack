@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
+
 package org.inkstack.parsers.site.all
 
 import kotlinx.coroutines.Dispatchers
@@ -14,9 +16,7 @@ import org.inkstack.parsers.core.FlexibleMangaParser
 import org.inkstack.parsers.exception.ParseException
 import org.inkstack.parsers.model.*
 import org.inkstack.parsers.model.search.MangaSearchQuery
-import org.inkstack.parsers.model.search.MangaSearchQueryCapabilities
 import org.inkstack.parsers.model.search.QueryCriteria.*
-import org.inkstack.parsers.model.search.SearchCapability
 import org.inkstack.parsers.model.search.SearchableField
 import org.inkstack.parsers.model.search.SearchableField.*
 import org.inkstack.parsers.network.UserAgents
@@ -71,59 +71,15 @@ internal class MangaDexParser(context: MangaLoaderContext) : FlexibleMangaParser
 		SortOrder.RELEVANCE,
 	)
 
-	override val searchQueryCapabilities: MangaSearchQueryCapabilities
-		get() = MangaSearchQueryCapabilities(
-			SearchCapability(
-				field = TAG,
-				criteriaTypes = setOf(Include::class, Exclude::class),
-				isMultiple = true,
-			),
-			SearchCapability(
-				field = TITLE_NAME,
-				criteriaTypes = setOf(Match::class),
-				isMultiple = false,
-			),
-			SearchCapability(
-				field = STATE,
-				criteriaTypes = setOf(Include::class),
-				isMultiple = true,
-			),
-			SearchCapability(
-				field = AUTHOR,
-				criteriaTypes = setOf(Include::class),
-				isMultiple = true,
-			),
-			SearchCapability(
-				field = CONTENT_TYPE,
-				criteriaTypes = setOf(Include::class),
-				isMultiple = true,
-			),
-			SearchCapability(
-				field = CONTENT_RATING,
-				criteriaTypes = setOf(Include::class),
-				isMultiple = true,
-			),
-			SearchCapability(
-				field = DEMOGRAPHIC,
-				criteriaTypes = setOf(Include::class),
-				isMultiple = true,
-			),
-			SearchCapability(
-				field = ORIGINAL_LANGUAGE,
-				criteriaTypes = setOf(Include::class),
-				isMultiple = true,
-			),
-			SearchCapability(
-				field = LANGUAGE,
-				criteriaTypes = setOf(Include::class),
-				isMultiple = true,
-			),
-			SearchCapability(
-				field = PUBLICATION_YEAR,
-				criteriaTypes = setOf(Match::class),
-				isMultiple = false,
-			),
-		)
+	override val filterCapabilities = MangaListFilterCapabilities(
+		isMultipleTagsSupported = true,
+		isTagsExclusionSupported = true,
+		isSearchSupported = true,
+		isSearchWithFiltersSupported = true,
+		isYearSupported = true,
+		isOriginalLocaleSupported = true,
+		isAuthorSearchSupported = true,
+	)
 
 	override suspend fun getFilterOptions(): MangaListFilterOptions = coroutineScope {
 		val localesDeferred = async { fetchAvailableLocales() }
@@ -321,7 +277,7 @@ internal class MangaDexParser(context: MangaLoaderContext) : FlexibleMangaParser
 		return head.getElementsByAttributeValue("property", "og:locale:alternate")
 			.mapNotNullToSet { meta ->
 				val raw = meta.attrOrNull("content") ?: return@mapNotNullToSet null
-				Locale(raw.substringBefore('_'), raw.substringAfter('_', ""))
+				Locale.forLanguageTag(raw.replace('_', '-'))
 			}
 	}
 

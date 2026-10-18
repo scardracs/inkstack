@@ -97,6 +97,3 @@ public fun DateFormat.parseSafe(str: String?): Long = if (str.isNullOrEmpty()) {
         }
     }.getOrDefault(0L)
 }
-
-@Deprecated("Useless since OkHttp 5.0", replaceWith = ReplaceWith("body"))
-public fun Response.requireBody(): ResponseBody = body

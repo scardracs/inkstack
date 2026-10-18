@@ -29,11 +29,11 @@ internal class HentaiEnvy(context: MangaLoaderContext) :
 			Locale.FRENCH,
 			Locale.JAPANESE,
 			Locale.CHINESE,
-			Locale("es"),
-			Locale("ru"),
-			Locale("ko"),
+			Locale.forLanguageTag("es"),
+			Locale.forLanguageTag("ru"),
+			Locale.forLanguageTag("ko"),
 			Locale.GERMAN,
-			Locale("pt"),
+			Locale.forLanguageTag("pt"),
 		),
 	)
 

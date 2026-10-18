@@ -76,7 +76,7 @@ internal class NHentaiParser(context: MangaLoaderContext) :
 	private suspend fun ensureConfigFetched() {
 		if (isConfigFetched) return
 		try {
-			val res = webClient.httpGet("https://$domain/api/v2/config").body?.string() ?: return
+			val res = webClient.httpGet("https://$domain/api/v2/config").body.string() ?: return
 			val json = JSONObject(res)
 			val imgArray = json.optJSONArray("imageServers")
 			if (imgArray != null && imgArray.length() > 0) {
@@ -121,7 +121,7 @@ internal class NHentaiParser(context: MangaLoaderContext) :
 			}
 		}
 
-		val jsonString = webClient.httpGet(queryUrl).body?.string() ?: return emptyList()
+		val jsonString = webClient.httpGet(queryUrl).body.string() ?: return emptyList()
 		val json = JSONObject(jsonString)
 
 		if (json.has("id")) {
@@ -185,7 +185,7 @@ internal class NHentaiParser(context: MangaLoaderContext) :
 	override suspend fun getDetails(manga: Manga): Manga {
 		ensureConfigFetched()
 		val id = manga.url.removeSurrounding("/g/", "/").trimEnd('/')
-		val jsonString = webClient.httpGet("https://$domain/api/v2/galleries/$id").body?.string() ?: return manga
+		val jsonString = webClient.httpGet("https://$domain/api/v2/galleries/$id").body.string() ?: return manga
 		val item = JSONObject(jsonString)
 
 		val titleObj = item.optJSONObject("title")
@@ -248,7 +248,7 @@ internal class NHentaiParser(context: MangaLoaderContext) :
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
 		ensureConfigFetched()
 		val id = chapter.url.removeSurrounding("/g/", "/").trimEnd('/')
-		val jsonString = webClient.httpGet("https://$domain/api/v2/galleries/$id").body?.string() ?: return emptyList()
+		val jsonString = webClient.httpGet("https://$domain/api/v2/galleries/$id").body.string() ?: return emptyList()
 		val item = JSONObject(jsonString)
 		val pagesArr = item.optJSONArray("pages") ?: return emptyList()
 		val result = mutableListOf<MangaPage>()

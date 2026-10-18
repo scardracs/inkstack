@@ -126,9 +126,10 @@ internal abstract class KeyoappParser(
 		return Manga(
 			id = generateUid(href),
 			url = href,
-			publicUrl = href.toAbsoluteUrl(div.host ?: domain),
+			publicUrl = href.toAbsoluteUrl(div.host?.ifEmpty { domain } ?: domain),
 			coverUrl = coverUrl,
-			title = (div.selectFirst("h3")?.text() ?: div.selectFirst("a")?.attr("title")).orEmpty(),
+			title = div.selectFirst("h3")?.text()?.takeIf { it.isNotEmpty() }
+				?: div.selectFirst("a")?.attr("title").orEmpty(),
 			altTitles = emptySet(),
 			rating = RATING_UNKNOWN,
 			tags = div.select("div.gap-1 a").mapToSet { a ->
@@ -148,7 +149,7 @@ internal abstract class KeyoappParser(
 	private suspend fun fetchAvailableTags(): Set<MangaTag> {
 		val doc = webClient.httpGet("https://$domain/$listUrl").parseHtml()
 		return doc.requireElementById("series_tags_page").select("button").mapNotNullToSet { button ->
-			val key = button.attr("tag") ?: return@mapNotNullToSet null
+			val key = button.attr("tag").ifEmpty { return@mapNotNullToSet null }
 			val name = button.text().toTitleCase(sourceLocale)
 			MangaTag(
 				key = key,
@@ -190,7 +191,7 @@ internal abstract class KeyoappParser(
 				.mapChapters(reversed = true) { i, a ->
 					val href = a.attrAsRelativeUrl("href")
 					val name = a.selectFirstOrThrow("span.truncate").text()
-					val dateText = a.selectLast("div.text-xs.w-fit")?.text() ?: "0"
+					val dateText = a.selectLast("div.text-xs.w-fit")?.text().orEmpty().ifEmpty { "0" }
 					MangaChapter(
 						id = generateUid(href),
 						title = name,

@@ -55,7 +55,7 @@ internal class SoulScans(context: MangaLoaderContext) :
 
 	private suspend fun getGenres(): Map<String, MangaTag> {
 		genres?.let { return it }
-		val array = JSONArray(webClient.httpGet("$API_BASE_URL/genres").body?.string().orEmpty())
+		val array = JSONArray(webClient.httpGet("$API_BASE_URL/genres").body.string().orEmpty())
 		val result = buildMap {
 			for (i in 0 until array.length()) {
 				val obj = array.optJSONObject(i) ?: continue
@@ -119,7 +119,7 @@ internal class SoulScans(context: MangaLoaderContext) :
 			}
 		}
 
-		val data = JSONObject(webClient.httpGet(url).body?.string().orEmpty()).optJSONArray("data")
+		val data = JSONObject(webClient.httpGet(url).body.string().orEmpty()).optJSONArray("data")
 			?: return emptyList()
 		val result = buildList {
 			for (i in 0 until data.length()) {
@@ -155,7 +155,7 @@ internal class SoulScans(context: MangaLoaderContext) :
 	override suspend fun getDetails(manga: Manga): Manga {
 		val slug = manga.url.substringBefore('?').trimEnd('/').substringAfterLast('/')
 		val obj = JSONObject(
-			webClient.httpGet("$API_BASE_URL/series/comic/${slug.urlEncoded()}").body?.string().orEmpty(),
+			webClient.httpGet("$API_BASE_URL/series/comic/${slug.urlEncoded()}").body.string().orEmpty(),
 		)
 		val relativeUrl = "/comic/$slug"
 		val tags = obj.optJSONArray("genres")?.let { array ->
@@ -215,7 +215,7 @@ internal class SoulScans(context: MangaLoaderContext) :
 		val seriesSlug = chapter.url.substringAfter("/comic/").substringBefore("/chapter/")
 		val chapterSlug = chapter.url.substringAfter("/chapter/")
 		val url = "$API_BASE_URL/series/comic/${seriesSlug.urlEncoded()}/chapter/${chapterSlug.urlEncoded()}"
-		val pages = JSONObject(webClient.httpGet(url).body?.string().orEmpty())
+		val pages = JSONObject(webClient.httpGet(url).body.string().orEmpty())
 			.optJSONObject("chapter")?.optJSONArray("pages") ?: return emptyList()
 		return buildList {
 			for (i in 0 until pages.length()) {

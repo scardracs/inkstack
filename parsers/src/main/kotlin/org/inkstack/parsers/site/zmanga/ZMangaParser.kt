@@ -186,7 +186,7 @@ internal abstract class ZMangaParser(
 	protected open suspend fun fetchAvailableTags(): Set<MangaTag> {
 		val doc = webClient.httpGet("https://$domain/$listUrl").parseHtml()
 		return doc.select("tr.gnrx div.custom-control").mapNotNullToSet { checkbox ->
-			val key = checkbox.selectFirstOrThrow("input").attr("value") ?: return@mapNotNullToSet null
+			val key = checkbox.selectFirstOrThrow("input").attr("value").ifEmpty { return@mapNotNullToSet null }
 			val name = checkbox.selectFirstOrThrow("label").text()
 			MangaTag(
 				key = key,

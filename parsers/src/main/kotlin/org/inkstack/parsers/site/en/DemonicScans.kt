@@ -40,7 +40,7 @@ internal class DemonicScans(context: MangaLoaderContext) :
         val isAlpha = order == SortOrder.ALPHABETICAL && !hasQuery && filter.tags.isEmpty()
         val isAlphaDesc = order == SortOrder.ALPHABETICAL_DESC && !hasQuery && filter.tags.isEmpty()
         val url = when {
-            hasQuery -> "https://$domain/search.php?manga=" + (filter.query ?: "")
+            hasQuery -> "https://$domain/search.php?manga=" + filter.query
             isNewest -> "https://$domain/lastupdates.php?list=$page"
             isAlpha -> buildString {
                 append("https://$domain/advanced.php")

@@ -64,26 +64,26 @@ internal class MangaPark(context: MangaLoaderContext) :
 		),
 		availableContentRating = EnumSet.of(ContentRating.SAFE),
 		availableLocales = setOf(
-			Locale("af"), Locale("sq"), Locale("am"), Locale("ar"), Locale("hy"),
-			Locale("az"), Locale("be"), Locale("bn"), Locale("zh_hk"), Locale("zh_tw"),
-			Locale.CHINESE, Locale("ceb"), Locale("ca"), Locale("km"), Locale("my"),
-			Locale("bg"), Locale("bs"), Locale("hr"), Locale("cs"), Locale("da"),
-			Locale("nl"), Locale.ENGLISH, Locale("et"), Locale("fo"), Locale("fil"),
-			Locale("fi"), Locale("he"), Locale("ha"), Locale("jv"), Locale("lb"),
-			Locale("mn"), Locale("ro"), Locale("si"), Locale("ta"), Locale("uz"),
-			Locale("ur"), Locale("tg"), Locale("sd"), Locale("pt_br"), Locale("mo"),
-			Locale("lt"), Locale.JAPANESE, Locale.ITALIAN, Locale("ht"), Locale("lv"),
-			Locale("mr"), Locale("pt"), Locale("sn"), Locale("sv"), Locale("uk"),
-			Locale("tk"), Locale("sw"), Locale("st"), Locale("pl"), Locale("mi"),
-			Locale("lo"), Locale("ga"), Locale("gu"), Locale("gn"), Locale("id"),
-			Locale("ky"), Locale("mt"), Locale("fa"), Locale("sh"), Locale("es_419"),
-			Locale("tr"), Locale("to"), Locale("vi"), Locale("es"), Locale("sr"),
-			Locale("ps"), Locale("ml"), Locale("ku"), Locale("ig"), Locale("el"),
-			Locale.GERMAN, Locale("is"), Locale.KOREAN, Locale("ms"), Locale("ny"), Locale("sm"),
-			Locale("so"), Locale("ti"), Locale("zu"), Locale("yo"), Locale("th"),
-			Locale("sl"), Locale("ru"), Locale("no"), Locale("mg"), Locale("kk"),
-			Locale("hu"), Locale("ka"), Locale.FRENCH, Locale("hi"), Locale("kn"),
-			Locale("mk"), Locale("ne"), Locale("rm"), Locale("sk"), Locale("te"),
+			Locale.forLanguageTag("af"), Locale.forLanguageTag("sq"), Locale.forLanguageTag("am"), Locale.forLanguageTag("ar"), Locale.forLanguageTag("hy"),
+			Locale.forLanguageTag("az"), Locale.forLanguageTag("be"), Locale.forLanguageTag("bn"), Locale.forLanguageTag("zh-hk"), Locale.forLanguageTag("zh-tw"),
+			Locale.CHINESE, Locale.forLanguageTag("ceb"), Locale.forLanguageTag("ca"), Locale.forLanguageTag("km"), Locale.forLanguageTag("my"),
+			Locale.forLanguageTag("bg"), Locale.forLanguageTag("bs"), Locale.forLanguageTag("hr"), Locale.forLanguageTag("cs"), Locale.forLanguageTag("da"),
+			Locale.forLanguageTag("nl"), Locale.ENGLISH, Locale.forLanguageTag("et"), Locale.forLanguageTag("fo"), Locale.forLanguageTag("fil"),
+			Locale.forLanguageTag("fi"), Locale.forLanguageTag("he"), Locale.forLanguageTag("ha"), Locale.forLanguageTag("jv"), Locale.forLanguageTag("lb"),
+			Locale.forLanguageTag("mn"), Locale.forLanguageTag("ro"), Locale.forLanguageTag("si"), Locale.forLanguageTag("ta"), Locale.forLanguageTag("uz"),
+			Locale.forLanguageTag("ur"), Locale.forLanguageTag("tg"), Locale.forLanguageTag("sd"), Locale.forLanguageTag("pt-br"), Locale.forLanguageTag("mo"),
+			Locale.forLanguageTag("lt"), Locale.JAPANESE, Locale.ITALIAN, Locale.forLanguageTag("ht"), Locale.forLanguageTag("lv"),
+			Locale.forLanguageTag("mr"), Locale.forLanguageTag("pt"), Locale.forLanguageTag("sn"), Locale.forLanguageTag("sv"), Locale.forLanguageTag("uk"),
+			Locale.forLanguageTag("tk"), Locale.forLanguageTag("sw"), Locale.forLanguageTag("st"), Locale.forLanguageTag("pl"), Locale.forLanguageTag("mi"),
+			Locale.forLanguageTag("lo"), Locale.forLanguageTag("ga"), Locale.forLanguageTag("gu"), Locale.forLanguageTag("gn"), Locale.forLanguageTag("id"),
+			Locale.forLanguageTag("ky"), Locale.forLanguageTag("mt"), Locale.forLanguageTag("fa"), Locale.forLanguageTag("sh"), Locale.forLanguageTag("es-419"),
+			Locale.forLanguageTag("tr"), Locale.forLanguageTag("to"), Locale.forLanguageTag("vi"), Locale.forLanguageTag("es"), Locale.forLanguageTag("sr"),
+			Locale.forLanguageTag("ps"), Locale.forLanguageTag("ml"), Locale.forLanguageTag("ku"), Locale.forLanguageTag("ig"), Locale.forLanguageTag("el"),
+			Locale.GERMAN, Locale.forLanguageTag("is"), Locale.KOREAN, Locale.forLanguageTag("ms"), Locale.forLanguageTag("ny"), Locale.forLanguageTag("sm"),
+			Locale.forLanguageTag("so"), Locale.forLanguageTag("ti"), Locale.forLanguageTag("zu"), Locale.forLanguageTag("yo"), Locale.forLanguageTag("th"),
+			Locale.forLanguageTag("sl"), Locale.forLanguageTag("ru"), Locale.forLanguageTag("no"), Locale.forLanguageTag("mg"), Locale.forLanguageTag("kk"),
+			Locale.forLanguageTag("hu"), Locale.forLanguageTag("ka"), Locale.FRENCH, Locale.forLanguageTag("hi"), Locale.forLanguageTag("kn"),
+			Locale.forLanguageTag("mk"), Locale.forLanguageTag("ne"), Locale.forLanguageTag("rm"), Locale.forLanguageTag("sk"), Locale.forLanguageTag("te"),
 		),
 	)
 
@@ -186,9 +186,11 @@ internal class MangaPark(context: MangaLoaderContext) :
 		for (el in tagElements) {
 			val name = el.selectFirstOrThrow("span.whitespace-nowrap").text().toTitleCase(sourceLocale)
 			if (name.isEmpty()) continue
+			val key = el.attr("q:key")
+			if (key.isEmpty()) continue
 			tagMap[name] = MangaTag(
 				title = name,
-				key = el.attr("q:key") ?: continue,
+				key = key,
 				source = source,
 			)
 		}

@@ -245,7 +245,7 @@ internal class BatCave(context: MangaLoaderContext) :
 			if (!response.request.url.isDleGuard()) {
 				return true
 			}
-			DLE_GUARD_TOKEN_REGEX.find(response.requireBody().string())?.groupValues?.get(1)
+			DLE_GUARD_TOKEN_REGEX.find(response.body.string())?.groupValues?.get(1)
 		} ?: return false
 		val startedAt = System.currentTimeMillis()
 		val digest = MessageDigest.getInstance("SHA-256")

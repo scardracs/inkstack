@@ -159,7 +159,7 @@ internal class KomiicParser(context: MangaLoaderContext) :
         }
 
         val base = if (!filter.query.isNullOrEmpty()) {
-            val list = search(filter.query!!)
+            val list = search(filter.query)
             if (page == paginator.firstPage) {
                 searchFirstPageCacheQuery = filter.query
                 searchFirstPageCache = list

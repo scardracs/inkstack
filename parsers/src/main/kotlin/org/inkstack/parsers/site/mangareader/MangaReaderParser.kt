@@ -398,7 +398,11 @@ internal abstract class MangaReaderParser(
 			s.html().takeIf { x -> x.contains("slowAES.decrypt") }
 		} ?: return@runCatchingCancellable null
 		val min = webClient.httpGet("https://$domain/min.js").parseRaw()
-		val res = context.evaluateJs(min + "\n\n" + script.replace(Regex("document.cookie\\s*=\\s*"), "return "))
+		val res = context.evaluateJs(
+			"https://$domain/",
+			min + "\n\n" + script.replace(Regex("document.cookie\\s*=\\s*"), "return "),
+			timeout = 10000L,
+		)
 		res?.let {
 			Cookie.parse(baseUri().toHttpUrl(), it)
 		}

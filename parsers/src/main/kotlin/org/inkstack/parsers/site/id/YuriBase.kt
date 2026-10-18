@@ -44,7 +44,7 @@ internal class YuriBase(context: MangaLoaderContext) :
 		val filtersArray = JSONArray()
 
 		if (!filter.query.isNullOrEmpty()) {
-			val query = filter.query!!.lowercase().replace(" ", "-")
+			val query = filter.query.lowercase().replace(" ", "-")
 			filtersArray.put(JSONObject().apply {
 				put("fieldFilter", JSONObject().apply {
 					put("field", JSONObject().put("fieldPath", "mangaSlug"))

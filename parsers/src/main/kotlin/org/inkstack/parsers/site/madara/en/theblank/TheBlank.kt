@@ -172,8 +172,8 @@ internal class TheBlank(context: MangaLoaderContext) :
         val mangas = mutableListOf<Manga>()
         
         if (!filter.query.isNullOrEmpty()) {
-            val searchUrl = "https://$domain/api/v1/search/series?q=${filter.query!!.urlEncoded()}"
-            val responseBody = webClient.httpGet(searchUrl).body?.string() ?: "[]"
+            val searchUrl = "https://$domain/api/v1/search/series?q=${filter.query.urlEncoded()}"
+            val responseBody = webClient.httpGet(searchUrl).body.string()
             val jsonArray = try { org.json.JSONArray(responseBody) } catch (e: Exception) { org.json.JSONArray() }
             
             for (i in 0 until jsonArray.length()) {
@@ -463,7 +463,7 @@ internal class TheBlank(context: MangaLoaderContext) :
             ByteArray(32) { i -> (sha[i].toInt() xor keyHint[i].toInt()).toByte() }
         }
 
-        val networkSource = response.body?.source() ?: return response
+        val networkSource = response.body.source()
         networkSource.skip(192L) // PREFIX_LENGTH
         val ssHeader = networkSource.readByteArray(24L) // STREAM_HEADER_LENGTH
 

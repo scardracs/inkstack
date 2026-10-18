@@ -132,7 +132,7 @@ internal abstract class MangAdventureParser(
 				"hiatus" -> MangaState.PAUSED
 				else -> null
 			},
-			chapters = chapters?.optJSONArray("results")?.asTypedList<JSONObject>()?.mapChapters { _, it ->
+			chapters = chapters.optJSONArray("results")?.asTypedList<JSONObject>()?.mapChapters { _, it ->
 				MangaChapter(
 					id = generateUid(it.getLong("id")),
 					title = it.getStringOrNull("full_title"),
@@ -153,7 +153,7 @@ internal abstract class MangAdventureParser(
 			.addEncodedPathSegment(chapter.url)
 			.addEncodedPathSegment("pages")
 			.addEncodedQueryParameter("track", "true")
-		return url.get()?.optJSONArray("results")?.mapJSON {
+		return url.get().optJSONArray("results")?.mapJSON {
 			MangaPage(
 				id = generateUid(it.getLong("id")),
 				url = it.getString("image"),
@@ -167,7 +167,7 @@ internal abstract class MangAdventureParser(
 
 	private suspend fun fetchAvailableTags(): Set<MangaTag> {
 		val url = apiUrl.addEncodedPathSegment("categories")
-		return url.get()?.optJSONArray("results")?.mapJSONToSet {
+		return url.get().optJSONArray("results")?.mapJSONToSet {
 			val name = it.getString("name")
 			MangaTag(name, name, source)
 		} ?: emptySet()

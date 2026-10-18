@@ -12,7 +12,7 @@ internal class ManhwaBreakup(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.MANHWABREAKUP, "www.manhwabreakup.com") {
 
 	override val datePattern = "MMMM dd, yyyy"
-	override val sourceLocale: Locale = Locale("th")
+	override val sourceLocale: Locale = Locale.forLanguageTag("th")
 	override val withoutAjax = true
 	override val postReq = false
 

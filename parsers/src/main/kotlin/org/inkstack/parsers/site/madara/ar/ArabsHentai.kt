@@ -41,7 +41,7 @@ internal class ArabsHentai(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.ARABSHENTAI, domain = "arabshentai.com", 25) {
 
 	override val withoutAjax = true
-	override val sourceLocale: Locale = Locale("ar")
+	override val sourceLocale: Locale = Locale.forLanguageTag("ar")
 	override val listUrl = "manga/"
 	override val datePattern = "yyyy-MM-dd"
 	override val selectDate = ".chapterdate"

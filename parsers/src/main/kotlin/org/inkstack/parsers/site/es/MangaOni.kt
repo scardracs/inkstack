@@ -51,7 +51,7 @@ internal class MangaOni(context: MangaLoaderContext) :
 	override suspend fun getListPage(page: Int, order: SortOrder, filter: MangaListFilter): List<Manga> {
 		return if (!filter.query.isNullOrEmpty()) {
 			// Search results
-			val url = buildSearchUrl(page, filter.query!!)
+			val url = buildSearchUrl(page, filter.query)
 			val doc = webClient.httpGet(url).parseHtml()
 			parseSearchResults(doc)
 		} else {

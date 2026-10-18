@@ -78,7 +78,7 @@ internal class YaoiMangaOnline(context: MangaLoaderContext) :
 				append("https://")
 				append(domain)
 				append("/?s=")
-				append(filter.query!!.urlEncoded())
+				append(filter.query.urlEncoded())
 				if (page > 1) {
 					append("&paged=")
 					append(page)

@@ -154,7 +154,7 @@ internal class ElderManga(context: MangaLoaderContext):
             },
             chapters = doc.select("div.list-episode a").mapChapters(reversed = true) { i, el ->
                 val href = el.attrAsRelativeUrl("href")
-                val dateFormat = SimpleDateFormat("MMM d ,yyyy", Locale("tr"))
+                val dateFormat = SimpleDateFormat("MMM d ,yyyy", )
                 MangaChapter(
                     id = generateUid(href),
                     title = el.selectFirstOrThrow("h3").text(),

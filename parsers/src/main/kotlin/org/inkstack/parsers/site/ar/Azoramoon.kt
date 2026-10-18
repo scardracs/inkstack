@@ -51,7 +51,7 @@ internal class Azoramoon(context: MangaLoaderContext) :
 
 			// Add search query
 			if (!filter.query.isNullOrEmpty()) {
-				params.add("searchTerm=${filter.query!!.urlEncoded()}")
+				params.add("searchTerm=${filter.query.urlEncoded()}")
 			}
 
 			// Add genre filters (comma-separated)

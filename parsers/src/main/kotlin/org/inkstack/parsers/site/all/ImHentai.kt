@@ -33,11 +33,11 @@ internal class ImHentai(context: MangaLoaderContext) :
 		availableLocales = setOf(
 			Locale.ENGLISH,
 			Locale.JAPANESE,
-			Locale("es"),
+			Locale.forLanguageTag("es"),
 			Locale.FRENCH,
-			Locale("kr"),
+			Locale.forLanguageTag("kr"),
 			Locale.GERMAN,
-			Locale("ru"),
+			Locale.forLanguageTag("ru"),
 		),
 		availableContentTypes = EnumSet.of(
 			ContentType.MANGA,

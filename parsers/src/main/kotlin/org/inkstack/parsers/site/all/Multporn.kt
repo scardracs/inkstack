@@ -38,11 +38,11 @@ internal class Multporn(context: MangaLoaderContext) :
 
     override suspend fun getFilterOptions() = MangaListFilterOptions(
         availableLocales = setOf(
-            Locale("en"),
-            Locale("de"),
-            Locale("ru"),
-            Locale("zh"),
-            Locale("es"),
+            Locale.forLanguageTag("en"),
+            Locale.forLanguageTag("de"),
+            Locale.forLanguageTag("ru"),
+            Locale.forLanguageTag("zh"),
+            Locale.forLanguageTag("es"),
         ),
         availableContentTypes = EnumSet.of(
 			ContentType.COMICS,
@@ -102,11 +102,11 @@ internal class Multporn(context: MangaLoaderContext) :
                         append("&language=")
                         append(
                             when (it) {
-                                Locale("en") -> "1"
-                                Locale("de") -> "2"
-                                Locale("ru") -> "3"
-                                Locale("zh") -> "4"
-                                Locale("es") -> "5"
+                                Locale.forLanguageTag("en") -> "1"
+                                Locale.forLanguageTag("de") -> "2"
+                                Locale.forLanguageTag("ru") -> "3"
+                                Locale.forLanguageTag("zh") -> "4"
+                                Locale.forLanguageTag("es") -> "5"
                                 else -> "All"
                             }
                         )

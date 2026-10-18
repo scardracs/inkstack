@@ -1,17 +1,18 @@
+@file:Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
+
 package org.inkstack.parsers.site.mangabox
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import okhttp3.Headers
+import okhttp3.Interceptor
+import okhttp3.Response
 import org.jsoup.nodes.Document
 import org.inkstack.parsers.MangaLoaderContext
 import org.inkstack.parsers.config.ConfigKey
 import org.inkstack.parsers.core.FlexiblePagedMangaParser
 import org.inkstack.parsers.model.*
 import org.inkstack.parsers.model.search.MangaSearchQuery
-import org.inkstack.parsers.model.search.MangaSearchQueryCapabilities
 import org.inkstack.parsers.model.search.QueryCriteria.*
-import org.inkstack.parsers.model.search.SearchCapability
 import org.inkstack.parsers.model.search.SearchableField
 import org.inkstack.parsers.model.search.SearchableField.*
 import org.inkstack.parsers.util.*
@@ -38,30 +39,13 @@ internal abstract class MangaboxParser(
         SortOrder.ALPHABETICAL,
     )
 
-    override val searchQueryCapabilities: MangaSearchQueryCapabilities
-        get() = MangaSearchQueryCapabilities(
-            SearchCapability(
-                field = TAG,
-                criteriaTypes = setOf(Include::class, Exclude::class),
-                isMultiple = true,
-            ),
-            SearchCapability(
-                field = TITLE_NAME,
-                criteriaTypes = setOf(Match::class),
-                isMultiple = false,
-            ),
-            SearchCapability(
-                field = STATE,
-                criteriaTypes = setOf(Include::class),
-                isMultiple = true,
-            ),
-            SearchCapability(
-                field = AUTHOR,
-                criteriaTypes = setOf(Include::class),
-                isMultiple = false,
-                isExclusive = true,
-            ),
-        )
+    override val filterCapabilities = MangaListFilterCapabilities(
+        isMultipleTagsSupported = true,
+        isTagsExclusionSupported = true,
+        isSearchSupported = true,
+        isSearchWithFiltersSupported = true,
+        isAuthorSearchSupported = true,
+    )
 
     override suspend fun getFilterOptions() = MangaListFilterOptions(
         availableTags = fetchAvailableTags(),
@@ -386,10 +370,15 @@ internal abstract class MangaboxParser(
         }
     }
 
-    override fun getRequestHeaders(): Headers = super.getRequestHeaders().newBuilder()
-        .add("Referer", "https://$domain/")
-        .add("Accept", "image/webp,image/apng,image/*,*/*;q=0.8")
-        .add("Accept-Encoding", "gzip, deflate, br")
-        .add("Accept-Language", "en-US,en;q=0.9")
-        .build()
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val request = chain.request().newBuilder()
+            .header("Referer", "https://$domain/")
+            .header("Accept", "image/webp,image/apng,image/*,*/*;q=0.8")
+            .header("Accept-Encoding", "gzip, deflate, br")
+            .header("Accept-Language", "en-US,en;q=0.9")
+            .build()
+        return super.intercept(object : Interceptor.Chain by chain {
+            override fun request() = request
+        })
+    }
 }

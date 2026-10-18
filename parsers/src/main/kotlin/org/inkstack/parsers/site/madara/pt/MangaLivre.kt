@@ -122,7 +122,7 @@ internal class MangaLivre(context: MangaLoaderContext) :
 
             // Debug what's actually in the HTML
             val title = doc.title()
-            val bodyText = doc.body()?.text()?.take(200) ?: "no body"
+            val bodyText = doc.body().text().take(200)
             println("DEBUG: Page title: '$title'")
             println("DEBUG: Body preview: '$bodyText'")
 
@@ -167,7 +167,7 @@ internal class MangaLivre(context: MangaLoaderContext) :
 
         // Also accept if it's a working MangaLivre page (less strict)
         val isMangaLivrePage = doc.title().contains("manga livre", ignoreCase = true) ||
-            (doc.body()?.html()?.length ?: 0) > 5000
+            doc.body().html().length > 5000
 
         return hasMangaContent || isMangaLivrePage
     }
@@ -375,7 +375,7 @@ internal class MangaLivre(context: MangaLoaderContext) :
         if (items.isEmpty()) {
             println("DEBUG: No items found, throwing ParseException with page info")
             val title = doc.title()
-            val bodyText = doc.body()?.text()?.take(500) ?: "no body content"
+            val bodyText = doc.body().text().take(500)
             val htmlSnippet = doc.outerHtml().take(1000)
 
             throw ParseException(
