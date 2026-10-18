@@ -11,6 +11,8 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
@@ -67,9 +69,11 @@ class ListConfigBottomSheet :
 				android.R.id.text1,
 				sortOrders.map { binding.spinnerOrder.context.getString(it.titleResId) },
 			)
-			val selected = sortOrders.indexOf(viewModel.getSelectedSortOrder())
-			if (selected >= 0) {
-				binding.spinnerOrder.setSelection(selected, false)
+			viewLifecycleOwner.lifecycleScope.launch {
+				val selected = sortOrders.indexOf(viewModel.getSelectedSortOrder())
+				if (selected >= 0) {
+					binding.spinnerOrder.setSelection(selected, false)
+				}
 			}
 			binding.spinnerOrder.onItemSelectedListener = this
 			binding.cardOrder.isVisible = true

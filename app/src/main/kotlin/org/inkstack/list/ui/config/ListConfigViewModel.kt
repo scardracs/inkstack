@@ -2,7 +2,6 @@ package org.inkstack.list.ui.config
 
 import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.runBlocking
 import org.inkstack.core.nav.AppRouter
 import org.inkstack.core.prefs.AppSettings
 import org.inkstack.core.prefs.ListMode
@@ -14,6 +13,7 @@ import org.inkstack.favourites.ui.list.FavouritesListFragment.Companion.NO_ID
 import org.inkstack.list.domain.ListSortOrder
 import org.inkstack.parsers.util.runCatchingCancellable
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 @HiltViewModel
 class ListConfigViewModel @Inject constructor(
@@ -78,7 +78,7 @@ class ListConfigViewModel @Inject constructor(
 		ListConfigSection.Updated -> null
 	}?.sortedByOrdinal()
 
-	fun getSelectedSortOrder(): ListSortOrder? = when (section) {
+	suspend fun getSelectedSortOrder(): ListSortOrder? = when (section) {
 		is ListConfigSection.Favorites -> getCategorySortOrder(section.categoryId)
 		ListConfigSection.General -> null
 		ListConfigSection.Updated -> null
@@ -105,12 +105,13 @@ class ListConfigViewModel @Inject constructor(
 		}
 	}
 
-	private fun getCategorySortOrder(id: Long): ListSortOrder = if (id == NO_ID) {
+	private suspend fun getCategorySortOrder(id: Long): ListSortOrder = if (id == NO_ID) {
 		settings.allFavoritesSortOrder
-	} else runBlocking {
+	} else {
 		runCatchingCancellable {
 			favouritesRepository.getCategory(id).order
 		}.getOrElse {
+			if (it is CancellationException) throw it
 			settings.allFavoritesSortOrder
 		}
 	}
