@@ -29,7 +29,7 @@ enum class ColorScheme(
 
 		val default: ColorScheme
 			get() = if (DynamicColors.isDynamicColorAvailable()) {
-				MONET
+				EXPRESSIVE
 			} else {
 				MIKU
 			}

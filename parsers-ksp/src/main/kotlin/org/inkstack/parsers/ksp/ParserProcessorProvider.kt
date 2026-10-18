@@ -7,10 +7,13 @@ import com.google.devtools.ksp.processing.SymbolProcessorProvider
 class ParserProcessorProvider : SymbolProcessorProvider {
 
 	override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
-		return ParserProcessor(
+		val processor = ParserProcessor(
 			codeGenerator = environment.codeGenerator,
 			logger = environment.logger,
-			options = environment.options
+			options = environment.options,
 		)
+		// Opt into KSP 2.3+ backing-field / new language-feature modelling.
+		environment.registerProcessorForNewFeatures(processor)
+		return processor
 	}
 }
