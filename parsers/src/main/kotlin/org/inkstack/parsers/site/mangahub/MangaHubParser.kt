@@ -95,12 +95,7 @@ internal abstract class MangaHubParser(
 			val item = rows.optJSONObject(i) ?: continue
 			val slug = item.optString("slug").takeIf { it.isNotBlank() } ?: continue
 			val title = item.optString("title").takeIf { it.isNotBlank() } ?: continue
-			val signature = buildString {
-				append(item.optString("author"))
-				append(item.opt("latestChapter")?.toString().orEmpty())
-				append(item.optString("genres"))
-			}
-			if (!seenSignatures.add(signature)) {
+			if (!seenSignatures.add(slug)) {
 				continue
 			}
 			val relativeUrl = "/manga/$slug"
