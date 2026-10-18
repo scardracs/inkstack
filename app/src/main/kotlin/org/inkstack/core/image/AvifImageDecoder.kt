@@ -90,7 +90,18 @@ class AvifImageDecoder(
 		override fun hashCode() = javaClass.hashCode()
 
 		private fun isApplicable(result: SourceFetchResult): Boolean {
-			return result.mimeType == "image/avif"
+			if (result.mimeType == "image/avif") {
+				return true
+			}
+			// Sites may serve AVIF under a .jpg URL; peek a small header without consuming the source.
+			return runCatching {
+				val peek = result.source.source().peek()
+				if (!peek.request(64)) {
+					return@runCatching false
+				}
+				val bytes = peek.readByteArray(64)
+				AvifDecoder.isAvifImage(java.nio.ByteBuffer.wrap(bytes))
+			}.getOrDefault(false)
 		}
 	}
 }
