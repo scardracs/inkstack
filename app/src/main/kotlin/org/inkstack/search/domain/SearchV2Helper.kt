@@ -109,7 +109,10 @@ class SearchV2Helper @AssistedInject constructor(
 		when (kind) {
 			SearchKind.SIMPLE,
 			SearchKind.TITLE -> sortBy { m ->
-				minOf(m.title.levenshteinDistance(query), m.altTitle?.levenshteinDistance(query) ?: Int.MAX_VALUE)
+				minOf(
+					m.title.levenshteinDistance(query),
+					m.altTitles.minOfOrNull { it.levenshteinDistance(query) } ?: Int.MAX_VALUE,
+				)
 			}
 
 			SearchKind.AUTHOR -> sortByDescending { m ->
@@ -139,7 +142,8 @@ class SearchV2Helper @AssistedInject constructor(
 
 
 	private fun Manga.matches(query: String, threshold: Float): Boolean {
-		return matchesTitles(title, query, threshold) || matchesTitles(altTitle, query, threshold)
+		return matchesTitles(title, query, threshold) ||
+			altTitles.any { matchesTitles(it, query, threshold) }
 	}
 
 	private fun matchesTitles(a: String?, b: String?, threshold: Float): Boolean {

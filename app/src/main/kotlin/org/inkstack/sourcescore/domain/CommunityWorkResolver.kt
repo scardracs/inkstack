@@ -3,6 +3,7 @@ package org.inkstack.sourcescore.domain
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.inkstack.parsers.model.ContentRating
 import org.inkstack.parsers.model.Manga
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.util.runCatchingCancellable
@@ -60,12 +61,12 @@ class CommunityWorkResolver @Inject constructor(
 					title = title,
 					// Every rendering this source knows, because an exact key hit is what makes
 					// resolution cheap - and the alt title is often the one another source uses.
-					altTitles = listOfNotNull(manga.altTitle)
+					altTitles = manga.altTitles
 						.mapNotNull { it.toWireTitle() }
 						.distinct()
 						.take(MAX_ALT_TITLES),
 					contentType = parserSource.contentType.name.lowercase(),
-					nsfw = manga.isNsfw,
+					nsfw = manga.contentRating == ContentRating.ADULT,
 					// What this source calls the work's genres. Sent with the fingerprint that was
 					// going out anyway: it describes the manga, not the reader, and it is how works
 					// no catalogue has ever listed - most of them - get categories at all.

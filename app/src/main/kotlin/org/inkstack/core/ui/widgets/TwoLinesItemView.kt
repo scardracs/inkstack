@@ -25,7 +25,6 @@ import com.google.android.material.ripple.RippleUtils
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 import org.inkstack.R
-import org.inkstack.core.util.ext.getDrawableCompat
 import org.inkstack.core.util.ext.resolveDp
 import org.inkstack.core.util.ext.textAndVisible
 import org.inkstack.databinding.ViewTwoLinesItemBinding
@@ -89,7 +88,7 @@ class TwoLinesItemView @JvmOverloads constructor(
 				getResourceId(R.styleable.TwoLinesItemView_subtitleTextAppearance, textAppearanceFallback),
 			)
 			binding.icon.isChecked = getBoolean(R.styleable.TwoLinesItemView_android_checked, false)
-			val button = getDrawableCompat(context, R.styleable.TwoLinesItemView_android_button)
+			val button = getDrawable(R.styleable.TwoLinesItemView_android_button)
 			binding.button.setImageDrawable(button)
 			binding.button.isVisible = button != null
 		}

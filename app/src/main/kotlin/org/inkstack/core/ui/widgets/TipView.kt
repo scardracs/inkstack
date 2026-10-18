@@ -18,7 +18,6 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 import org.inkstack.R
 import org.inkstack.core.util.ext.drawableStart
-import org.inkstack.core.util.ext.getDrawableCompat
 import org.inkstack.core.util.ext.getThemeColorStateList
 import org.inkstack.core.util.ext.setTextAndVisible
 import org.inkstack.core.util.ext.textAndVisible
@@ -70,7 +69,7 @@ class TipView @JvmOverloads constructor(
 		context.withStyledAttributes(attrs, R.styleable.TipView, defStyleAttr) {
 			title = getText(R.styleable.TipView_title)
 			text = getText(R.styleable.TipView_android_text)
-			icon = getDrawableCompat(context, R.styleable.TipView_icon)
+			icon = getDrawable(R.styleable.TipView_icon)
 			primaryButtonText = getString(R.styleable.TipView_primaryButtonText)
 			secondaryButtonText = getString(R.styleable.TipView_secondaryButtonText)
 			val shapeAppearanceModel = ShapeAppearanceModel.builder(context, attrs, defStyleAttr, 0).build()

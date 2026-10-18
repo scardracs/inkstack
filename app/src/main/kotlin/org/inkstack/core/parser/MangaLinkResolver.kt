@@ -10,6 +10,7 @@ import org.inkstack.core.model.isNsfw
 import org.inkstack.core.util.ext.isHttpUrl
 import org.inkstack.parsers.MangaLoaderContext
 import org.inkstack.parsers.exception.NotFoundException
+import org.inkstack.parsers.model.ContentRating
 import org.inkstack.parsers.model.Manga
 import org.inkstack.parsers.model.MangaListFilter
 import org.inkstack.parsers.model.MangaSource
@@ -82,9 +83,9 @@ class MangaLinkResolver @Inject constructor(
 		// NoSuchElementException out of `first` and break the whole link, so fall back to the seed.
 		return runCatchingCancellable {
 			val seedTitle = seed.title.ifEmpty {
-				seed.altTitle
+				seed.altTitles.firstOrNull().orEmpty()
 			}.ifNullOrEmpty {
-				seed.author
+				seed.authors.firstOrNull()
 			} ?: return@runCatchingCancellable null
 			val seedList = getList(0, null, MangaListFilter(query = seedTitle))
 			seedList.firstOrNull { x -> x.url == url }
@@ -130,15 +131,15 @@ class MangaLinkResolver @Inject constructor(
 			h
 		},
 		title = title.orEmpty(),
-		altTitle = null,
+		altTitles = emptySet(),
 		url = url,
 		publicUrl = "",
 		rating = 0.0f,
-		isNsfw = source.isNsfw(),
+		contentRating = if (source.isNsfw()) ContentRating.ADULT else null,
 		coverUrl = "",
 		tags = emptySet(),
 		state = null,
-		author = null,
+		authors = emptySet(),
 		largeCoverUrl = null,
 		description = null,
 		chapters = null,

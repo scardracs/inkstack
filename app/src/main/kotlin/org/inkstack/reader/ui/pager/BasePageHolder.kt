@@ -1,7 +1,6 @@
 package org.inkstack.reader.ui.pager
 
 import android.content.ComponentCallbacks2
-import android.content.ComponentCallbacks2.TRIM_MEMORY_COMPLETE
 import android.content.Context
 import android.content.res.Configuration
 import android.view.View
@@ -159,7 +158,7 @@ abstract class BasePageHolder<B : ViewBinding>(
 	override fun onConfigurationChanged(newConfig: Configuration) = Unit
 
 	@Deprecated("Deprecated in Java")
-	final override fun onLowMemory() = onTrimMemory(TRIM_MEMORY_COMPLETE)
+	final override fun onLowMemory() = onTrimMemory(level = 80)
 
 	protected open fun onStateChanged(state: PageState) {
 		bindingInfo.layoutError.isVisible = state is PageState.Error

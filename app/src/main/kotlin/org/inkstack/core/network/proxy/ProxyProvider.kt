@@ -6,6 +6,7 @@ import androidx.webkit.WebViewFeature
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asExecutor
+import kotlin.coroutines.ContinuationInterceptor
 import okhttp3.Authenticator
 import okhttp3.Credentials
 import okhttp3.Request
@@ -63,7 +64,8 @@ class ProxyProvider @Inject constructor(
 			if (settings.proxyType == Proxy.Type.DIRECT) {
 				suspendCoroutine { cont ->
 					controller.clearProxyOverride(
-						(cont.context[CoroutineDispatcher] ?: Dispatchers.Main).asExecutor(),
+						(cont.context[ContinuationInterceptor] as? CoroutineDispatcher ?: Dispatchers.Main)
+							.asExecutor(),
 					) {
 						cont.resume(Unit)
 					}
@@ -90,7 +92,8 @@ class ProxyProvider @Inject constructor(
 				suspendCoroutine { cont ->
 					controller.setProxyOverride(
 						proxyConfig,
-						(cont.context[CoroutineDispatcher] ?: Dispatchers.Main).asExecutor(),
+						(cont.context[ContinuationInterceptor] as? CoroutineDispatcher ?: Dispatchers.Main)
+							.asExecutor(),
 					) {
 						cont.resume(Unit)
 					}

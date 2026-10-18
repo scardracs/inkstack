@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.drawable.toDrawable
-import androidx.core.os.bundleOf
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
@@ -32,7 +31,7 @@ import org.inkstack.core.ui.BaseActivity
 import org.inkstack.core.ui.model.titleRes
 import org.inkstack.core.ui.util.FadingAppbarMediator
 import org.inkstack.core.util.ViewBadge
-import org.inkstack.core.util.ext.consumeSystemBarsInsets
+import org.inkstack.core.util.ext.consume
 import org.inkstack.core.util.ext.end
 import org.inkstack.core.util.ext.getParcelableExtraCompat
 import org.inkstack.core.util.ext.getSerializableExtraCompat
@@ -116,7 +115,7 @@ class MangaListActivity :
 			end = if (viewBinding.cardSide == null) barsInsets.end(v) else 0,
 			start = barsInsets.start(v),
 		)
-		return insets.consumeSystemBarsInsets(v, top = true, end = true)
+		return insets.consume(v, WindowInsetsCompat.Type.systemBars(), top = true, end = true)
 	}
 
 	override fun onClick(v: View) {
@@ -135,7 +134,7 @@ class MangaListActivity :
 
 	fun showPreview(manga: Manga): Boolean = setSideFragment(
 		PreviewFragment::class.java,
-		bundleOf(AppRouter.KEY_MANGA to ParcelableManga(manga)),
+		Bundle(1).apply { putParcelable(AppRouter.KEY_MANGA, ParcelableManga(manga)) },
 	)
 
 	fun hidePreview() = setSideFragment(FilterSheetFragment::class.java, null)

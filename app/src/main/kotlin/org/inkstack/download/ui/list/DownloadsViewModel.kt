@@ -313,7 +313,11 @@ class DownloadsViewModel @Inject constructor(
 				if (chapterIds == null || it.id in chapterIds) {
 					DownloadChapter(
 						number = it.numberString(),
-						name = it.name,
+						name = it.title ?: buildString {
+							if (it.volume > 0) append("Vol ").append(it.volume).append(' ')
+							val number = it.numberString()
+							if (number != null) append("Chapter ").append(number) else append("Unnamed")
+						},
 						isDownloaded = it.id in localChapters,
 					)
 				} else {

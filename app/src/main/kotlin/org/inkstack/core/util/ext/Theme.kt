@@ -3,14 +3,11 @@ package org.inkstack.core.util.ext
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.content.res.TypedArray
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import androidx.annotation.Px
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.use
 import androidx.core.graphics.ColorUtils
 
@@ -74,10 +71,4 @@ fun Context.getThemeResId(
 	fallback: Int
 ): Int = obtainStyledAttributes(intArrayOf(resId)).use {
 	it.getResourceId(0, fallback)
-}
-
-@Deprecated("")
-fun TypedArray.getDrawableCompat(context: Context, index: Int): Drawable? {
-	val resId = getResourceId(index, 0)
-	return if (resId != 0) ContextCompat.getDrawable(context, resId) else null
 }

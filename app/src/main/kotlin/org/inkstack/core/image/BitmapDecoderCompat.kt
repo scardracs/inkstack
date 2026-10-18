@@ -22,7 +22,6 @@ import org.inkstack.core.util.MimeTypes
 import org.inkstack.core.util.ext.MimeType
 import org.inkstack.core.util.ext.printStackTraceDebug
 import org.inkstack.core.util.ext.readByteBuffer
-import org.inkstack.core.util.ext.toByteBuffer
 import org.inkstack.core.util.ext.toMimeTypeOrNull
 import org.inkstack.parsers.util.runCatchingCancellable
 import java.io.File
@@ -59,15 +58,12 @@ object BitmapDecoderCompat {
 	@Blocking
 	fun decode(stream: InputStream, type: MimeType?, isMutable: Boolean = false): Bitmap {
 		val format = type?.subtype
-		if (format == FORMAT_AVIF) {
-			return decodeAvif(stream.toByteBuffer())
-		}
 		if (format == FORMAT_JXL) {
 			return decodeJxl(stream.readBytes(), isMutable)
 		}
-		val byteBuffer = stream.toByteBuffer()
+		val byteBuffer = stream.source().buffer().use { it.readByteBuffer() }
 		return when {
-			AvifDecoder.isAvifImage(byteBuffer) -> decodeAvif(byteBuffer)
+			format == FORMAT_AVIF || AvifDecoder.isAvifImage(byteBuffer) -> decodeAvif(byteBuffer)
 			isJxl(byteBuffer) -> decodeJxl(ByteArray(byteBuffer.remaining()).also { byteBuffer.duplicate().get(it) }, isMutable)
 			else -> ImageDecoder.decodeBitmap(ImageDecoder.createSource(byteBuffer), DecoderConfigListener(isMutable))
 		}

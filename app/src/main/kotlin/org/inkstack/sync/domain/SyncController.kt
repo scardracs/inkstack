@@ -168,34 +168,36 @@ class SyncController @Inject constructor(
 		requestSyncImpl(favourites = favourites, history = history)
 	}
 
-	private suspend fun requestSyncImpl(favourites: Boolean, history: Boolean) = mutex.withLock {
-		if (!favourites && !history) {
-			return
-		}
-		val db = dbProvider.get()
-		val account = peekAccount()
-		if (account == null || !ContentResolver.getMasterSyncAutomatically()) {
-			db.gc(favourites, history)
-			return
-		}
-		var gcHistory = false
-		var gcFavourites = false
-		if (favourites) {
-			if (ContentResolver.getSyncAutomatically(account, authorityFavourites)) {
-				ContentResolver.requestSync(account, authorityFavourites, Bundle.EMPTY)
-			} else {
-				gcFavourites = true
+	private suspend fun requestSyncImpl(favourites: Boolean, history: Boolean) {
+		mutex.withLock {
+			if (!favourites && !history) {
+				return
 			}
-		}
-		if (history) {
-			if (ContentResolver.getSyncAutomatically(account, authorityHistory)) {
-				ContentResolver.requestSync(account, authorityHistory, Bundle.EMPTY)
-			} else {
-				gcHistory = true
+			val db = dbProvider.get()
+			val account = peekAccount()
+			if (account == null || !ContentResolver.getMasterSyncAutomatically()) {
+				db.gc(favourites, history)
+				return
 			}
-		}
-		if (gcHistory || gcFavourites) {
-			db.gc(gcFavourites, gcHistory)
+			var gcHistory = false
+			var gcFavourites = false
+			if (favourites) {
+				if (ContentResolver.getSyncAutomatically(account, authorityFavourites)) {
+					ContentResolver.requestSync(account, authorityFavourites, Bundle.EMPTY)
+				} else {
+					gcFavourites = true
+				}
+			}
+			if (history) {
+				if (ContentResolver.getSyncAutomatically(account, authorityHistory)) {
+					ContentResolver.requestSync(account, authorityHistory, Bundle.EMPTY)
+				} else {
+					gcHistory = true
+				}
+			}
+			if (gcHistory || gcFavourites) {
+				db.gc(gcFavourites, gcHistory)
+			}
 		}
 	}
 

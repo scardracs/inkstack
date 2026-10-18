@@ -220,7 +220,9 @@ class TrackingRepository @Inject constructor(
 				progressUpdateUseCase(updates.manga)
 				val logEntity = TrackLogEntity(
 					mangaId = updates.manga.id,
-					chapters = updates.newChapters.joinToString("\n") { x -> x.name },
+					chapters = updates.newChapters.joinToString("\n") { x ->
+						x.title ?: x.numberString()?.let { n -> "Chapter $n" } ?: "Unnamed"
+					},
 					createdAt = System.currentTimeMillis(),
 					isUnread = true,
 				)

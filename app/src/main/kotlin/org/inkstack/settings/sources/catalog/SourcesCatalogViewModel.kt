@@ -2,7 +2,6 @@ package org.inkstack.settings.sources.catalog
 
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.viewModelScope
-import androidx.room.invalidationTrackerFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -72,7 +71,7 @@ class SourcesCatalogViewModel @Inject constructor(
 		searchQuery,
 		appliedFilter,
 		presetSources,
-		db.invalidationTrackerFlow(TABLE_SOURCES),
+		db.invalidationTracker.createFlow(TABLE_SOURCES),
 		// Re-rank when a score download lands, not only when the sources table changes.
 		sourceRanker.observeScores(),
 	) { q, f, ps, _, _ ->
