@@ -1,2 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>	<plurals name="community_rating_count">
+		<item quantity="one">%d evaluare</item>
+		<item quantity="other">%d evaluări</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d comentariu</item>
+		<item quantity="other">%d comentarii</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">Ai postat cât permite un cont nou deocamdată. Încearcă din nou peste aproximativ %1$d minut.</item>
+		<item quantity="other">Ai postat cât permite un cont nou deocamdată. Încearcă din nou peste aproximativ %1$d minute.</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d răspuns nou</item>
+		<item quantity="other">%d răspunsuri noi</item>
+	</plurals>
+</resources>
