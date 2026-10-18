@@ -293,7 +293,7 @@ class MangaSourcesRepository @Inject constructor(
 	suspend fun setIsPinned(sources: Collection<MangaSource>, isPinned: Boolean): ReversibleHandle {
 		setSourcesPinnedImpl(sources, isPinned)
 		return ReversibleHandle {
-			setSourcesEnabledImpl(sources, !isPinned)
+			setSourcesPinnedImpl(sources, !isPinned)
 		}
 	}
 
