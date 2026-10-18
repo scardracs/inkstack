@@ -36,4 +36,20 @@
         <item quantity="one">%1$d минут</item>
         <item quantity="other">%1$d минут</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d баға</item>
+		<item quantity="other">%d баға</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d пікір</item>
+		<item quantity="other">%d пікір</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">Жаңа есептік жазба шегіне жетті. Шамамен %1$d минуттан кейін қайталап көріңіз.</item>
+		<item quantity="other">Жаңа есептік жазба шегіне жетті. Шамамен %1$d минуттан кейін қайталап көріңіз.</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d жаңа жауап</item>
+		<item quantity="other">%d жаңа жауап</item>
+	</plurals>
 </resources>
