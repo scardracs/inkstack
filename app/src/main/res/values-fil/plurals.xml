@@ -36,4 +36,20 @@
         <item quantity="one">%1$d minuto</item>
         <item quantity="other">%1$d (na) minuto</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d rating</item>
+		<item quantity="other">%d na rating</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d komento</item>
+		<item quantity="other">%d na komento</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">Na-post mo na ang hanggang maaari ng bagong account sa ngayon. Subukan muli sa humigit-kumulang %1$d minuto.</item>
+		<item quantity="other">Na-post mo na ang hanggang maaari ng bagong account sa ngayon. Subukan muli sa humigit-kumulang %1$d minuto.</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d bagong sagot</item>
+		<item quantity="other">%d na bagong sagot</item>
+	</plurals>
 </resources>
