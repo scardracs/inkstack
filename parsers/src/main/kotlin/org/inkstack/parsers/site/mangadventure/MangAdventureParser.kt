@@ -138,7 +138,7 @@ internal abstract class MangAdventureParser(
 					title = it.getStringOrNull("full_title"),
 					number = it.getFloatOrDefault("number", 0f),
 					volume = it.getIntOrDefault("volume", 0),
-					url = it.getString("url"),
+					url = it.getLong("id").toString(),
 					scanlator = it.getJSONArray("groups").joinToString(),
 					uploadDate = it.getString("published").toLong(),
 					branch = null,
@@ -150,7 +150,7 @@ internal abstract class MangAdventureParser(
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
 		val url = apiUrl.addEncodedPathSegment("chapters")
-			.addEncodedPathSegment(chapter.id.toString())
+			.addEncodedPathSegment(chapter.url)
 			.addEncodedPathSegment("pages")
 			.addEncodedQueryParameter("track", "true")
 		return url.get()?.optJSONArray("results")?.mapJSON {
