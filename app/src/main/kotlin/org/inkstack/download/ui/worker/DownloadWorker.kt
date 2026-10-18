@@ -544,10 +544,12 @@ class DownloadWorker @AssistedInject constructor(
 				if (work.state.isFinished) {
 					continue
 				}
+				val inputData = workManager.getWorkInputData(work.id) ?: continue
 				val request = OneTimeWorkRequestBuilder<DownloadWorker>()
 					.setConstraints(constraints)
 					.addTag(TAG)
 					.setId(work.id)
+					.setInputData(inputData)
 					.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
 					.build()
 				workManager.awaitUpdateWork(request)
