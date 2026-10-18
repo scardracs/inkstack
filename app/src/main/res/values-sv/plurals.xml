@@ -36,4 +36,20 @@
         <item quantity="one">%1$d minut</item>
         <item quantity="other">%1$d minuter</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d betyg</item>
+		<item quantity="other">%d betyg</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d kommentar</item>
+		<item quantity="other">%d kommentarer</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">Du har postat så mycket som ett nytt konto får för tillfället. Försök igen om cirka %1$d minut.</item>
+		<item quantity="other">Du har postat så mycket som ett nytt konto får för tillfället. Försök igen om cirka %1$d minuter.</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d nytt svar</item>
+		<item quantity="other">%d nya svar</item>
+	</plurals>
 </resources>
