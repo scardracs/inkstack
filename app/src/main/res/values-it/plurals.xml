@@ -45,4 +45,20 @@
         <item quantity="many">%1$d minuti</item>
         <item quantity="other">%1$d minuti</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d valutazione</item>
+		<item quantity="other">%d valutazioni</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d commento</item>
+		<item quantity="other">%d commenti</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">Hai pubblicato quanto consente un account nuovo per ora. Riprova tra circa %1$d minuto.</item>
+		<item quantity="other">Hai pubblicato quanto consente un account nuovo per ora. Riprova tra circa %1$d minuti.</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d nuova risposta</item>
+		<item quantity="other">%d nuove risposte</item>
+	</plurals>
 </resources>
