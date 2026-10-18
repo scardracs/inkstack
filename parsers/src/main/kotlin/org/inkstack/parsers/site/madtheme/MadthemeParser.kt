@@ -150,13 +150,22 @@ internal abstract class MadthemeParser(
 		val doc = webClient.httpGet(url).parseHtml()
 
 		return doc.select("div.book-item").map { div ->
-			val href = div.selectFirstOrThrow("a").attrAsRelativeUrl("href")
+			val a = div.selectFirstOrThrow("a")
+			val href = a.attrAsRelativeUrl("href")
+			val json = div.selectFirst("script#json-data")?.data().orEmpty()
+			val title = div.selectFirst("div.meta div.title")?.text()?.nullIfEmpty()
+				?: json.substringAfter("\"name\":\"", "").substringBefore("\"").nullIfEmpty()
+				?: a.attr("title").nullIfEmpty()
+				?: div.selectFirst("img")?.attr("alt")?.removePrefix("Read ")?.trim()?.nullIfEmpty()
+				?: ""
+			val coverUrl = div.selectFirst("img")?.src()
+				?: json.substringAfter("\"cover\":\"", "").substringBefore("\"").nullIfEmpty()
 			Manga(
 				id = generateUid(href),
 				url = href,
 				publicUrl = href.toAbsoluteUrl(div.host ?: domain),
-				coverUrl = div.selectFirst("img")?.src(),
-				title = div.selectFirst("div.meta")?.selectFirst("div.title")?.text().orEmpty(),
+				coverUrl = coverUrl,
+				title = title,
 				altTitles = emptySet(),
 				rating = div.selectFirst("div.meta span.score")?.ownText()?.toFloatOrNull()?.div(5f) ?: RATING_UNKNOWN,
 				tags = div.select("div.meta div.genres span").mapToSet { span ->
@@ -240,10 +249,24 @@ internal abstract class MadthemeParser(
 
 	protected open suspend fun getChapters(doc: Document): List<MangaChapter> {
 		val dateFormat = SimpleDateFormat(datePattern, sourceLocale)
-		val slug = doc.selectFirstOrThrow("script:containsData(bookSlug)").data().substringAfter("bookSlug = \"")
+		val embedded = doc.select(selectChapter)
+		if (embedded.isNotEmpty()) {
+			return mapChapterElements(embedded, dateFormat)
+		}
+		val slugScript = doc.selectFirst("script:containsData(bookSlug)") ?: return emptyList()
+		val slug = slugScript.data().substringAfter("bookSlug = \"")
 			.substringBefore("\";")
+			.takeIf { it.isNotEmpty() }
+			?: return emptyList()
 		val docChapter = webClient.httpGet("https://$domain/api/manga/$slug/chapters?source=detail").parseHtml()
-		return docChapter.select(selectChapter).mapChapters(reversed = true) { i, li ->
+		return mapChapterElements(docChapter.select(selectChapter), dateFormat)
+	}
+
+	private fun mapChapterElements(
+		elements: org.jsoup.select.Elements,
+		dateFormat: DateFormat,
+	): List<MangaChapter> {
+		return elements.mapChapters(reversed = true) { i, li ->
 			val a = li.selectFirstOrThrow("a")
 			val href = a.attrAsRelativeUrl("href")
 			val dateText = li.selectFirst(selectDate)?.text()
