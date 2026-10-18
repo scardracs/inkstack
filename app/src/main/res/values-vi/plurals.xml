@@ -27,4 +27,16 @@
     <plurals name="minutes">
         <item quantity="other">%1$d phút</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="other">%d xếp hạng</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="other">%d bình luận</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="other">Hiện tại, bạn đã đăng nhiều nhất có thể đối với một tài khoản mới. Hãy thử lại sau khoảng %1$d phút.</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="other">%d câu trả lời mới</item>
+	</plurals>
 </resources>
