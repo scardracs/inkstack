@@ -39,3 +39,11 @@ class AppValidator @Inject constructor(
 		private const val TRUSTED_CERT_SHA256 = ""
 	}
 }
+
+private fun String.hexToByteArray(): ByteArray {
+	require(length % 2 == 0) { "Hex string must have an even length" }
+	return ByteArray(length / 2) { index ->
+		val i = index * 2
+		substring(i, i + 2).toInt(16).toByte()
+	}
+}
