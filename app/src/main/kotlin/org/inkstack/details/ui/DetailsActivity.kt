@@ -121,6 +121,7 @@ import org.inkstack.sourcescore.ui.CommunityRatingDelegate
 import org.inkstack.sourcescore.ui.StarRowBinder
 import org.inkstack.sourcescore.ui.CommunityNameGate
 import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Job
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import org.inkstack.sourcescore.data.RatingResponse
@@ -710,7 +711,8 @@ class DetailsActivity :
 				}
 			}
 		}
-		lifecycleScope.launch {
+		communityRatingJob?.cancel()
+		communityRatingJob = lifecycleScope.launch {
 			val rating = communityRating.load(manga)
 			loading?.isVisible = false
 			if (rating == null) {
@@ -728,6 +730,8 @@ class DetailsActivity :
 
 	/** Cached so the Comments button does not have to resolve the work before it can open. */
 	private var resolvedWorkId: String? = null
+
+	private var communityRatingJob: Job? = null
 
 	private fun showCommunityRating(rating: RatingResponse) {
 		// The score, and nothing else. How many people voted is not what anyone came to find out.
