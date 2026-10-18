@@ -1,13 +1,4 @@
     -optimizationpasses 8
--dontobfuscate
--assumenosideeffects class kotlin.jvm.internal.Intrinsics {
-	public static void checkExpressionValueIsNotNull(...);
-	public static void checkNotNullExpressionValue(...);
-	public static void checkReturnedValueIsNotNull(...);
-	public static void checkFieldIsNotNull(...);
-	public static void checkParameterIsNotNull(...);
-	public static void checkNotNullParameter(...);
-}
 
 -dontwarn okhttp3.internal.platform.**
 -dontwarn org.bouncycastle.**
