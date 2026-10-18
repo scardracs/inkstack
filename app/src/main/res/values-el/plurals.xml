@@ -28,4 +28,20 @@
         <item quantity="one">%1$d μήνας πριν</item>
         <item quantity="other">%1$d μήνες πριν</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d αξιολόγηση</item>
+		<item quantity="other">%d αξιολογήσεις</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d σχόλιο</item>
+		<item quantity="other">%d σχόλια</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">Έχετε δημοσιεύσει όσα επιτρέπονται προς το παρόν για νέο λογαριασμό. Δοκιμάστε ξανά σε περίπου %1$d λεπτό.</item>
+		<item quantity="other">Έχετε δημοσιεύσει όσα επιτρέπονται προς το παρόν για νέο λογαριασμό. Δοκιμάστε ξανά σε περίπου %1$d λεπτά.</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d νέα απάντηση</item>
+		<item quantity="other">%d νέες απαντήσεις</item>
+	</plurals>
 </resources>
