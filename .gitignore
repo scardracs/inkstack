@@ -15,3 +15,6 @@ keystore/*.keystore
 keystore/*.p12
 !keystore/*.cer
 !keystore/README.md
+
+# Local UI smoke screenshots (not for VCS)
+.local-ref/
