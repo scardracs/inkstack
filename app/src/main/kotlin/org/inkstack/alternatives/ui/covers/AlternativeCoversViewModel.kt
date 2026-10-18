@@ -28,6 +28,7 @@ import org.inkstack.core.nav.AppRouter
 import org.inkstack.core.ui.BaseViewModel
 import org.inkstack.core.util.ext.require
 import org.inkstack.parsers.model.Manga
+import org.inkstack.parsers.model.MangaSource
 import javax.inject.Inject
 
 private const val HASH_PARALLELISM = 4
@@ -81,7 +82,7 @@ class AlternativeCoversViewModel @Inject constructor(
 			try {
 				// Seed the current cover's hash first, so a source offering the same artwork back is
 				// dropped rather than shown as an alternative to itself.
-				manga.coverUrl?.let { rememberHash(it) }
+				manga.coverUrl?.let { rememberHash(it, manga.source) }
 				// Same rule as the Alternatives screen: the active preset when it has candidates,
 				// otherwise every enabled source.
 				val scope = alternativesUseCase.getSourceScopeOptions(manga.source).defaultScope
@@ -130,7 +131,7 @@ class AlternativeCoversViewModel @Inject constructor(
 		}
 		// Cheap url check first, then the image itself: sources republish the same artwork under
 		// different names often enough that the url tells you almost nothing.
-		if (!rememberHash(url)) {
+		if (!rememberHash(url, candidate.source)) {
 			return
 		}
 		// update, not `value = value + x`: several candidates finish hashing at once and a plain
@@ -155,8 +156,8 @@ class AlternativeCoversViewModel @Inject constructor(
 	 * A cover that cannot be decoded is kept: dropping it would hide artwork over a transient failure,
 	 * and a duplicate is a smaller problem than a missing option.
 	 */
-	private suspend fun rememberHash(url: String): Boolean {
-		val hash = hashSemaphore.withPermit { hashOf(url) } ?: return true
+	private suspend fun rememberHash(url: String, source: MangaSource): Boolean {
+		val hash = hashSemaphore.withPermit { hashOf(url, source) } ?: return true
 		return hashMutex.withLock {
 			if (acceptedHashes.any { CoverHash.distance(it, hash) <= CoverHash.MAX_DISTANCE }) {
 				false
@@ -167,12 +168,12 @@ class AlternativeCoversViewModel @Inject constructor(
 		}
 	}
 
-	private suspend fun hashOf(url: String): Long? = runCatchingCancellable {
+	private suspend fun hashOf(url: String, source: MangaSource): Long? = runCatchingCancellable {
 		val request = ImageRequest.Builder(context)
 			.data(url)
 			.size(CoverHash.SAMPLE_WIDTH, CoverHash.SAMPLE_HEIGHT)
 			.allowRgb565(false)
-			.mangaSourceExtra(manga.source)
+			.mangaSourceExtra(source)
 			.build()
 		coil.execute(request).toBitmapOrNull()?.let(CoverHash::of)
 	}.getOrNull()
