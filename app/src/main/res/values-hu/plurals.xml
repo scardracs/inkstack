@@ -36,4 +36,20 @@
         <item quantity="one">%1$d perc</item>
         <item quantity="other">%1$d perc</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d értékelés</item>
+		<item quantity="other">%d értékelés</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d hozzászólás</item>
+		<item quantity="other">%d hozzászólás</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">Egy új fiók ennyit posztolhat most. Próbáld újra kb. %1$d perc múlva.</item>
+		<item quantity="other">Egy új fiók ennyit posztolhat most. Próbáld újra kb. %1$d perc múlva.</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d új válasz</item>
+		<item quantity="other">%d új válasz</item>
+	</plurals>
 </resources>
