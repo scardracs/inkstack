@@ -18,6 +18,7 @@ import org.inkstack.core.util.progress.Progress
 import java.util.zip.Deflater
 import java.util.zip.ZipOutputStream
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 @HiltViewModel
 class BackupViewModel @Inject constructor(
@@ -34,11 +35,18 @@ class BackupViewModel @Inject constructor(
 
 	init {
 		launchLoadingJob(Dispatchers.Default) {
-			ZipOutputStream(checkNotNull(contentResolver.openOutputStream(destination))).use {
-				it.setLevel(Deflater.BEST_COMPRESSION)
-				repository.createBackup(it, progress)
+			try {
+				ZipOutputStream(checkNotNull(contentResolver.openOutputStream(destination))).use {
+					it.setLevel(Deflater.BEST_COMPRESSION)
+					repository.createBackup(it, progress)
+				}
+				onBackupDone.call(destination)
+			} catch (e: CancellationException) {
+				throw e
+			} catch (e: Exception) {
+				runCatching { contentResolver.delete(destination, null, null) }
+				throw e
 			}
-			onBackupDone.call(destination)
 		}
 	}
 }
