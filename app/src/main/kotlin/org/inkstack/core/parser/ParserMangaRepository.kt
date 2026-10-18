@@ -130,13 +130,11 @@ class ParserMangaRepository(
 			}
 		},
 		onFailure = {
-			when (it.cause) {
-				is CloudFlareProtectedException,
-				is AuthRequiredException,
-				is InteractiveActionRequiredException,
-				is ProxyConfigException -> true
-
-				else -> false
+			generateSequence(it as Throwable?) { e -> e.cause }.any { e ->
+				e is CloudFlareProtectedException ||
+					e is AuthRequiredException ||
+					e is InteractiveActionRequiredException ||
+					e is ProxyConfigException
 			}
 		},
 	)
