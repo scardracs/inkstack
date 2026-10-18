@@ -45,4 +45,20 @@
         <item quantity="few">prieš %1$d mėn</item>
         <item quantity="other">prieš %1$d mėn</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d įvertinimas</item>
+		<item quantity="other">%d įvertinimai</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d komentaras</item>
+		<item quantity="other">%d komentarai</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">Nauja paskyra kol kas gali tiek. Bandykite vėl po maždaug %1$d minutės.</item>
+		<item quantity="other">Nauja paskyra kol kas gali tiek. Bandykite vėl po maždaug %1$d minučių.</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d naujas atsakymas</item>
+		<item quantity="other">%d nauji atsakymai</item>
+	</plurals>
 </resources>
