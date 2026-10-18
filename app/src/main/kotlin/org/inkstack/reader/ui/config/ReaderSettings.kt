@@ -102,6 +102,7 @@ data class ReaderSettings(
 			AppSettings.KEY_CF_BRIGHTNESS,
 			AppSettings.KEY_CF_INVERTED,
 			AppSettings.KEY_CF_GRAYSCALE,
+			AppSettings.KEY_CF_BOOK,
 			AppSettings.KEY_READER_CROP,
 		)
 		private var job: Job? = null
