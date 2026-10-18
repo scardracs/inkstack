@@ -1,6 +1,6 @@
 # Inkstack
 
-Manga reader for Android 16+.
+Manga reader for Android 9+ (API 28).
 
 ## Layout
 
@@ -10,8 +10,9 @@ Manga reader for Android 16+.
 
 ## Requirements
 
-- Android 16 (API 36) or newer
-- JDK 17
+- Android 9 (API 28) or newer
+- JDK 27 (toolchain; bytecode target 26)
+- Optional: `local.properties` release signing keys (see `keystore/README.md`)
 
 ## Build
 
