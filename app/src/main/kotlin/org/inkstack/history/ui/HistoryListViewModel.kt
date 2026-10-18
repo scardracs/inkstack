@@ -84,6 +84,7 @@ class HistoryListViewModel @Inject constructor(
 	}
 
 	private val limit = MutableStateFlow(PAGE_SIZE)
+	private val refreshTrigger = MutableStateFlow(Any())
 	private val isPaginationReady = AtomicBoolean(false)
 
 	val isStatsEnabled = settings.observeAsStateFlow(
@@ -93,20 +94,25 @@ class HistoryListViewModel @Inject constructor(
 	)
 
 	override val content = combine(
-		quickFilter.appliedOptions,
-		observeHistory(),
-		isGroupingEnabled,
-		observeListModeWithTriggers(),
-		settings.observeAsFlow(AppSettings.KEY_INCOGNITO_MODE) { isIncognitoModeEnabled },
-	) { filters, list, grouped, mode, incognito ->
-		mapList(list, grouped, mode, filters, incognito)
-	}.distinctUntilChanged().onEach {
+		combine(
+			quickFilter.appliedOptions,
+			observeHistory(),
+			isGroupingEnabled,
+			observeListModeWithTriggers(),
+			settings.observeAsFlow(AppSettings.KEY_INCOGNITO_MODE) { isIncognitoModeEnabled },
+		) { filters, list, grouped, mode, incognito ->
+			mapList(list, grouped, mode, filters, incognito)
+		},
+		refreshTrigger,
+	) { list, _ -> list }.distinctUntilChanged().onEach {
 		isPaginationReady.set(true)
 	}.catch { e ->
 		emit(listOf(e.toErrorState(canRetry = false)))
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState()))
 
-	override fun onRefresh() = Unit
+	override fun onRefresh() {
+		refreshTrigger.value = Any()
+	}
 
 	override fun onRetry() = Unit
 

@@ -25,6 +25,7 @@ fun HistoryScreen(
 ) {
 	val context = LocalContext.current
 	val content by viewModel.content.collectAsState()
+	val isLoading by viewModel.isLoading.collectAsState()
 	val selection = rememberMangaListSelection(
 		content = content,
 		menuRes = R.menu.mode_history,
@@ -58,6 +59,8 @@ fun HistoryScreen(
 		quickFilterListener = viewModel,
 		onEmptyAction = viewModel::clearFilter,
 		onLoadMore = viewModel::requestMoreItems,
+		onRefresh = viewModel::onRefresh,
+		isRefreshing = isLoading,
 		imageLoader = imageLoader,
 		contentPadding = contentPadding,
 	)

@@ -22,6 +22,7 @@ fun SuggestionsScreen(
 	contentPadding: PaddingValues = PaddingValues(),
 ) {
 	val content by viewModel.content.collectAsState()
+	val isLoading by viewModel.isLoading.collectAsState()
 	val selection = rememberMangaListSelection(
 		content = content,
 		menuRes = R.menu.mode_remote,
@@ -32,6 +33,8 @@ fun SuggestionsScreen(
 		selection = selection,
 		modifier = modifier,
 		quickFilterListener = viewModel,
+		onRefresh = viewModel::updateSuggestions,
+		isRefreshing = isLoading,
 		imageLoader = imageLoader,
 		contentPadding = contentPadding,
 	)

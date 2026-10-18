@@ -22,6 +22,7 @@ fun UpdatesScreen(
 	contentPadding: PaddingValues = PaddingValues(),
 ) {
 	val content by viewModel.content.collectAsState()
+	val isLoading by viewModel.isLoading.collectAsState()
 	val selection = rememberMangaListSelection(
 		content = content,
 		menuRes = R.menu.mode_updates,
@@ -41,6 +42,8 @@ fun UpdatesScreen(
 		selection = selection,
 		modifier = modifier,
 		quickFilterListener = viewModel,
+		onRefresh = viewModel::onRefresh,
+		isRefreshing = isLoading,
 		imageLoader = imageLoader,
 		contentPadding = contentPadding,
 	)

@@ -8,6 +8,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -29,15 +30,24 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import org.inkstack.R
 
+data class MainOverflowItem(
+	val id: String,
+	val titleRes: Int,
+	val checked: Boolean? = null,
+	val visible: Boolean = true,
+	val onClick: () -> Unit,
+)
+
 @Composable
 fun MainSearchBar(
 	query: String,
 	onQueryChange: (String) -> Unit,
 	onSearch: (String) -> Unit,
-	onOpenSettings: () -> Unit,
+	menuItems: List<MainOverflowItem>,
 	modifier: Modifier = Modifier,
 ) {
 	var menuExpanded by remember { mutableStateOf(false) }
+	val visibleItems = menuItems.filter { it.visible }
 	Surface(
 		modifier = modifier
 			.fillMaxWidth()
@@ -57,19 +67,32 @@ fun MainSearchBar(
 			},
 			trailingIcon = {
 				IconButton(onClick = { menuExpanded = true }) {
-					Icon(Icons.Filled.MoreVert, contentDescription = stringResource(R.string.settings))
+					Icon(
+						Icons.Filled.MoreVert,
+						contentDescription = stringResource(R.string.more),
+					)
 				}
 				DropdownMenu(
 					expanded = menuExpanded,
 					onDismissRequest = { menuExpanded = false },
 				) {
-					DropdownMenuItem(
-						text = { Text(stringResource(R.string.settings)) },
-						onClick = {
-							menuExpanded = false
-							onOpenSettings()
-						},
-					)
+					visibleItems.forEach { item ->
+						DropdownMenuItem(
+							text = { Text(stringResource(item.titleRes)) },
+							onClick = {
+								menuExpanded = false
+								item.onClick()
+							},
+							trailingIcon = item.checked?.let { checked ->
+								{
+									Checkbox(
+										checked = checked,
+										onCheckedChange = null,
+									)
+								}
+							},
+						)
+					}
 				}
 			},
 			singleLine = true,
