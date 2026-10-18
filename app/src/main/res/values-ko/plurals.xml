@@ -1,2 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>	<plurals name="community_rating_count">
+		<item quantity="one">평점 %d개</item>
+		<item quantity="other">평점 %d개</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">댓글 %d개</item>
+		<item quantity="other">댓글 %d개</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">새 계정의 게시 한도에 도달했습니다. 약 %1$d분 후 다시 시도하세요.</item>
+		<item quantity="other">새 계정의 게시 한도에 도달했습니다. 약 %1$d분 후 다시 시도하세요.</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">새 답글 %d개</item>
+		<item quantity="other">새 답글 %d개</item>
+	</plurals>
+</resources>
