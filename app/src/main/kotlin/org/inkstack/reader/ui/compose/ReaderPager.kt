@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateMapOf
@@ -24,7 +24,7 @@ import org.inkstack.reader.ui.pager.ReaderPage
 @Composable
 fun ReaderPager(
 	pages: List<ReaderPage>,
-	initialIndex: Int,
+	listState: LazyListState,
 	webtoonGaps: Boolean,
 	loader: PageLoader,
 	settingsProducer: ReaderSettings.Producer,
@@ -35,8 +35,6 @@ fun ReaderPager(
 	onTap: () -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	val safeIndex = initialIndex.coerceIn(0, (pages.size - 1).coerceAtLeast(0))
-	val listState = rememberLazyListState(initialFirstVisibleItemIndex = safeIndex)
 	val aspectRatios = remember { mutableStateMapOf<Long, Float>() }
 
 	LaunchedEffect(listState) {

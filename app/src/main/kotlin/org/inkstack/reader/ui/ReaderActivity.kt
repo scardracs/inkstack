@@ -28,6 +28,7 @@ import org.inkstack.core.util.ext.observeEvent
 import org.inkstack.reader.data.TapGridSettings
 import org.inkstack.reader.domain.PageLoader
 import org.inkstack.reader.ui.compose.ReaderScreen
+import org.inkstack.reader.ui.compose.ReaderScrollController
 import org.inkstack.reader.ui.config.ReaderConfigSheet
 import org.inkstack.sourcescore.ui.CommunityCommentsSheet
 import org.inkstack.sourcescore.ui.CommunityRatingDelegate
@@ -55,7 +56,7 @@ class ReaderActivity :
 	private lateinit var controlDelegate: ReaderControlDelegate
 
 	private var uiVisible by mutableStateOf(true)
-	private var pagerSwitch: ((Int) -> Unit)? = null
+	private var scrollController: ReaderScrollController? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -93,6 +94,7 @@ class ReaderActivity :
 				onComments = { onCommentsClick() },
 				systemUiVisible = uiVisible,
 				onToggleUi = { toggleUiVisibility() },
+				onScrollController = { scrollController = it },
 			)
 		}
 	}
@@ -123,31 +125,27 @@ class ReaderActivity :
 	}
 
 	override fun switchPageBy(delta: Int) {
-		pagerSwitch?.invoke(delta)
-		val state = viewModel.getCurrentState() ?: return
-		val pages = viewModel.content.value.pages
-		val idx = pages.indexOfFirst { it.chapterId == state.chapterId && it.index == state.page }
-		val next = idx + delta
-		when {
-			next in pages.indices -> viewModel.onCurrentPageChanged(next, next)
-			delta > 0 -> viewModel.switchChapterBy(1)
-			delta < 0 -> viewModel.switchChapterBy(-1)
+		scrollController?.scrollByPages(delta) ?: run {
+			val state = viewModel.getCurrentState() ?: return
+			val pages = viewModel.content.value.pages
+			val idx = pages.indexOfFirst { it.chapterId == state.chapterId && it.index == state.page }
+			val next = idx + delta
+			when {
+				next in pages.indices -> viewModel.onCurrentPageChanged(next, next)
+				delta > 0 -> viewModel.switchChapterBy(1)
+				delta < 0 -> viewModel.switchChapterBy(-1)
+			}
 		}
 	}
 
 	override fun switchPageTo(index: Int) {
-		val pages = viewModel.getCurrentChapterPages() ?: return
-		val page = pages.getOrNull(index) ?: return
-		val chapterId = viewModel.getCurrentState()?.chapterId ?: return
-		val global = viewModel.content.value.pages.indexOfFirst {
-			it.chapterId == chapterId && it.index == index
-		}
-		if (global >= 0) viewModel.onCurrentPageChanged(global, global)
+		scrollController?.scrollToChapterPage(index)
 	}
 
 	override fun switchChapterBy(delta: Int) = viewModel.switchChapterBy(delta)
 
-	override fun scrollBy(delta: Int, smooth: Boolean): Boolean = false
+	override fun scrollBy(delta: Int, smooth: Boolean): Boolean =
+		scrollController?.scrollPixels(delta, smooth) == true
 
 	override fun toggleUiVisibility() = setUiIsVisible(!uiVisible)
 
