@@ -38,7 +38,11 @@ class AppProtectHelper @Inject constructor(private val settings: AppSettings) :
 		isUnlocked = true
 	}
 
-	private fun restoreLock() {
+	fun syncLockState() {
 		isUnlocked = settings.appPassword.isNullOrEmpty()
+	}
+
+	private fun restoreLock() {
+		syncLockState()
 	}
 }

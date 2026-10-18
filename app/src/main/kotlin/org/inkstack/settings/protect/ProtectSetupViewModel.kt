@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.inkstack.core.prefs.AppSettings
 import org.inkstack.core.ui.BaseViewModel
+import org.inkstack.main.ui.protect.AppProtectHelper
 import org.inkstack.core.util.ext.MutableEventFlow
 import org.inkstack.core.util.ext.call
 import org.inkstack.parsers.util.isNumeric
@@ -19,6 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ProtectSetupViewModel @Inject constructor(
 	private val settings: AppSettings,
+	private val protectHelper: AppProtectHelper,
 ) : BaseViewModel() {
 
 	private val firstPassword = MutableStateFlow<String?>(null)
@@ -41,6 +43,7 @@ class ProtectSetupViewModel @Inject constructor(
 			if (firstPassword.value == password) {
 				settings.appPassword = password.md5()
 				settings.isAppPasswordNumeric = password.isNumeric()
+				protectHelper.syncLockState()
 				onPasswordSet.call(Unit)
 			} else {
 				onPasswordMismatch.call(Unit)
