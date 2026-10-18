@@ -9,6 +9,23 @@ version = "1.0"
 
 tasks.test {
 	useJUnitPlatform()
+	// MangaParserTest hits every live source (Cloudflare/DNS/timeouts) — opt-in only.
+	filter {
+		excludeTestsMatching("org.inkstack.parsers.MangaParserTest")
+	}
+}
+
+tasks.register<Test>("testLiveSources") {
+	description = "Live MangaParserSource integration tests (requires network; not for CI)"
+	group = "verification"
+	val unitTest = tasks.test.get()
+	testClassesDirs = unitTest.testClassesDirs
+	classpath = unitTest.classpath
+	useJUnitPlatform()
+	filter {
+		includeTestsMatching("org.inkstack.parsers.MangaParserTest")
+	}
+	shouldRunAfter(unitTest)
 }
 
 ksp {

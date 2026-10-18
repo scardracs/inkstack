@@ -60,6 +60,7 @@ jobs:
         run: ./gradlew :app:assembleDebug --stacktrace
 
       - name: Parsers unit tests
+        # Excludes MangaParserTest (live network suite). Run locally via :parsers:testLiveSources
         run: ./gradlew :parsers:test --stacktrace
 
       - name: App unit tests
