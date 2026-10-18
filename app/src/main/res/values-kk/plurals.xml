@@ -30,7 +30,7 @@
     </plurals>
     <plurals name="hours">
         <item quantity="one">%1$d сағат</item>
-        <item quantity="other">Нөл , екі, үш, төрт, бес, алты, жеті, сегіз, тоғыз, он</item>
+        <item quantity="other">%1$d сағат</item>
     </plurals>
     <plurals name="minutes">
         <item quantity="one">%1$d минут</item>
