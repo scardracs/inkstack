@@ -20,7 +20,7 @@ public object CloudFlareHelper {
             return PROTECTION_NOT_DETECTED
         }
         val content = try {
-            response.peekBody(Long.MAX_VALUE).use {
+            response.peekBody(1L * 1024 * 1024).use {
                 Jsoup.parse(it.byteStream(), Charsets.UTF_8.name(), response.request.url.toString())
             }
         } catch (_: IllegalStateException) {
