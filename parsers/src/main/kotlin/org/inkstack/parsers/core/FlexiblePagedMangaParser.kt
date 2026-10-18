@@ -32,9 +32,9 @@ internal abstract class FlexiblePagedMangaParser(
 
 		return searchManga(
 			paginator = if (containTitleNameCriteria) {
-				paginator
-			} else {
 				searchPaginator
+			} else {
+				paginator
 			},
 			query = query,
 		)
