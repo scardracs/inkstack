@@ -45,4 +45,28 @@
         <item quantity="few">%1$d minuty</item>
         <item quantity="other">%1$d minut</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d hodnocení</item>
+		<item quantity="few">%d hodnocení</item>
+		<item quantity="many">%d hodnocení</item>
+		<item quantity="other">%d hodnocení</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d komentář</item>
+		<item quantity="few">%d komentáře</item>
+		<item quantity="many">%d komentářů</item>
+		<item quantity="other">%d komentáře</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">Nový účet vyčerpal limit. Zkuste to znovu za asi %1$d minutu.</item>
+		<item quantity="few">Nový účet vyčerpal limit. Zkuste to znovu za asi %1$d minuty.</item>
+		<item quantity="many">Nový účet vyčerpal limit. Zkuste to znovu za asi %1$d minut.</item>
+		<item quantity="other">Nový účet vyčerpal limit. Zkuste to znovu za asi %1$d minut.</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d nová odpověď</item>
+		<item quantity="few">%d nové odpovědi</item>
+		<item quantity="many">%d nových odpovědí</item>
+		<item quantity="other">%d nových odpovědí</item>
+	</plurals>
 </resources>
