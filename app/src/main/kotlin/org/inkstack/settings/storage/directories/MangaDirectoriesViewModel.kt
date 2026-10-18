@@ -42,14 +42,14 @@ class MangaDirectoriesViewModel @Inject constructor(
                 throw AccessDeniedException(dir)
             }
             if (dir !in storageManager.getApplicationStorageDirs()) {
-                settings.userSpecifiedMangaDirectories += dir
+                settings.addUserSpecifiedMangaDirectory(dir)
                 loadList()
             }
         }
     }
 
     fun onRemoveClick(directory: File) {
-        settings.userSpecifiedMangaDirectories -= directory
+        settings.removeUserSpecifiedMangaDirectory(directory)
         if (settings.mangaStorageDir == directory) {
             settings.mangaStorageDir = null
         }
@@ -62,7 +62,7 @@ class MangaDirectoriesViewModel @Inject constructor(
             prevJob?.cancelAndJoin()
             val downloadDir = storageManager.getDefaultWriteableDir()
             val applicationDirs = storageManager.getApplicationStorageDirs()
-            val customDirs = settings.userSpecifiedMangaDirectories - applicationDirs
+            val customDirs = settings.getAllUserSpecifiedMangaDirectoryPaths() - applicationDirs
             items.value = buildList(applicationDirs.size + customDirs.size) {
                 applicationDirs.mapTo(this) { dir ->
                     dir.toDirectoryModel(

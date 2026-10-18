@@ -390,6 +390,22 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 			prefs.edit { putStringSet(KEY_LOCAL_MANGA_DIRS, set) }
 		}
 
+	fun getAllUserSpecifiedMangaDirectoryPaths(): Set<File> {
+		return prefs.getStringSet(KEY_LOCAL_MANGA_DIRS, emptySet()).orEmpty().mapTo(linkedSetOf()) { File(it) }
+	}
+
+	fun addUserSpecifiedMangaDirectory(dir: File) {
+		val set = prefs.getStringSet(KEY_LOCAL_MANGA_DIRS, emptySet()).orEmpty().toMutableSet()
+		set.add(dir.absolutePath)
+		prefs.edit { putStringSet(KEY_LOCAL_MANGA_DIRS, set) }
+	}
+
+	fun removeUserSpecifiedMangaDirectory(dir: File) {
+		val set = prefs.getStringSet(KEY_LOCAL_MANGA_DIRS, emptySet()).orEmpty().toMutableSet()
+		set.remove(dir.absolutePath)
+		prefs.edit { putStringSet(KEY_LOCAL_MANGA_DIRS, set) }
+	}
+
 	var mangaStorageDir: File?
 		get() = prefs.getString(KEY_LOCAL_STORAGE, null)?.let {
 			File(it)
