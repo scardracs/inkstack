@@ -19,7 +19,6 @@ import org.inkstack.core.ui.BaseViewModel
 import org.inkstack.core.ui.util.ActivityRecreationHandle
 import org.inkstack.list.ui.model.ListModel
 import org.inkstack.main.ui.MainActivity
-import org.inkstack.main.ui.MainNavigationDelegate
 import org.inkstack.parsers.util.move
 import org.inkstack.settings.nav.model.NavItemAddModel
 import org.inkstack.settings.nav.model.NavItemConfigModel
@@ -39,7 +38,7 @@ class NavConfigViewModel @Inject constructor(
 				NavItemConfigModel(it, getUnavailabilityHint(it))
 			}
 			if (size < NavItem.entries.size) {
-				add(NavItemAddModel(size < MainNavigationDelegate.MAX_ITEM_COUNT))
+				add(NavItemAddModel(size < MAX_MAIN_NAV_ITEMS))
 			}
 		}
 	}.stateIn(
@@ -94,5 +93,9 @@ class NavConfigViewModel @Inject constructor(
 		NavItem.FEED -> R.string.check_for_new_chapters_disabled
 		NavItem.SUGGESTIONS -> R.string.suggestions_unavailable_text
 		else -> 0
+	}
+
+	companion object {
+		const val MAX_MAIN_NAV_ITEMS = 6
 	}
 }

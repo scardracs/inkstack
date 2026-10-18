@@ -1,9 +1,7 @@
 package org.inkstack.main.ui
 
-import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.search.SearchView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -16,15 +14,18 @@ import kotlinx.coroutines.launch
 import org.inkstack.R
 import org.inkstack.core.prefs.AppSettings
 import org.inkstack.core.prefs.observeAsFlow
-import org.inkstack.main.ui.owners.BottomNavOwner
 
+/**
+ * Double-back-to-exit for the legacy View-based MainActivity shell.
+ * The Compose [org.inkstack.main.ui.compose.MainScreen] handles exit confirmation itself.
+ */
 class ExitCallback(
 	private val activity: MainActivity,
-	private val snackbarHost: View,
-) : OnBackPressedCallback(false), SearchView.TransitionListener {
+	private val snackbarHost: android.view.View,
+) : OnBackPressedCallback(false) {
 
 	private var job: Job? = null
-	private val isSearchOpen = MutableStateFlow(activity.viewBinding.searchView.isShowing)
+	private val isSearchOpen = MutableStateFlow(false)
 	private val isDisabledByTimeout = MutableStateFlow(false)
 
 	init {
@@ -48,18 +49,13 @@ class ExitCallback(
 		}
 	}
 
-	override fun onStateChanged(
-		searchView: SearchView,
-		previousState: SearchView.TransitionState,
-		newState: SearchView.TransitionState
-	) {
-		isSearchOpen.value = newState >= SearchView.TransitionState.SHOWING
+	fun setSearchOpen(isOpen: Boolean) {
+		isSearchOpen.value = isOpen
 	}
 
 	private suspend fun resetExitConfirmation() {
 		isDisabledByTimeout.value = true
 		val snackbar = Snackbar.make(snackbarHost, R.string.confirm_exit, Snackbar.LENGTH_INDEFINITE)
-		snackbar.anchorView = (activity as? BottomNavOwner)?.bottomNav
 		snackbar.show()
 		delay(2000)
 		snackbar.dismiss()

@@ -1,8 +1,8 @@
 package org.inkstack.main.ui.owners
 
-import org.inkstack.core.ui.widgets.SlidingBottomNavigationView
+import android.view.View
 
 interface BottomNavOwner {
 
-	val bottomNav: SlidingBottomNavigationView?
+	val bottomNav: View?
 }
