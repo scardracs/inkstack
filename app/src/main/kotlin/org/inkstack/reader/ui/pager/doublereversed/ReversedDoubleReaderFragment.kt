@@ -11,7 +11,11 @@ class ReversedDoubleReaderFragment : DoubleReaderFragment() {
 	}
 
 	override fun switchPageTo(position: Int, smooth: Boolean) {
-		super.switchPageTo(reversed(position), smooth)
+		if (smooth) {
+			super.switchPageTo(reversed(position), smooth)
+		} else {
+			super<DoubleReaderFragment>.switchPageTo(position, smooth)
+		}
 	}
 
 	override suspend fun onPagesChanged(pages: List<ReaderPage>, pendingState: ReaderState?) {
