@@ -95,9 +95,7 @@
     <string name="text_history_holder_secondary">Найдите, что почитать в разделе «Обзор»</string>
     <string name="text_local_holder_primary">Сохраните что-нибудь</string>
     <string name="text_local_holder_secondary">Сохраните что-нибудь из онлайн-каталога или импортируйте из файла.</string>
-    <string name="manga_shelf">Полка</string>
-    <string name="recent_manga">Недавнее</string>
-    <string name="pages_animation">Анимация пролистывания</string>
+<string name="pages_animation">Анимация пролистывания</string>
     <string name="manga_save_location">Папка загрузок</string>
     <string name="not_available">Недоступно</string>
     <string name="cannot_find_available_storage">Нет доступного хранилища</string>
@@ -249,9 +247,7 @@
     <string name="send">Отправить</string>
     <string name="disable_all">Отключить все</string>
     <string name="use_fingerprint">Использовать биометрические данные, если они доступны</string>
-    <string name="appwidget_shelf_description">Манга из Вашего избранного</string>
-    <string name="appwidget_recent_description">Манга, которую Вы недавно читали</string>
-    <string name="status_reading">Читаю</string>
+<string name="status_reading">Читаю</string>
     <string name="status_planned">Запланировано</string>
     <string name="status_on_hold">Отложено</string>
     <string name="status_dropped">Заброшено</string>

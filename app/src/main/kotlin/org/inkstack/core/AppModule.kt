@@ -65,7 +65,6 @@ import org.inkstack.main.ui.protect.ScreenshotPolicyHelper
 import org.inkstack.parsers.MangaLoaderContext
 import org.inkstack.search.ui.MangaSuggestionsProvider
 import org.inkstack.sync.domain.SyncController
-import org.inkstack.widget.WidgetUpdater
 import javax.inject.Provider
 import javax.inject.Singleton
 
@@ -156,12 +155,10 @@ interface AppModule {
 		@Provides
 		@ElementsIntoSet
 		fun provideDatabaseObservers(
-			widgetUpdater: WidgetUpdater,
 			appShortcutManager: AppShortcutManager,
 			backupObserver: BackupObserver,
 			syncController: SyncController,
 		): Set<@JvmSuppressWildcards InvalidationTracker.Observer> = arraySetOf(
-			widgetUpdater,
 			appShortcutManager,
 			backupObserver,
 			syncController,

@@ -166,8 +166,7 @@
     <string name="list">பட்டியல்</string>
     <string name="detailed_list">விரிவான பட்டியல்</string>
     <string name="text_local_holder_primary">முதலில் எதையாவது சேமிக்கவும்</string>
-    <string name="recent_manga">அண்மைக் கால</string>
-    <string name="other_storage">பிற சேமிப்பு</string>
+<string name="other_storage">பிற சேமிப்பு</string>
     <string name="create_backup">தரவு காப்புப்பிரதியை உருவாக்கவும்</string>
     <string name="data_restored">மீட்டெடுக்கப்பட்டது</string>
     <string name="data_restored_success">எல்லா தரவுகளும் மீட்டெடுக்கப்பட்டன</string>
@@ -245,8 +244,7 @@
     <string name="text_history_holder_secondary">«எக்ச்ப்ளோர்» பிரிவில் என்ன படிக்க வேண்டும் என்பதைக் கண்டறியவும்</string>
     <string name="text_empty_holder_secondary_filtered">நீங்கள் தேர்ந்தெடுத்த வடிப்பான்களுடன் பொருந்தக்கூடிய மங்கா எதுவும் இல்லை</string>
     <string name="text_local_holder_secondary">நிகழ்நிலை பட்டியலிலிருந்து ஏதாவது சேமிக்கவும் அல்லது ஒரு கோப்பிலிருந்து இறக்குமதி செய்யவும்.</string>
-    <string name="manga_shelf">அலமாரி</string>
-    <string name="pages_animation">பக்க அனிமேசன்</string>
+<string name="pages_animation">பக்க அனிமேசன்</string>
     <string name="manga_save_location">கோப்புறை பதிவிறக்குகிறது</string>
     <string name="not_available">கிடைக்கவில்லை</string>
     <string name="cannot_find_available_storage">கிடைக்கக்கூடிய சேமிப்பு இல்லை</string>
@@ -371,9 +369,7 @@
     <string name="status_dropped">கைவிடப்பட்டது</string>
     <string name="disable_all">அனைத்தையும் முடக்கு</string>
     <string name="use_fingerprint">கிடைத்தால் பயோமெட்ரிக் பயன்படுத்தவும்</string>
-    <string name="appwidget_shelf_description">உங்களுக்கு பிடித்தவர்களிடமிருந்து மங்கா</string>
-    <string name="appwidget_recent_description">உங்கள் அண்மைக் காலத்தில் படித்த மங்கா</string>
-    <string name="show_reading_indicators">வாசிப்பு முன்னேற்ற குறிகாட்டிகளைக் காட்டு</string>
+<string name="show_reading_indicators">வாசிப்பு முன்னேற்ற குறிகாட்டிகளைக் காட்டு</string>
     <string name="show_reading_indicators_summary">வரலாறு மற்றும் பிடித்தவைகளில் படித்த சதவீதத்தைக் காட்டு</string>
     <string name="import_will_start_soon">இறக்குமதி விரைவில் தொடங்கும்</string>
     <string name="download_option_all_unread">படிக்காத அனைத்து அத்தியாயங்களும்</string>

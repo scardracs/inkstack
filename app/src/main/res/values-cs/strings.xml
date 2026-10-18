@@ -64,9 +64,7 @@
     <string name="text_history_holder_secondary">Najděte co číst v sekci « Prozkoumat»</string>
     <string name="text_local_holder_primary">Nejdříve něco uložte</string>
     <string name="text_local_holder_secondary">Uložte něco z online zdrojů nebo importujte soubor.</string>
-    <string name="recent_manga">Nedávné</string>
-    <string name="manga_shelf">Polička</string>
-    <string name="pages_animation">Animace stránek</string>
+<string name="pages_animation">Animace stránek</string>
     <string name="manga_save_location">Složka pro stahování</string>
     <string name="not_available">Není dostupné</string>
     <string name="cannot_find_available_storage">Není dostupné uložiště</string>
@@ -204,9 +202,7 @@
     <string name="status_dropped">Zahozeno</string>
     <string name="disable_all">Vypnout vše</string>
     <string name="use_fingerprint">Pokud lze, použijte biometrii</string>
-    <string name="appwidget_shelf_description">Manga z vašich oblíbených</string>
-    <string name="appwidget_recent_description">Vaše nedávno čtená manga</string>
-    <string name="report">Hlášení</string>
+<string name="report">Hlášení</string>
     <string name="show_reading_indicators">Zobrazovat indikátory pokroku ve čtení</string>
     <string name="data_deletion">Smazání dat</string>
     <string name="show_reading_indicators_summary">Zobrazovat procento čtení v historii a oblíbených</string>

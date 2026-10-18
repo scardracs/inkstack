@@ -110,8 +110,7 @@
     <string name="reader_settings">Подешавања читача</string>
     <string name="notifications">Обавештења</string>
     <string name="pages_cache">Кеш страница</string>
-    <string name="manga_shelf">Полица</string>
-    <string name="check_for_updates">Провери ажурирања</string>
+<string name="check_for_updates">Провери ажурирања</string>
     <string name="feed">Новости</string>
     <string name="services">Услуге</string>
     <string name="show_on_shelf">Прикажи на полици</string>
@@ -265,8 +264,7 @@
     <string name="port">Прикључак</string>
     <string name="not_found_404">Садржај није пронађен или је уклоњен</string>
     <string name="feed_will_update_soon">Ажурирање новости ће ускоро почети</string>
-    <string name="appwidget_recent_description">Ваша недавно прочитана манга</string>
-    <string name="got_it">Разумем</string>
+<string name="got_it">Разумем</string>
     <string name="type">Тип</string>
     <string name="bookmark_remove">Уклони обележивач</string>
     <string name="search_hint">Унеси наслов манге, жанр или назив извора</string>
@@ -308,8 +306,7 @@
     <string name="dns_over_https">DNS преко HTTPS-а</string>
     <string name="show_suspicious_content">Прикажи сумњив садржај</string>
     <string name="sync_title">Синхронизуј своје податке</string>
-    <string name="appwidget_shelf_description">Манга из ваших Омиљених</string>
-    <string name="comics_archive_import_description">Можеш да изабереш једну или више .cbz или .zip датотека, свака датотека ће бити препозната као засебна манга.</string>
+<string name="comics_archive_import_description">Можеш да изабереш једну или више .cbz или .zip датотека, свака датотека ће бити препозната као засебна манга.</string>
     <string name="downloads_paused">Преузимања су заустављена</string>
     <string name="too_many_requests_message">Превише захтева. Покушај поново касније</string>
     <string name="downloads_wifi_only">Преузми само преко Ви-Фи мреже</string>
@@ -433,8 +430,7 @@
     <string name="logout">Одјави се</string>
     <string name="status_completed">Завршен</string>
     <string name="manga_list">Листа манги</string>
-    <string name="recent_manga">Недавно</string>
-    <string name="reader_control_ltr">Ергономска контрола читача</string>
+<string name="reader_control_ltr">Ергономска контрола читача</string>
     <string name="dont_check">Не проверавај</string>
     <string name="zoom_mode_fit_width">Уклопи по ширини</string>
     <string name="read_more">Опширније</string>

@@ -87,9 +87,7 @@
     <string name="text_history_holder_primary">O que você lê vai aparecer aqui</string>
     <string name="text_history_holder_secondary">Encontre o que ler na seção «Explorar»</string>
     <string name="text_local_holder_primary">Salve algo primeiro</string>
-    <string name="manga_shelf">Prateleira</string>
-    <string name="recent_manga">Recente</string>
-    <string name="pages_animation">Animação da página</string>
+<string name="pages_animation">Animação da página</string>
     <string name="manga_save_location">Pasta de downloads</string>
     <string name="not_available">Indisponível</string>
     <string name="cannot_find_available_storage">Sem espaço de armazenamento disponível</string>
@@ -247,9 +245,7 @@
     <string name="disable_battery_optimization_summary">Ajuda com as verificações de atualizações em segundo plano</string>
     <string name="invalid_domain_message">Domínio inválido</string>
     <string name="use_fingerprint">Usar biometria, se disponível</string>
-    <string name="appwidget_shelf_description">Mangás dos seus favoritos</string>
-    <string name="appwidget_recent_description">Mangás lidos recentemente</string>
-    <string name="status_completed">Concluída</string>
+<string name="status_completed">Concluída</string>
     <string name="status_on_hold">Em espera</string>
     <string name="status_dropped">Abandonada</string>
     <string name="canceled">Cancelado</string>

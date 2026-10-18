@@ -36,8 +36,7 @@
     <string name="text_feed_holder">Nye kapitler av det du leser vises her</string>
     <string name="updates">Oppdatering</string>
     <string name="other_storage">Annen lagring</string>
-    <string name="manga_shelf">Hylle</string>
-    <string name="text_local_holder_primary">Lagre noe først</string>
+<string name="text_local_holder_primary">Lagre noe først</string>
     <string name="text_history_holder_secondary">Finn lesestoff i sidemenyen.</string>
     <string name="text_history_holder_primary">Det du leser vil vises her</string>
     <string name="text_search_holder_secondary">Prøv å reformulere spørringen.</string>
@@ -101,8 +100,7 @@
     <string name="done">Ferdig</string>
     <string name="not_available">Ikke tilgjengelig</string>
     <string name="pages_animation">Sideanimasjon</string>
-    <string name="recent_manga">Nylig</string>
-    <string name="remove_category">Fjern</string>
+<string name="remove_category">Fjern</string>
     <string name="favourites_categories">Favorittkategorier</string>
     <string name="light_indicator">LED-indikator</string>
     <string name="vibration">Vibrasjon</string>
@@ -254,9 +252,7 @@
     <string name="logout">Logg ut</string>
     <string name="status_completed">Fullført</string>
     <string name="status_on_hold">På vent</string>
-    <string name="appwidget_shelf_description">Manga fra favorittene dine</string>
-    <string name="appwidget_recent_description">Manga du har lest nylig</string>
-    <string name="clear_all_history">Tøm all historikk</string>
+<string name="clear_all_history">Tøm all historikk</string>
     <string name="last_2_hours">De siste to timene</string>
     <string name="history_cleared">Historikk tømt</string>
     <string name="manage">Håndter</string>

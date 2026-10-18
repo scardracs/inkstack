@@ -115,9 +115,7 @@
     <string name="not_available">Non disponibile</string>
     <string name="manga_save_location">Cartella download</string>
     <string name="pages_animation">Animazione delle pagine</string>
-    <string name="recent_manga">Manga recenti</string>
-    <string name="manga_shelf">Scaffale da manga</string>
-    <string name="text_local_holder_secondary">Salva qualcosa da un catalogo online o importalo da un file.</string>
+<string name="text_local_holder_secondary">Salva qualcosa da un catalogo online o importalo da un file.</string>
     <string name="text_local_holder_primary">Non hai ancora salvato nessun manga</string>
     <string name="text_history_holder_secondary">Trova cosa leggere nella sezione «Esplora»</string>
     <string name="text_history_holder_primary">I manga che stai leggendo saranno visualizzati qui</string>
@@ -249,9 +247,7 @@
     <string name="send">Invia</string>
     <string name="disable_all">Disabilita tutto</string>
     <string name="use_fingerprint">Usa le impronte digitali se disponibili</string>
-    <string name="appwidget_shelf_description">Manga dai tuoi preferiti</string>
-    <string name="appwidget_recent_description">I manga letti di recente</string>
-    <string name="report">Segnala</string>
+<string name="report">Segnala</string>
     <string name="tracking">Monitoraggio</string>
     <string name="status_reading">Lettura</string>
     <string name="status_re_reading">Rilettura</string>

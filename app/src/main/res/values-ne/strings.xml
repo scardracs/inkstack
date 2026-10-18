@@ -87,8 +87,7 @@
     <string name="text_history_holder_secondary">«अन्वेषण» खण्डमा गएर के पढ्ने हेर्नुहोस्</string>
     <string name="pages_animation">पृष्ठ एनिमेसन</string>
     <string name="manga_save_location">डाउनलोड फोल्डर</string>
-    <string name="recent_manga">हालैका</string>
-    <string name="not_available">उपलब्ध छैन</string>
+<string name="not_available">उपलब्ध छैन</string>
     <string name="text_feed_holder">तपाईंले पढिरहनु भएको माङ्गाको नयाँ अध्यायहरू यहाँ देखाइएको छ</string>
     <string name="search_results">खोज परिणामहरू</string>
     <string name="clear_updates_feed">अपडेट फिड खाली गर्नुहोस्</string>
@@ -112,8 +111,7 @@
     <string name="text_file_sizes">B|kB|MB|GB|TB</string>
     <string name="notifications">सूचनाहरू</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%2$d को %1$d अन</string>
-    <string name="manga_shelf">दराज</string>
-    <string name="cannot_find_available_storage">भण्डारण उपलब्ध छैन</string>
+<string name="cannot_find_available_storage">भण्डारण उपलब्ध छैन</string>
     <string name="other_storage">अन्य भण्डारण</string>
     <string name="done">सकियो</string>
     <string name="all_favourites">सबै मनपर्नेहरू</string>

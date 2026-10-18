@@ -108,9 +108,7 @@
     <string name="text_empty_holder_primary">វាដូចជាទទេនៅទីនេះ…</string>
     <string name="text_search_holder_secondary">ព្យាយាមកែទម្រង់សំណួរ។</string>
     <string name="text_history_holder_primary">អ្វីដែលអ្នកអាននឹងត្រូវបានបង្ហាញនៅទីនេះ</string>
-    <string name="manga_shelf">ធ្នើ</string>
-    <string name="recent_manga">ថ្មីៗ</string>
-    <string name="text_local_holder_primary">រក្សាទុកអ្វីមួយជាមុនសិន</string>
+<string name="text_local_holder_primary">រក្សាទុកអ្វីមួយជាមុនសិន</string>
     <string name="text_local_holder_secondary">រក្សាទុកអ្វីមួយពីកាតាឡុកអនឡាញ ឬនាំវាចូលពីឯកសារ។</string>
     <string name="pages_animation">ចលនា</string>
     <string name="sfw">សម្រាប់គ្រប់វ័យ</string>

@@ -218,22 +218,6 @@
 			android:name="org.inkstack.favourites.ui.categories.FavouriteCategoriesActivity"
 			android:label="@string/manage_categories" />
 		<activity
-			android:name="org.inkstack.widget.shelf.ShelfWidgetConfigActivity"
-			android:exported="true"
-			android:label="@string/manga_shelf">
-			<intent-filter>
-				<action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
-			</intent-filter>
-		</activity>
-		<activity
-			android:name="org.inkstack.widget.recent.RecentWidgetConfigActivity"
-			android:exported="true"
-			android:label="@string/recent_manga">
-			<intent-filter>
-				<action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
-			</intent-filter>
-		</activity>
-		<activity
 			android:name="org.inkstack.search.ui.multi.SearchActivity"
 			android:label="@string/search" />
 		<activity
@@ -466,28 +450,6 @@
 			<intent-filter>
 				<action android:name="org.inkstack.CAPTCHA_DISCARD" />
 			</intent-filter>
-		</receiver>
-		<receiver
-			android:name="org.inkstack.widget.shelf.ShelfWidgetProvider"
-			android:exported="true"
-			android:label="@string/manga_shelf">
-			<intent-filter>
-				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-			</intent-filter>
-			<meta-data
-				android:name="android.appwidget.provider"
-				android:resource="@xml/widget_shelf" />
-		</receiver>
-		<receiver
-			android:name="org.inkstack.widget.recent.RecentWidgetProvider"
-			android:exported="true"
-			android:label="@string/recent_manga">
-			<intent-filter>
-				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-			</intent-filter>
-			<meta-data
-				android:name="android.appwidget.provider"
-				android:resource="@xml/widget_recent" />
 		</receiver>
 		<receiver
 			android:name="org.inkstack.core.ErrorReporterReceiver"

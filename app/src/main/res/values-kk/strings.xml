@@ -84,9 +84,7 @@
     <string name="text_empty_holder_primary">Мына жер бос екен…</string>
     <string name="text_history_holder_primary">Бұ жерде оқығаныңыз тұрады</string>
     <string name="text_local_holder_primary">Алдымен бірдеңе сақтаңыз</string>
-    <string name="manga_shelf">Сөре</string>
-    <string name="recent_manga">Соңғы</string>
-    <string name="pages_animation">Бет анимасасы</string>
+<string name="pages_animation">Бет анимасасы</string>
     <string name="manga_save_location">Жүктеу бумасы</string>
     <string name="not_available">Қолжетімсіз</string>
     <string name="cannot_find_available_storage">Қолжетімді бума жоқ</string>
@@ -219,8 +217,7 @@
     <string name="removed_from_history">Тарихтан жойылды</string>
     <string name="crash_text">Ақау пайда болды. Жөндеу үшін әзірлеушіге шағым жіберіңізші.</string>
     <string name="detect_reader_mode_summary">Маңга уебтүн бе екенін өздігінен анықтап береді</string>
-    <string name="appwidget_recent_description">Соңғы оқыған маңгаңыз</string>
-    <string name="appearance">Кейіп</string>
+<string name="appearance">Кейіп</string>
     <string name="bookmark_remove">Бетбелгіні алып тастау</string>
     <string name="disable_battery_optimization_summary">Аяда жаңарту іздеуді көмектеседі</string>
     <string name="status_on_hold">Кейінге қалған</string>
@@ -234,8 +231,7 @@
     <string name="back">Кері</string>
     <string name="dns_over_https">HTTPS үстінен DNS</string>
     <string name="sync_title">Дерегіңізді үйлестіріңіз</string>
-    <string name="appwidget_shelf_description">Таңдаулы маңгаңыз</string>
-    <string name="send">Жіберу</string>
+<string name="send">Жіберу</string>
     <string name="bookmark_add">Бетбелгілеу</string>
     <string name="new_sources_text">Жаңа маңга дереккөзі қолжетімді</string>
     <string name="check_new_chapters_title">Жаңа тарау барын тексеріп, сол туралы мәлімдеу</string>

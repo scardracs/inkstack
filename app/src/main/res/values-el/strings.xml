@@ -142,9 +142,7 @@
     <string name="text_history_holder_secondary">Βρες κάτι να διαβάσεις στο τμήμα «Εξερεύνηση»</string>
     <string name="text_local_holder_primary">Αποθήκευσε κάτι πρώτα</string>
     <string name="text_local_holder_secondary">Αποθήκευσε κάτι από διαδικτυακές πηγές ή εισήγαγε το από αρχείο.</string>
-    <string name="manga_shelf">Ράφι</string>
-    <string name="recent_manga">Πρόσφατα</string>
-    <string name="pages_animation">Κίνηση σελίδας</string>
+<string name="pages_animation">Κίνηση σελίδας</string>
     <string name="wrong_password">Λανθασμένος κωδικός</string>
     <string name="protect_application">Προστασία εφαρμογής</string>
     <string name="protect_application_summary">Να ζητείται κωδικός κατά την εκκίνηση του Inkstack</string>
@@ -525,12 +523,10 @@
     <string name="select_range">Επιλογή εύρους</string>
     <string name="last_2_hours">Τελευταίες 2 ώρες</string>
     <string name="edit">Επεξεργασία</string>
-    <string name="appwidget_shelf_description">Manga από τα αγαπημένα σας</string>
-    <string name="bookmark_add">Προσθήκη σελιδοδείκτη</string>
+<string name="bookmark_add">Προσθήκη σελιδοδείκτη</string>
     <string name="bookmark_remove">Αφαίρεση σελιδοδείκτη</string>
     <string name="exclude_nsfw_from_history_summary">Manga που χαρακτηρίζονται ως NSFW δεν θα προστίθενται ποτέ στο ιστορικό και η πρόοδος σου δεν θα αποθηκεύεται</string>
     <string name="clear_all_history">Εκκαθάριση όλου του ιστορικού</string>
-    <string name="appwidget_recent_description">Τα πρόσφατα διαβασμένα manga σου</string>
-    <string name="clear_cookies_summary">Μπορεί να βοηθήσει σε περίπτωση κάποιων προβλημάτων. Όλες οι εξουσιοδοτήσεις θα ανακληθούν</string>
+<string name="clear_cookies_summary">Μπορεί να βοηθήσει σε περίπτωση κάποιων προβλημάτων. Όλες οι εξουσιοδοτήσεις θα ανακληθούν</string>
     <string name="category_hidden_done">Αυτή η κατηγορία αποκρύφτηκε από την αρχική οθόνη και είναι προσβάσιμη μέσω του Μενού → Διαχείριση κατηγοριών</string>
 </resources>

@@ -90,9 +90,7 @@
     <string name="text_history_holder_primary">読んだ内容がここに表示されます</string>
     <string name="text_history_holder_secondary">«探索» セクションで読みたいものを見つけてください</string>
     <string name="text_local_holder_primary">最初に何かを保存してください</string>
-    <string name="manga_shelf">本棚</string>
-    <string name="recent_manga">最近</string>
-    <string name="pages_animation">ページアニメーション</string>
+<string name="pages_animation">ページアニメーション</string>
     <string name="manga_save_location">ダウンロードフォルダ</string>
     <string name="not_available">利用不可</string>
     <string name="cannot_find_available_storage">使用可能なストレージがありません</string>
@@ -248,10 +246,8 @@
     <string name="crash_text">何か問題が発生しました。開発者にバグレポートを提出し、解決にご協力ください。</string>
     <string name="send">送信</string>
     <string name="disable_all">すべて無効にする</string>
-    <string name="appwidget_recent_description">最近読んだ漫画</string>
-    <string name="use_fingerprint">利用可能な場合、指紋認証を使用する</string>
-    <string name="appwidget_shelf_description">お気に入りの漫画</string>
-    <string name="report">報告</string>
+<string name="use_fingerprint">利用可能な場合、指紋認証を使用する</string>
+<string name="report">報告</string>
     <string name="status_reading">読書</string>
     <string name="status_re_reading">再読込</string>
     <string name="status_completed">完了</string>

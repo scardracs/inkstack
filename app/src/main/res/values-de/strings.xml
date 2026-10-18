@@ -109,9 +109,7 @@
     <string name="cannot_find_available_storage">Kein verfügbarer Speicher gefunden</string>
     <string name="not_available">Nicht verfügbar</string>
     <string name="pages_animation">Seitenanimation</string>
-    <string name="recent_manga">Neueste Manga</string>
-    <string name="manga_shelf">Regal</string>
-    <string name="text_local_holder_secondary">Speichere etwas aus einem Online-Katalog oder importiere es aus einer Datei.</string>
+<string name="text_local_holder_secondary">Speichere etwas aus einem Online-Katalog oder importiere es aus einer Datei.</string>
     <string name="text_local_holder_primary">Speichere erst etwas</string>
     <string name="text_history_holder_secondary">Finde etwas zu lesen in der Rubrik „Erkunden“</string>
     <string name="text_search_holder_secondary">Versuche, die Anfrage umzuformulieren.</string>
@@ -249,9 +247,7 @@
     <string name="crash_text">Etwas ist schief gelaufen. Bitte sende einen Fehlerbericht an die Entwickler, um uns bei der Behebung zu helfen.</string>
     <string name="disable_all">Alle deaktivieren</string>
     <string name="use_fingerprint">Fingerabdruck verwenden, falls verfügbar</string>
-    <string name="appwidget_shelf_description">Manga aus deinen Favoriten</string>
-    <string name="appwidget_recent_description">Deine kürzlich gelesenen Manga</string>
-    <string name="report">Melden</string>
+<string name="report">Melden</string>
     <string name="tracking">Externe Plattformen (Tracking)</string>
     <string name="logout">Abmelden</string>
     <string name="status_planned">Geplant</string>

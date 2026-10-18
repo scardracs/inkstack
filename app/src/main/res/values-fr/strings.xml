@@ -77,9 +77,7 @@
     <string name="not_available">Non disponible</string>
     <string name="manga_save_location">Dossier pour les téléchargements</string>
     <string name="pages_animation">Animation de page</string>
-    <string name="recent_manga">Récents</string>
-    <string name="manga_shelf">Étagère</string>
-    <string name="text_local_holder_secondary">Enregistrez quelque chose à partir d\'un catalogue en ligne ou importez-le à partir d\'un fichier.</string>
+<string name="text_local_holder_secondary">Enregistrez quelque chose à partir d\'un catalogue en ligne ou importez-le à partir d\'un fichier.</string>
     <string name="text_local_holder_primary">Sauvegardez d\'abord quelque chose</string>
     <string name="text_history_holder_secondary">Trouver quoi lire dans la section « Explorer »</string>
     <string name="text_history_holder_primary">Ce que vous lisez sera affiché ici</string>
@@ -265,9 +263,7 @@
     <string name="send">Envoyer</string>
     <string name="disable_all">Tout désactiver</string>
     <string name="use_fingerprint">Utiliser la biométrie si elle est disponible</string>
-    <string name="appwidget_recent_description">Vos mangas récemment lus</string>
-    <string name="appwidget_shelf_description">Vos mangas favoris</string>
-    <string name="report">Signaler</string>
+<string name="report">Signaler</string>
     <string name="tracking">Suivi</string>
     <string name="status_planned">Planifié</string>
     <string name="status_reading">Lecture</string>

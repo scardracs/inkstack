@@ -38,8 +38,7 @@
     <string name="text_history_holder_primary">Ang iyong nabasa ay ipapakita dito</string>
     <string name="text_local_holder_primary">Mag-save muna ng isa</string>
     <string name="text_local_holder_secondary">Mag-save ng isang bagay mula sa isang online na catalog o i-import ito mula sa isang file.</string>
-    <string name="manga_shelf">Istante</string>
-    <string name="pages_animation">Animasyon ng pahina</string>
+<string name="pages_animation">Animasyon ng pahina</string>
     <string name="not_available">Hindi magagamit</string>
     <string name="cannot_find_available_storage">Walang available na storage</string>
     <string name="other_storage">Iba pang storage</string>
@@ -146,8 +145,7 @@
     <string name="remove_category">Tanggalin</string>
     <string name="text_empty_holder_primary">Parang walang laman dito…</string>
     <string name="text_history_holder_secondary">Hanapin kung anong pwedeng basahin sa «Mag-Explore» na seksyon</string>
-    <string name="recent_manga">Kamakailan</string>
-    <string name="manga_save_location">Mga folder ng pag-download</string>
+<string name="manga_save_location">Mga folder ng pag-download</string>
     <string name="save_page">I-save ang pahina</string>
     <string name="_s_deleted_from_local_storage">Natanggal ang \"%s\" sa lokal na storage</string>
     <string name="history_is_empty">Wala pang kasaysayan</string>
@@ -228,9 +226,7 @@
     <string name="send">Ipadala</string>
     <string name="status_re_reading">Muling pagbabasa</string>
     <string name="status_dropped">Itinigil</string>
-    <string name="appwidget_shelf_description">Manga mula sa iyong mga paborito</string>
-    <string name="appwidget_recent_description">Ang iyong kamakailang nabasa na manga</string>
-    <string name="data_deletion">Pagtanggal ng data</string>
+<string name="data_deletion">Pagtanggal ng data</string>
     <string name="show_reading_indicators_summary">Ipakita ang porsyento na nabasa sa kasaysayan at mga paborito</string>
     <string name="show_all">Ipakita lahat</string>
     <string name="select_range">Pumili ng saklaw</string>

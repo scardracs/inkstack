@@ -120,8 +120,7 @@
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d از %2$d فعال است</string>
     <string name="new_chapters">چپتر های جدید</string>
     <string name="text_history_holder_primary">چیزهایی که خوانده اید اینجا نمایش داده میشود</string>
-    <string name="manga_shelf">تاقچه</string>
-    <string name="not_available">در دسترس نیست</string>
+<string name="not_available">در دسترس نیست</string>
     <string name="cannot_find_available_storage">محل ذخیره سازی قابل دسترسی ئی یافت نشد</string>
     <string name="scale_mode">مقیاس</string>
     <string name="zoom_mode_fit_center">متناسب به مرکز</string>
@@ -132,8 +131,7 @@
     <string name="auth_complete">به اکانت وارد شدید</string>
     <string name="nothing_found">هیچ نتیجه ای پیدا نشد</string>
     <string name="notifications">اعلان ها</string>
-    <string name="recent_manga">مانگاهای اخیر</string>
-    <string name="chapter_is_missing">این چپتر پیدا نشد</string>
+<string name="chapter_is_missing">این چپتر پیدا نشد</string>
     <string name="about_app_translation">ترجمه</string>
     <string name="suggestions_info">همه ی داده ها صرفا برروی دستگاه شما آنالیز می شود و جای دیگری فرستاده نخواهد شد.</string>
     <string name="backup_information">شما می توانید از تاریخچه و علاقه مندی های خود پشتیبان گیری کرده و آن ها را بعدا بازیابی کنید</string>
@@ -276,12 +274,10 @@
     <string name="status_dropped">رها شده</string>
     <string name="exclude_nsfw_from_history_summary">مانگای نشان شده به عنوان NSFWهرگز به تاریخچه افزوده نخواهد شد و پیشرفت شما ذخیره نخواهد شد.</string>
     <string name="disable_battery_optimization_summary">به بررسی‌های به‌روز رسانی‌های پس‌زمینه کمک می‌کند</string>
-    <string name="appwidget_shelf_description">مانگا از پسندیده‌های شما</string>
-    <string name="report">گزارش</string>
+<string name="report">گزارش</string>
     <string name="status_planned">برنامه‌ریزی شده</string>
     <string name="show_reading_indicators_summary">نشان دادن درصد خوانده شده در تاریخچه و پسندیده‌ها</string>
-    <string name="appwidget_recent_description">مانگا های اخیراً خوانده شده</string>
-    <string name="clear_cookies_summary">می‌تواند در صورت بروز برخی مشکلات کمک کند. همه مجوزها باطل خواهند شد</string>
+<string name="clear_cookies_summary">می‌تواند در صورت بروز برخی مشکلات کمک کند. همه مجوزها باطل خواهند شد</string>
     <string name="show_all">نمایش همه</string>
     <string name="invalid_domain_message">دامنه نامعتبر</string>
     <string name="invalid_server_address_message">آدرس سرور نامعتیر</string>

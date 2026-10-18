@@ -75,9 +75,7 @@
     <string name="text_history_holder_primary">Apa yang anda baca akan dipaparkan di sini</string>
     <string name="text_local_holder_primary">Simpan sesuatu dahulu</string>
     <string name="text_local_holder_secondary">Simpan sesuatu daripada katalog dalam talian atau import daripada fail.</string>
-    <string name="manga_shelf">Rak</string>
-    <string name="recent_manga">Terbaharu</string>
-    <string name="cannot_find_available_storage">Tiada storan tersedia</string>
+<string name="cannot_find_available_storage">Tiada storan tersedia</string>
     <string name="other_storage">Storan lain</string>
     <string name="done">Tamat</string>
     <string name="favourites_category_empty">Kategori kosong</string>
@@ -197,9 +195,7 @@
     <string name="status_dropped">Dihentikan</string>
     <string name="disable_all">Lumpuhkan semua</string>
     <string name="use_fingerprint">Guna cap jari sekiranya tersedia</string>
-    <string name="appwidget_shelf_description">Manga daripada kegemaran anda</string>
-    <string name="appwidget_recent_description">Manga yang anda baru baca</string>
-    <string name="report">Lapor</string>
+<string name="report">Lapor</string>
     <string name="show_reading_indicators">Tunjukkan penunjuk kemajuan pembacaan</string>
     <string name="data_deletion">Pembuangan data</string>
     <string name="exclude_nsfw_from_history_summary">Manga ditanda sebagai NSFW tidak akan ditambahkan dalam sejarah dan kemajuan tidak akan disimpan</string>

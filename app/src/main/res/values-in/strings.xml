@@ -87,9 +87,7 @@
     <string name="text_history_holder_primary">Apa yang Anda baca akan ditampilkan di sini</string>
     <string name="text_history_holder_secondary">Cari sesuatu untuk dibaca via «Eksplor»</string>
     <string name="text_local_holder_primary">Simpan sesuatu dulu</string>
-    <string name="manga_shelf">Rak</string>
-    <string name="recent_manga">Baru-baru ini</string>
-    <string name="pages_animation">Animasi halaman</string>
+<string name="pages_animation">Animasi halaman</string>
     <string name="manga_save_location">Folder unduhan</string>
     <string name="not_available">Tidak tersedia</string>
     <string name="cannot_find_available_storage">Tidak ada penyimpanan yang tersedia</string>
@@ -289,9 +287,7 @@
     <string name="text_unsaved_changes_prompt">Simpan atau buang perubahan yang belum disimpan?</string>
     <string name="discard">Buang</string>
     <string name="use_fingerprint">Gunakan biometrik jika tersedia</string>
-    <string name="appwidget_shelf_description">Manga dari kesukaan Anda</string>
-    <string name="appwidget_recent_description">Manga yang baru-baru ini Anda baca</string>
-    <string name="data_deletion">Penghapusan data</string>
+<string name="data_deletion">Penghapusan data</string>
     <string name="account_already_exists">Akun sudah ada</string>
     <string name="back">Kembali</string>
     <string name="disable_battery_optimization_summary">Membantu pemeriksaan pembaruan di latar belakang</string>

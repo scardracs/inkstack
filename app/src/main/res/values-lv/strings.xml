@@ -81,8 +81,7 @@
     <string name="text_history_holder_secondary">Ja nav ko lasīt, vari kaut ko atrast \"Meklēšana\" nodalījumā</string>
     <string name="text_empty_holder_secondary_filtered">Neeksistē manga, kas atbilstu tevis atlasītajiem filtriem</string>
     <string name="text_local_holder_primary">Vispirms saglabā kaut ko</string>
-    <string name="manga_shelf">Skapis</string>
-    <string name="pages_animation">Lapas animācija</string>
+<string name="pages_animation">Lapas animācija</string>
     <string name="manga_save_location">Lejupielāžu mape</string>
     <string name="not_available">Nav pieejams</string>
     <string name="cannot_find_available_storage">Nav pieejama krātuve</string>
@@ -132,8 +131,7 @@
     <string name="light_indicator">LED rādītājs</string>
     <string name="text_empty_holder_primary">Šeit ir vientuļi…</string>
     <string name="text_search_holder_secondary">Pamēģini pārformulēt meklējumu.</string>
-    <string name="recent_manga">Nesenie</string>
-    <string name="updates">Atjauninājumi</string>
+<string name="updates">Atjauninājumi</string>
     <string name="text_feed_holder">Jaunas daļas no tā, ko tu lasi parādās šeit</string>
     <string name="search_results">Meklēšanas rezultāti</string>
     <string name="new_version_s">Jauna versija: %s</string>

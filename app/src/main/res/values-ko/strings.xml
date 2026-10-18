@@ -140,10 +140,8 @@
     <string name="search_history_cleared">삭제됨</string>
     <string name="new_chapters">새로운 챕터</string>
     <string name="text_empty_holder_primary">이 항목은 비어있는 것 같습니다…</string>
-    <string name="recent_manga">최근에 추가된</string>
-    <string name="manga_save_location">다운로드를 저장하기 위한 폴더</string>
-    <string name="manga_shelf">책장</string>
-    <string name="other_storage">기타 저장소</string>
+<string name="manga_save_location">다운로드를 저장하기 위한 폴더</string>
+<string name="other_storage">기타 저장소</string>
     <string name="updates_feed_cleared">삭제됨</string>
     <string name="update">업데이트</string>
     <string name="feed_will_update_soon">피드가 곧 업데이트 됩니다</string>
@@ -255,9 +253,7 @@
     <string name="status_re_reading">다시 읽는 중</string>
     <string name="status_completed">완료됨</string>
     <string name="disable_all">모두 비활성화</string>
-    <string name="appwidget_shelf_description">선호작 목록에 존재하는 만화</string>
-    <string name="appwidget_recent_description">최근에 본 만화</string>
-    <string name="report">제보하기</string>
+<string name="report">제보하기</string>
     <string name="show_reading_indicators">읽기 진행 상황 표시</string>
     <string name="exclude_nsfw_from_history_summary">성인 만화는 읽은 기록에 포함되지 않으며 읽기 진행 상황은 저장되지 않습니다</string>
     <string name="show_all">모두 보여주기</string>

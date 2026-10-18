@@ -64,8 +64,7 @@
     <string name="pages">पन्ने</string>
     <string name="no_description">कोई विवरण नहीं है</string>
     <string name="updates">अद्यतन</string>
-    <string name="manga_shelf">दराज</string>
-    <string name="text_history_holder_secondary">«अन्वेषण करें» अनुभाग में जानें कि क्या पढ़ना है</string>
+<string name="text_history_holder_secondary">«अन्वेषण करें» अनुभाग में जानें कि क्या पढ़ना है</string>
     <string name="all_favourites">सभी पसंदीदा</string>
     <string name="light_indicator">LED सूचक</string>
     <string name="favourites_categories">पसंदीदा श्रेणियां</string>
@@ -108,8 +107,7 @@
     <string name="error">त्रुटि</string>
     <string name="grid_size">ग्रिड का आकार</string>
     <string name="_continue">जारी रखें</string>
-    <string name="recent_manga">हालिया</string>
-    <string name="search_on_s">%s पर खोजें</string>
+<string name="search_on_s">%s पर खोजें</string>
     <string name="search_results">खोज परिणाम</string>
     <string name="pages_animation">पृष्ठ सजीवता</string>
     <string name="other_storage">अन्य स्टोरेज</string>
@@ -209,9 +207,7 @@
     <string name="send">भेजें</string>
     <string name="disable_all">सब अक्षम करें</string>
     <string name="use_fingerprint">यदि उपलब्ध हो तो बायोमेट्रिक का उपयोग करें</string>
-    <string name="appwidget_shelf_description">आपके पसंदीदा में से मांगा</string>
-    <string name="appwidget_recent_description">आपके हालिया पढ़ें मंगा</string>
-    <string name="report">रिपोर्ट</string>
+<string name="report">रिपोर्ट</string>
     <string name="status_planned">योजना बनाई</string>
     <string name="status_reading">पढ़ रहा हूँ</string>
     <string name="status_re_reading">दोबारा पढ़ना</string>

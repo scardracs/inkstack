@@ -156,8 +156,7 @@
     <string name="text_search_holder_secondary">Försök att omformulera frågan.</string>
     <string name="text_history_holder_primary">Det du läser kommer att visas här</string>
     <string name="text_local_holder_primary">Spara något först</string>
-    <string name="manga_shelf">Hylla</string>
-    <string name="remove_category">Ta bort</string>
+<string name="remove_category">Ta bort</string>
     <string name="create_category">Ny kategori</string>
     <string name="text_history_holder_secondary">Hitta något att läsa i sektionen «Utforska»</string>
     <string name="pages_animation">Sidanimation</string>
@@ -166,8 +165,7 @@
     <string name="updates">Uppdateringar</string>
     <string name="new_version_s">Ny version: %s</string>
     <string name="text_local_holder_secondary">Spara något från en onlinekatalog eller importera från en fil.</string>
-    <string name="recent_manga">Nytt</string>
-    <string name="manga_save_location">Nedladdningsmapp</string>
+<string name="manga_save_location">Nedladdningsmapp</string>
     <string name="not_available">Ej tillgänglig</string>
     <string name="other_storage">Annan lagring</string>
     <string name="text_feed_holder">Nya kapitel av det du läser visas här</string>
@@ -226,8 +224,7 @@
     <string name="disable_battery_optimization">Inaktivera batterioptimering</string>
     <string name="local_manga_processing">Bearbetar nedladdad manga</string>
     <string name="detect_reader_mode_summary">Automatiskt detektera om manga är en webtoon</string>
-    <string name="appwidget_recent_description">Dina nyligen lästa manga</string>
-    <string name="disable_battery_optimization_summary">Hjälper till med att leta efter uppdateringar i bakgrunden</string>
+<string name="disable_battery_optimization_summary">Hjälper till med att leta efter uppdateringar i bakgrunden</string>
     <string name="new_sources_text">Nya mangakällor finns tillgängliga</string>
     <string name="report">Anmäl</string>
     <string name="chapters_will_removed_background">Kapitel kommer att tas bort i bakgrunden</string>
@@ -241,8 +238,7 @@
     <string name="status_on_hold">Pausad</string>
     <string name="status_dropped">Övergiven</string>
     <string name="use_fingerprint">Använd biometrik om tillgängligt</string>
-    <string name="appwidget_shelf_description">Manga från dina favoriter</string>
-    <string name="show_reading_indicators">Visa indikatorer om läsförlopp</string>
+<string name="show_reading_indicators">Visa indikatorer om läsförlopp</string>
     <string name="data_deletion">Radering av data</string>
     <string name="show_reading_indicators_summary">Visa hur långt du har läst i procent på listor för historik och favoriter</string>
     <string name="exclude_nsfw_from_history_summary">Manga markerad för vuxna kommer aldrig läggas till i historiken och ditt läsförlopp kommer inte att sparas</string>

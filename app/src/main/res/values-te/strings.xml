@@ -99,9 +99,7 @@
     <string name="text_empty_holder_secondary_filtered">మీరు ఎంచుకున్న ఫిల్టర్లకు సరిపోలిన మంగా లేదు</string>
     <string name="text_local_holder_primary">ముందుగా ఏదైనా సేవ్ చేయండి</string>
     <string name="text_local_holder_secondary">ఆన్‌లైన్ కేటలాగ్ నుండి ఏదైనా సేవ్ చేయండి లేదా ఫైల్ నుండి దిగుమతి చేసుకోండి.</string>
-    <string name="manga_shelf">షెల్ఫ్</string>
-    <string name="recent_manga">తాజా మంగా</string>
-    <string name="pages_animation">పేజీ యానిమేషన్</string>
+<string name="pages_animation">పేజీ యానిమేషన్</string>
     <string name="manga_save_location">డౌన్‌లోడ్స్ ఫోల్డర్</string>
     <string name="not_available">ఉపలబ్ధం లేదు</string>
     <string name="cannot_find_available_storage">లభ్యమైన స్టోరేజ్ లేదు</string>

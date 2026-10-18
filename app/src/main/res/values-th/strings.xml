@@ -65,8 +65,7 @@
     <string name="text_history_holder_primary">สิ่งที่คุณอ่านจะแสดงที่นี่</string>
     <string name="text_local_holder_primary">บันทึกบางอย่างก่อน</string>
     <string name="text_local_holder_secondary">บันทึกบางอย่างจากแหล่งข้อมูลออนไลน์หรือนำเข้าจากไฟล์</string>
-    <string name="recent_manga">ล่าสุด</string>
-    <string name="manga_save_location">แฟ้มดาวน์โหลด</string>
+<string name="manga_save_location">แฟ้มดาวน์โหลด</string>
     <string name="other_storage">พื้นที่จัดเก็บอื่น</string>
     <string name="favourites_category_empty">หมวดหมู่ที่ว่างเปล่า</string>
     <string name="read_later">อ่านทีหลัง</string>
@@ -206,8 +205,7 @@
     <string name="screenshots_block_all">บล็อกตลอด</string>
     <string name="suggestions">คําแนะนํา</string>
     <string name="suggestions_enable">เปิดใช้คำแนะนำ</string>
-    <string name="manga_shelf">ชั้น</string>
-    <string name="not_available">ไม่สามารถใช้ได้</string>
+<string name="not_available">ไม่สามารถใช้ได้</string>
     <string name="backup_information">คุณสามารถสํารองข้อมูลประวัติและรายการโปรดและกู้คืน</string>
     <string name="tap_to_try_again">แตะเพื่อลองอีกครั้ง</string>
     <string name="silent">เงียบ</string>
@@ -266,8 +264,7 @@
     <string name="show_notification_new_chapters_off">คุณจะไม่ได้รับการแจ้งเตือน แต่บทใหม่จะถูกเน้นในรายการ</string>
     <string name="text_clear_search_history_prompt">ลบคำค้นหาล่าสุดทั้งหมดอย่างถาวรไหม\?</string>
     <string name="detect_reader_mode_summary">ตรวจสอบอัตโนมัติว่ามังงะเป็นเว็บตูนหรือไม่</string>
-    <string name="appwidget_recent_description">มังงะที่คุณอ่านล่าสุด</string>
-    <string name="appearance">รูปร่าง</string>
+<string name="appearance">รูปร่าง</string>
     <string name="bookmark_remove">ลบบุ๊คมาร์ค</string>
     <string name="auth_not_supported_by">%s ไม่รองรับการเข้าสู่ระบบ</string>
     <string name="last_2_hours">2 ชั่วโมงที่ผ่านมา</string>
@@ -275,8 +272,7 @@
     <string name="bookmark_removed">บุ๊คมาร์คถูกลบแล้ว</string>
     <string name="suggestions_excluded_genres_summary">ระบุประเภทที่คุณไม่ต้องการเห็นในคำแนะนำ</string>
     <string name="dns_over_https">DNS บน HTTPS</string>
-    <string name="appwidget_shelf_description">มังงะจากรายการโปรดของคุณ</string>
-    <string name="bookmark_add">เพิ่มบุ๊คมาร์ค</string>
+<string name="bookmark_add">เพิ่มบุ๊คมาร์ค</string>
     <string name="logged_in_as">เข้าสู่ระบบด้วย %s</string>
     <string name="history_cleared">ลบประวัติแล้ว</string>
     <string name="bookmark_added">บุ๊คมาร์คได้ถูกเพิ่มแล้ว</string>

@@ -89,9 +89,7 @@
     <string name="vibration">Вібрацыя</string>
     <string name="favourites_categories">Катэгорыі абранага</string>
     <string name="remove_category">Выдаліць катэгорыю</string>
-    <string name="manga_shelf">Паліца</string>
-    <string name="recent_manga">Нядаўняя манга</string>
-    <string name="pages_animation">Анімацыя гартання</string>
+<string name="pages_animation">Анімацыя гартання</string>
     <string name="manga_save_location">Папка для загрузак</string>
     <string name="not_available">Недаступна</string>
     <string name="cannot_find_available_storage">Не атрымалася знайсці ніводнага даступнага сховішча</string>
@@ -216,9 +214,7 @@
     <string name="appearance">Знешні выгляд</string>
     <string name="disable_all">Адключыць усе</string>
     <string name="use_fingerprint">Выкарыстоўваць біяметрычныя дадзеныя, калі яны даступныя</string>
-    <string name="appwidget_shelf_description">Манга з Вашага абранага</string>
-    <string name="appwidget_recent_description">Манга, якую вы нядаўна чыталі</string>
-    <string name="suggestions_updating">Абнаўленне рэкамендацый</string>
+<string name="suggestions_updating">Абнаўленне рэкамендацый</string>
     <string name="local_manga_processing">Апрацоўка захаванай мангі</string>
     <string name="chapters_will_removed_background">Раздзелы будуць выдалены ў фонавым рэжыме</string>
     <string name="check_new_chapters_title">Правяраць новыя главы і паведамляць пра іх</string>

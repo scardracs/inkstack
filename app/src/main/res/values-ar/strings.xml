@@ -175,8 +175,7 @@
     <string name="text_empty_holder_primary">يبدو أنه فارغ…</string>
     <string name="status_re_reading">إعادة القراءة</string>
     <string name="detect_reader_mode">وضع القارئ التلقائي</string>
-    <string name="manga_shelf">رف</string>
-    <string name="tracking">تتبع</string>
+<string name="tracking">تتبع</string>
     <string name="text_history_holder_secondary">ابحث عن ما تقرأه في قسم «استكشاف»</string>
     <string name="all_favourites">كل المُفضلة</string>
     <string name="email_enter_hint">أدخل بريدك الإلكتروني للمتابعة</string>
@@ -199,8 +198,7 @@
     <string name="removed_from_history">تم الحذف من السجل</string>
     <string name="crash_text">حدث خطأ ما. يرجى إرسال تقرير بالخطأ إلى المطورين لمساعدتنا في إصلاحه.</string>
     <string name="detect_reader_mode_summary">اكتشف تلقائيًا ما إذا كانت المانجا عبارة عن webtoon</string>
-    <string name="appwidget_recent_description">المانجا التي قرأتها مؤخرًا</string>
-    <string name="appearance">مظهر</string>
+<string name="appearance">مظهر</string>
     <string name="bookmark_remove">حذف الإشارة المرجعية</string>
     <string name="disable_battery_optimization_summary">يساعد في فحص التحديثات في الخلفية</string>
     <string name="auth_not_supported_by">تسجيل الدخول على %s غير مدعوم</string>
@@ -216,8 +214,7 @@
     <string name="screenshots_allow">السماح</string>
     <string name="dns_over_https">DNS مع HTTPS</string>
     <string name="sync_title">مزامنة بياناتك</string>
-    <string name="appwidget_shelf_description">مانجا من المُفضلة لديك</string>
-    <string name="send">إرسال</string>
+<string name="send">إرسال</string>
     <string name="bookmark_add">اضافة إشارة مرجعية</string>
     <string name="screenshots_block_all">احظر دائما</string>
     <string name="new_sources_text">تتوفر مصادر مانغا جديدة</string>
@@ -249,8 +246,7 @@
     <string name="default_mode">الوضع الافتراضي</string>
     <string name="logout">تسجيل الخروج</string>
     <string name="status_completed">مكتملة</string>
-    <string name="recent_manga">آخر التحديثات</string>
-    <string name="dont_check">لا تحدد</string>
+<string name="dont_check">لا تحدد</string>
     <string name="zoom_mode_fit_width">مناسب للعرض</string>
     <string name="reset_filter">إعادة تعيين الترتيب حسب</string>
     <string name="status_dropped">متروكة</string>

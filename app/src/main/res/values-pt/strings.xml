@@ -91,8 +91,7 @@
     <string name="state_ongoing">Em andamento</string>
     <string name="remove_category">Remover</string>
     <string name="text_empty_holder_primary">Está meio vazio aqui…</string>
-    <string name="manga_shelf">Estante</string>
-    <string name="done">Feito</string>
+<string name="done">Feito</string>
     <string name="zoom_mode_keep_start">Manter no início</string>
     <string name="clear_updates_feed">Limpar atualizações de fluxo</string>
     <string name="updates_feed_cleared">Limpo</string>
@@ -158,8 +157,7 @@
     <string name="favourites_categories">Categorias favoritas</string>
     <string name="text_history_holder_secondary">Encontre o que ler na seção «Explorar»</string>
     <string name="text_local_holder_secondary">Salve-o de catálogos online ou importe de um arquivo.</string>
-    <string name="recent_manga">Recente</string>
-    <string name="other_storage">Outro armazenamento</string>
+<string name="other_storage">Outro armazenamento</string>
     <string name="text_search_holder_secondary">Tente reformular a consulta.</string>
     <string name="not_available">Não disponível</string>
     <string name="size_s">Tamanho: %s</string>
@@ -224,9 +222,7 @@
     <string name="prefetch_content">Pré-carregamento de conteúdo</string>
     <string name="invalid_domain_message">Domínio inválido</string>
     <string name="use_fingerprint">Usar biometria se disponível</string>
-    <string name="appwidget_shelf_description">Mangás favoritos</string>
-    <string name="appwidget_recent_description">Mangás lidos recentemente</string>
-    <string name="suggestions_excluded_genres_summary">Especifique os gêneros que você não deseja ver nas sugestões</string>
+<string name="suggestions_excluded_genres_summary">Especifique os gêneros que você não deseja ver nas sugestões</string>
     <string name="removal_completed">Remoção concluída</string>
     <string name="check_new_chapters_title">Verifique se há novos capítulos e notifique se houver</string>
     <string name="default_mode">Modo padrão</string>

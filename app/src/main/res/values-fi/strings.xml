@@ -80,9 +80,7 @@
     <string name="not_available">Ei saatavilla</string>
     <string name="manga_save_location">Mangan latauspaikka</string>
     <string name="pages_animation">Sivujen animaatio</string>
-    <string name="recent_manga">Viimeaikaiset mangat</string>
-    <string name="manga_shelf">Mangahylly</string>
-    <string name="text_local_holder_secondary">Voit tallentaa sen verkkolähteistä tai tuoda sen tiedostosta.</string>
+<string name="text_local_holder_secondary">Voit tallentaa sen verkkolähteistä tai tuoda sen tiedostosta.</string>
     <string name="text_local_holder_primary">Sinulla ei ole vielä yhtään tallennettua mangaa</string>
     <string name="text_history_holder_secondary">Löydät luettavaa sivuvalikosta.</string>
     <string name="text_history_holder_primary">Manga, jota luet, näytetään täällä</string>
@@ -249,9 +247,7 @@
     <string name="disable_all">Poista kaikki käytöstä</string>
     <string name="send">Lähetä</string>
     <string name="use_fingerprint">Käytä sormenjälkeä, jos käytettävissä</string>
-    <string name="appwidget_shelf_description">Manga suosikeistasi</string>
-    <string name="appwidget_recent_description">Äskettäin lukemasi manga</string>
-    <string name="tracking">Seuranta</string>
+<string name="tracking">Seuranta</string>
     <string name="logout">Kirjaudu ulos</string>
     <string name="status_reading">Lukemassa</string>
     <string name="status_re_reading">Lukemassa uudelleen</string>

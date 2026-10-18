@@ -103,9 +103,7 @@
     <string name="text_empty_holder_secondary_filtered">There are no manga matching the filters you selected</string>
     <string name="text_local_holder_primary">Save something first</string>
     <string name="text_local_holder_secondary">Save something from an online catalog or import it from a file.</string>
-    <string name="manga_shelf">Shelf</string>
-    <string name="recent_manga">Recent</string>
-    <string name="pages_animation">Page animation</string>
+<string name="pages_animation">Page animation</string>
     <string name="manga_save_location">Downloads folder</string>
     <string name="not_available">Not available</string>
     <string name="cannot_find_available_storage">No available storage</string>
@@ -298,9 +296,7 @@
     <string name="status_dropped">Dropped</string>
     <string name="disable_all">Disable all</string>
     <string name="use_fingerprint">Use biometric if available</string>
-    <string name="appwidget_shelf_description">Manga from your favorites</string>
-    <string name="appwidget_recent_description">Your recently read manga</string>
-    <string name="report">Report</string>
+<string name="report">Report</string>
     <string name="show_reading_indicators">Show reading progress indicators</string>
     <string name="data_deletion">Data deletion</string>
     <string name="show_reading_indicators_summary">Show percentage read in history and favorites</string>

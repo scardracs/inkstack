@@ -89,9 +89,7 @@
     <string name="vibration">Vibración</string>
     <string name="favourites_categories">Categorías favoritas</string>
     <string name="remove_category">Remover</string>
-    <string name="manga_shelf">Estante</string>
-    <string name="recent_manga">Reciente</string>
-    <string name="pages_animation">Animación de página</string>
+<string name="pages_animation">Animación de página</string>
     <string name="manga_save_location">Carpeta de descargas</string>
     <string name="not_available">No disponible</string>
     <string name="cannot_find_available_storage">No hay almacenamiento disponible</string>
@@ -248,9 +246,7 @@
     <string name="send">Enviar</string>
     <string name="crash_text">Algo ha ido mal. Por favor, envía un informe de errores a los desarrolladores para ayudarnos a solucionarlo.</string>
     <string name="use_fingerprint">Usar la biométria si está disponible</string>
-    <string name="appwidget_shelf_description">Mangas de tus favoritos</string>
-    <string name="appwidget_recent_description">Sus mangas recientemente leídos</string>
-    <string name="logout">Cerrar sesión</string>
+<string name="logout">Cerrar sesión</string>
     <string name="status_planned">Planeado</string>
     <string name="status_reading">Lectura</string>
     <string name="status_dropped">Abandonado</string>

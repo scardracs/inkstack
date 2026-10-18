@@ -120,9 +120,7 @@
     <string name="text_history_holder_secondary">«Keşfet» kısmında neler okuyacağınızı bulun</string>
     <string name="text_local_holder_primary">Önce bir şey kaydedin</string>
     <string name="text_local_holder_secondary">Çevrim içi kaynaklardan kaydedin veya dosyaları içe aktarın.</string>
-    <string name="manga_shelf">Raf</string>
-    <string name="recent_manga">Son</string>
-    <string name="size_s">Boyut: %s</string>
+<string name="size_s">Boyut: %s</string>
     <string name="updates_feed_cleared">Temizlendi</string>
     <string name="enter_password">Parola gir</string>
     <string name="protect_application_summary">Inkstack başlatılırken parola sor</string>
@@ -249,9 +247,7 @@
     <string name="send">Gönder</string>
     <string name="disable_all">Tümünü devre dışı bırak</string>
     <string name="use_fingerprint">Varsa biyometrik kullan</string>
-    <string name="appwidget_shelf_description">Favorilerinizden mangalar</string>
-    <string name="appwidget_recent_description">Son okuduğunuz mangalar</string>
-    <string name="report">Bildir</string>
+<string name="report">Bildir</string>
     <string name="tracking">İzleme</string>
     <string name="logout">Oturumu kapat</string>
     <string name="status_reading">Okunuyor</string>

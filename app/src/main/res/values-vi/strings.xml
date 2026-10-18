@@ -61,8 +61,7 @@
     <string name="favourites_categories">Danh mục yêu thích</string>
     <string name="remove_category">Xoá</string>
     <string name="text_local_holder_primary">Lưu gì đó trước</string>
-    <string name="manga_shelf">Tủ truyện</string>
-    <string name="pages_animation">Hoạt ảnh chuyển trang</string>
+<string name="pages_animation">Hoạt ảnh chuyển trang</string>
     <string name="manga_save_location">Thư mục tải xuống</string>
     <string name="not_available">Không khả dụng</string>
     <string name="cannot_find_available_storage">Không có bộ nhớ khả dụng</string>
@@ -147,8 +146,7 @@
     <string name="dns_over_https">DNS trên HTTPS</string>
     <string name="send">Gửi</string>
     <string name="status_reading">Đang đọc</string>
-    <string name="appwidget_recent_description">Truyện bạn đã đọc gần đây</string>
-    <string name="report">Báo cáo</string>
+<string name="report">Báo cáo</string>
     <string name="show_reading_indicators">Hiển thị thanh tiến độ đọc</string>
     <string name="no_bookmarks_yet">Chưa có đánh dấu nào</string>
     <string name="categories_delete_confirm">Bạn có chắc muốn xoá danh mục yêu thích đã chọn không? \nToàn bộ truyện trong mục sẽ bị mất và không thể khôi phục.</string>
@@ -197,8 +195,7 @@
     <string name="text_file_not_supported">Vui lòng chọn tập tin ZIP hoặc CBZ.</string>
     <string name="error">Lỗi</string>
     <string name="_continue">Tiếp tục</string>
-    <string name="recent_manga">Gần đây</string>
-    <string name="screenshots_allow">Cho phép</string>
+<string name="screenshots_allow">Cho phép</string>
     <string name="suggestions_info">Tất cả dữ liệu chỉ được phân tích cục bộ trên thiết bị này và không bao giờ gửi đi nơi nào khác.</string>
     <string name="all_favourites">Tất cả danh mục yêu thích</string>
     <string name="new_version_s">Phiên bản mới: %s</string>
@@ -291,8 +288,7 @@
     <string name="crash_text">Có gì đó không đúng. Vui lòng gửi một báo cáo lỗi cho các nhà phát triển để giúp chúng tôi sửa nó.</string>
     <string name="status_on_hold">Tạm ngưng</string>
     <string name="status_dropped">Đã ngưng</string>
-    <string name="appwidget_shelf_description">Manga từ các mục yêu thích của bạn</string>
-    <string name="disable_all">Tắt tất cả</string>
+<string name="disable_all">Tắt tất cả</string>
     <string name="status_completed">Đã hoàn thành</string>
     <string name="clear_cookies_summary">Có thể giúp ích trong trường hợp có vấn đề. Mọi uỷ quyền sẽ bị vô hiệu hoá</string>
     <string name="manage">Quản lý</string>

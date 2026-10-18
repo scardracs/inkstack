@@ -5,8 +5,7 @@
     <string name="status_re_reading">Uuesti loen</string>
     <string name="add_to_favourites">Lisa lemmikuks</string>
     <string name="detect_reader_mode">Automaatne lugeja mood</string>
-    <string name="manga_shelf">Riiul</string>
-    <string name="download_started">Allalaadimine alustatud</string>
+<string name="download_started">Allalaadimine alustatud</string>
     <string name="tracking">Jälgimine</string>
     <string name="close">Sulge</string>
     <string name="progress">Progress</string>
@@ -126,8 +125,7 @@
     <string name="detect_reader_mode_summary">Automaatselt tuvastada, kas manga on webtoon</string>
     <string name="not_found_404">Sisu mitte saadaval või eemaldatud</string>
     <string name="feed_will_update_soon">Voogu uuendused algavad varsti</string>
-    <string name="appwidget_recent_description">Sinu hiljuti loetud manga</string>
-    <string name="got_it">Saadud</string>
+<string name="got_it">Saadud</string>
     <string name="chapters">Peatükid</string>
     <string name="appearance">Välimus</string>
     <string name="bookmark_remove">Eemalda järjehoidja</string>
@@ -176,8 +174,7 @@
     <string name="show_pages_numbers">nummerda leheküljed</string>
     <string name="allow_unstable_updates_summary">Saa teateid ebastabiilsete uuenduste kohta</string>
     <string name="sync_title">Sünkroniseeri oma andmed</string>
-    <string name="appwidget_shelf_description">Manga sinu lemmikutest</string>
-    <string name="comics_archive_import_description">Sa võid valida üks või veel .cbz või .zip faile, iga fail võetakse kui erinev manga.</string>
+<string name="comics_archive_import_description">Sa võid valida üks või veel .cbz või .zip faile, iga fail võetakse kui erinev manga.</string>
     <string name="search_history_cleared">Tühjendatud</string>
     <string name="_s_deleted_from_local_storage">\"%s\" eemaldatud lokaasest salvestusruumist</string>
     <string name="too_many_requests_message">Liiga palju taotlusi. Proovige hiljem uuesti</string>
@@ -311,8 +308,7 @@
     <string name="status_completed">Loetud</string>
     <string name="_continue">Jätka</string>
     <string name="grid">Ruudustik</string>
-    <string name="recent_manga">Hiljutised</string>
-    <string name="operation_not_supported">See operatsioon ei ole toetatud</string>
+<string name="operation_not_supported">See operatsioon ei ole toetatud</string>
     <string name="reader_control_ltr">Ergonoomiline lügeja kontroll</string>
     <string name="dont_check">Ära kontrolli</string>
     <string name="save_page">Salvesta lehekülg</string>

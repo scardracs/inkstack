@@ -98,9 +98,7 @@
     <string name="text_history_holder_secondary">Pronađite što čitati u odjeljku «Istražite»</string>
     <string name="text_local_holder_primary">Prvo spremite nešto</string>
     <string name="text_local_holder_secondary">Spremite nešto iz online kataloga ili uvezite iz datoteke.</string>
-    <string name="manga_shelf">Polica</string>
-    <string name="recent_manga">Nedavno</string>
-    <string name="pages_animation">Animacija stranice</string>
+<string name="pages_animation">Animacija stranice</string>
     <string name="manga_save_location">Mapa preuzimanja</string>
     <string name="not_available">Nije dostupno</string>
     <string name="cannot_find_available_storage">Nema dostupnog prostora za pohranu</string>
@@ -493,8 +491,7 @@
     <string name="dns_over_https">DNS preko HTTPS-a</string>
     <string name="disable_battery_optimization">Onemogući optimizaciju baterije</string>
     <string name="status_dropped">Izbačeno</string>
-    <string name="appwidget_shelf_description">Manga iz vaših favorita</string>
-    <string name="no_bookmarks_summary">Možete stvoriti zabilješku dok čitate mangu</string>
+<string name="no_bookmarks_summary">Možete stvoriti zabilješku dok čitate mangu</string>
     <string name="empty">Prazno</string>
     <string name="exit_confirmation_summary">Dvaput pritisnite Natrag za izlaz iz aplikacije</string>
     <string name="exit_confirmation">Potvrda izlaza</string>
@@ -508,8 +505,7 @@
     <string name="undo">Poništi</string>
     <string name="disable_all">Onemogući sve</string>
     <string name="use_fingerprint">Koristite biometriju ako je dostupna</string>
-    <string name="appwidget_recent_description">Vaša nedavno pročitana manga</string>
-    <string name="explore">Istraži</string>
+<string name="explore">Istraži</string>
     <string name="confirm_exit">Ponovno pritisnite Natrag za izlaz</string>
     <string name="saved_manga">Spremljena manga</string>
     <string name="pages_cache">Predmemorija stranica</string>

@@ -59,8 +59,7 @@
     <string name="_s_deleted_from_local_storage">%s törölve lett a helyi tárhelyből</string>
     <string name="page_saved">Mentve</string>
     <string name="delete">Törlés</string>
-    <string name="recent_manga">Legutóbbi</string>
-    <string name="updates_feed_cleared">Törölve</string>
+<string name="updates_feed_cleared">Törölve</string>
     <string name="not_available">Nem elérhető</string>
     <string name="done">Kész</string>
     <string name="all_favourites">Összes kedvenc</string>
@@ -107,8 +106,7 @@
     <string name="text_empty_holder_primary">Kicsit üres itt…</string>
     <string name="text_search_holder_secondary">Próbáld meg átalakítani a kérdést.</string>
     <string name="text_local_holder_primary">Először ments el valamit</string>
-    <string name="manga_shelf">Polc</string>
-    <string name="pages_animation">Oldal animáció</string>
+<string name="pages_animation">Oldal animáció</string>
     <string name="manga_save_location">Letöltések mappa</string>
     <string name="cannot_find_available_storage">Nincs rendelkezésre álló tárhely</string>
     <string name="other_storage">Egyéb tárhely</string>
@@ -256,9 +254,7 @@
     <string name="send">Küld</string>
     <string name="status_dropped">Elvetett</string>
     <string name="disable_all">Összes letiltása</string>
-    <string name="appwidget_shelf_description">Manga a kedvenceid közül</string>
-    <string name="appwidget_recent_description">A nemrég olvasott mangád</string>
-    <string name="report">Jelent</string>
+<string name="report">Jelent</string>
     <string name="data_deletion">Adattörlés</string>
     <string name="show_all">Összes mutatása</string>
     <string name="clear_all_history">Minden előzmény törlése</string>

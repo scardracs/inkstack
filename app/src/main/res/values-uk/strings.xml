@@ -86,9 +86,7 @@
     <string name="text_history_holder_secondary">Знайдіть, що почитати, у розділі «Огляд»</string>
     <string name="text_local_holder_primary">Спочатку збережіть щось</string>
     <string name="text_local_holder_secondary">Збережіть щось із онлайн-каталогу або імпортуйте це з файлу.</string>
-    <string name="manga_shelf">Полиця</string>
-    <string name="recent_manga">Недавні</string>
-    <string name="pages_animation">Анімація перегортання</string>
+<string name="pages_animation">Анімація перегортання</string>
     <string name="manga_save_location">Папка завантажень</string>
     <string name="other_storage">Інше сховище</string>
     <string name="done">Готово</string>
@@ -249,9 +247,7 @@
     <string name="send">Надіслати</string>
     <string name="disable_all">Вимкнути все</string>
     <string name="use_fingerprint">Використовувати біометричні дані, якщо вони доступні</string>
-    <string name="appwidget_shelf_description">Манґа з Ваших обраних</string>
-    <string name="appwidget_recent_description">Манґа, яку Ви нещодавно читали</string>
-    <string name="invalid_domain_message">Недійсний домен</string>
+<string name="invalid_domain_message">Недійсний домен</string>
     <string name="report">Звіт</string>
     <string name="tracking">Відстеження</string>
     <string name="logout">Вийти</string>
