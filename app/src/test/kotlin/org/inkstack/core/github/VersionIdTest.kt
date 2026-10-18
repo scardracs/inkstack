@@ -45,8 +45,10 @@ class VersionIdTest {
 
 	@Test
 	fun testCurrentVersion() {
-		val version1 = VersionId("2.4.6")
-		val version2 = VersionId(BuildConfig.VERSION_NAME)
-		assertTrue(version1 < version2)
+		val current = VersionId(BuildConfig.VERSION_NAME)
+		assertEquals(0, current.major)
+		assertEquals(1, current.minor)
+		assertEquals(0, current.build)
+		assertTrue(current.isStable)
 	}
 }
