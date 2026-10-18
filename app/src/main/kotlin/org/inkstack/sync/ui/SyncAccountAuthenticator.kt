@@ -52,11 +52,10 @@ class SyncAccountAuthenticator(private val context: Context) : AbstractAccountAu
 		} else {
 			val intent = Intent(context, SyncAuthActivity::class.java)
 			intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response)
-			val bundle = Bundle()
 			if (options != null) {
-				bundle.putAll(options)
+				result.putAll(options)
 			}
-			bundle.putParcelable(AccountManager.KEY_INTENT, intent)
+			result.putParcelable(AccountManager.KEY_INTENT, intent)
 		}
 		return result
 	}
