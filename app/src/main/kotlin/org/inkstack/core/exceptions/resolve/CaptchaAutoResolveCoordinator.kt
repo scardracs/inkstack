@@ -81,10 +81,14 @@ class CaptchaAutoResolveCoordinator @Inject constructor(
 			?.complete(success)
 	}
 
-	fun isResolveActive(source: MangaSource): Boolean = activeSession != null
+	fun isResolveActive(source: MangaSource): Boolean = activeSession?.source == source
 
-	/** Waits for whichever global session is active. This method never starts verification. */
-	suspend fun awaitActiveResolve(source: MangaSource): Boolean? = activeSession?.result?.await()
+	/** Waits for the active session only when it belongs to [source]. Never starts verification. */
+	suspend fun awaitActiveResolve(source: MangaSource): Boolean? {
+		val session = activeSession ?: return null
+		if (session.source != source) return null
+		return session.result.await()
+	}
 
 	/**
 	 * Runs an operation in sync with the global solver. Background and prefetch callers pass
