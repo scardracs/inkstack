@@ -1,6 +1,6 @@
 # Inkstack
 
-Manga reader for Android 9+ (API 28).
+Manga reader for Android 9+ (`minSdk` 28). Built against API 37 (`compileSdk` / `targetSdk`).
 
 ## Layout
 
@@ -10,7 +10,8 @@ Manga reader for Android 9+ (API 28).
 
 ## Requirements
 
-- Android 9 (API 28) or newer
+- Android 9 (API 28) or newer to install
+- `compileSdk` / `targetSdk` 37
 - JDK 27 (toolchain; bytecode target 26)
 - Optional: `local.properties` release signing keys (see [`keystore/README.md`](keystore/README.md))
 
