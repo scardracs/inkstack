@@ -1,7 +1,8 @@
 package org.inkstack.local.ui
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -15,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import org.inkstack.R
 import org.inkstack.core.model.LocalMangaSource
 import org.inkstack.core.nav.router
+import org.inkstack.core.os.OpenDocumentTreeHelper
 import org.inkstack.core.ui.list.ListSelectionController
 import org.inkstack.core.ui.widgets.TipView
 import org.inkstack.core.util.ShareHelper
@@ -27,15 +29,17 @@ import org.inkstack.list.ui.MangaListFragment
 import org.inkstack.remotelist.ui.MangaSearchMenuProvider
 import org.inkstack.search.ui.MangaListActivity
 import org.inkstack.remotelist.ui.RemoteListFragment
-import org.inkstack.settings.storage.RequestStorageManagerPermissionContract
 
 class LocalListFragment : MangaListFragment(), FilterCoordinator.Owner {
 
-	private val permissionRequestLauncher = registerForActivityResult(
-		RequestStorageManagerPermissionContract(),
-	) {
-		if (it) {
-			viewModel.onRefresh()
+	private val pickFileTreeLauncher = OpenDocumentTreeHelper(
+		activityResultCaller = this,
+		flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+			or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+			or Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION,
+	) { uri: Uri? ->
+		if (uri != null) {
+			viewModel.onCustomDirectoryPicked(uri)
 		}
 	}
 
@@ -74,11 +78,7 @@ class LocalListFragment : MangaListFragment(), FilterCoordinator.Owner {
 	}
 
 	override fun onPrimaryButtonClick(tipView: TipView) {
-		if (Environment.isExternalStorageManager()) {
-			viewModel.onRefresh()
-			return
-		}
-		if (!permissionRequestLauncher.tryLaunch(Unit)) {
+		if (!pickFileTreeLauncher.tryLaunch(null)) {
 			Snackbar.make(tipView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT).show()
 		}
 	}

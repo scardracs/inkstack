@@ -802,7 +802,7 @@ Optional — skip it and you appear as anon.</string>
     <!-- Short minutes and seconds format pattern -->
     <string name="minutes_seconds_short">%1$d m %2$d s</string>
     <string name="fix">Fix</string>
-    <string name="missing_storage_permission">There is no permission to access manga on external storage</string>
+    <string name="missing_storage_permission">Access to a manga folder was lost. Pick the folder again using the system file picker.</string>
     <string name="last_used">Last used</string>
     <string name="show_updated">Show updated</string>
     <string name="webtoon_gaps">Gaps in webtoon mode</string>

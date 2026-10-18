@@ -1,6 +1,7 @@
 package org.inkstack.local.ui
 
 import android.content.Context
+import android.net.Uri
 import android.content.SharedPreferences
 import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -97,7 +98,7 @@ class LocalListViewModel @Inject constructor(
 						title = R.string.external_storage,
 						text = R.string.missing_storage_permission,
 						icon = R.drawable.ic_storage,
-						primaryButtonText = R.string.fix,
+						primaryButtonText = R.string.pick_custom_directory,
 						secondaryButtonText = R.string.settings,
 					)
 					list.add(0, tip)
@@ -130,6 +131,20 @@ class LocalListViewModel @Inject constructor(
 
 	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
 		if (key == AppSettings.KEY_LOCAL_MANGA_DIRS) {
+			onRefresh()
+		}
+	}
+
+	fun onCustomDirectoryPicked(uri: Uri) {
+		launchLoadingJob(Dispatchers.Default) {
+			localStorageManager.takePermissions(uri)
+			val dir = localStorageManager.resolveUri(uri)
+			if (!dir.canRead()) {
+				return@launchLoadingJob
+			}
+			if (dir !in localStorageManager.getApplicationStorageDirs()) {
+				settings.addUserSpecifiedMangaDirectory(dir)
+			}
 			onRefresh()
 		}
 	}

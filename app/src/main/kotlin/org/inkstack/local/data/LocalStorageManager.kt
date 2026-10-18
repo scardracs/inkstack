@@ -4,7 +4,6 @@ import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Environment
 import android.os.StatFs
 import androidx.annotation.WorkerThread
 import androidx.core.net.toFile
@@ -110,9 +109,36 @@ class LocalStorageManager @Inject constructor(
 		return !file.absolutePath.contains(context.packageName)
 	}
 
-	@Suppress("UNUSED_PARAMETER")
 	fun hasExternalStoragePermission(isReadOnly: Boolean): Boolean {
-		return Environment.isExternalStorageManager()
+		val applicationDirs = getAvailableStorageDirs()
+		for (dir in settings.userSpecifiedMangaDirectories) {
+			if (dir in applicationDirs) {
+				continue
+			}
+			if (dir.canRead()) {
+				continue
+			}
+			if (hasPersistableTreeAccess(dir)) {
+				continue
+			}
+			return false
+		}
+		return true
+	}
+
+	private fun hasPersistableTreeAccess(dir: File): Boolean {
+		val dirPath = dir.path
+		for (permission in contentResolver.persistedUriPermissions) {
+			if (!permission.isReadPermission) {
+				continue
+			}
+			val treeFile = permission.uri.resolveFile(context) ?: continue
+			val treePath = treeFile.path
+			if (dirPath == treePath || dirPath.startsWith(treePath + File.separator)) {
+				return true
+			}
+		}
+		return false
 	}
 
 	suspend fun getDirectoryDisplayName(dir: File, isFullPath: Boolean): String = runInterruptible(Dispatchers.IO) {

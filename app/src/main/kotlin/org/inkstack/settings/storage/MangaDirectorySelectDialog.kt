@@ -2,7 +2,6 @@ package org.inkstack.settings.storage
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,21 +33,6 @@ class MangaDirectorySelectDialog : AlertDialogFragment<DialogDirectorySelectBind
 	) {
 		if (it != null) viewModel.onCustomDirectoryPicked(it)
 	}
-	private val permissionRequestLauncher = registerForActivityResult(
-		RequestStorageManagerPermissionContract(),
-	) {
-		if (it) {
-			viewModel.refresh()
-			if (!pickFileTreeLauncher.tryLaunch(null)) {
-				Toast.makeText(
-					context ?: return@registerForActivityResult,
-					R.string.operation_not_supported,
-					Toast.LENGTH_SHORT,
-				).show()
-			}
-		}
-	}
-
 	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): DialogDirectorySelectBinding {
 		return DialogDirectorySelectBinding.inflate(inflater, container, false)
 	}
@@ -75,11 +59,7 @@ class MangaDirectorySelectDialog : AlertDialogFragment<DialogDirectorySelectBind
 	}
 
 	private fun pickCustomDirectory() {
-		val launched = if (Environment.isExternalStorageManager()) {
-			pickFileTreeLauncher.tryLaunch(null)
-		} else {
-			permissionRequestLauncher.tryLaunch(Unit)
-		}
+		val launched = pickFileTreeLauncher.tryLaunch(null)
 		if (!launched) {
 			Toast.makeText(context ?: return, R.string.operation_not_supported, Toast.LENGTH_SHORT).show()
 		}

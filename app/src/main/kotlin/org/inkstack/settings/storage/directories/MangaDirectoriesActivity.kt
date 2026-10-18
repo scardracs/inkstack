@@ -2,7 +2,6 @@ package org.inkstack.settings.storage.directories
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Environment
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.viewModels
@@ -24,7 +23,6 @@ import org.inkstack.core.util.ext.observe
 import org.inkstack.core.util.ext.observeEvent
 import org.inkstack.core.util.ext.tryLaunch
 import org.inkstack.databinding.ActivityMangaDirectoriesBinding
-import org.inkstack.settings.storage.RequestStorageManagerPermissionContract
 
 @AndroidEntryPoint
 class MangaDirectoriesActivity : BaseActivity<ActivityMangaDirectoriesBinding>(),
@@ -39,19 +37,6 @@ class MangaDirectoriesActivity : BaseActivity<ActivityMangaDirectoriesBinding>()
 	) {
 		if (it != null) viewModel.onCustomDirectoryPicked(it)
 	}
-	private val permissionRequestLauncher = registerForActivityResult(
-		RequestStorageManagerPermissionContract(),
-	) {
-		if (it) {
-			viewModel.updateList()
-			if (!pickFileTreeLauncher.tryLaunch(null)) {
-				Snackbar.make(
-					viewBinding.recyclerView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT,
-				).show()
-			}
-		}
-	}
-
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityMangaDirectoriesBinding.inflate(layoutInflater))
@@ -76,11 +61,7 @@ class MangaDirectoriesActivity : BaseActivity<ActivityMangaDirectoriesBinding>()
 	}
 
 	override fun onClick(v: View?) {
-		val launched = if (Environment.isExternalStorageManager()) {
-			pickFileTreeLauncher.tryLaunch(null)
-		} else {
-			permissionRequestLauncher.tryLaunch(Unit)
-		}
+		val launched = pickFileTreeLauncher.tryLaunch(null)
 		if (!launched) {
 			Snackbar.make(
 				viewBinding.recyclerView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT,
