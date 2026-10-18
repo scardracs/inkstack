@@ -50,7 +50,6 @@ import org.inkstack.core.util.FileSize
 import org.inkstack.core.util.MimeTypes
 import org.inkstack.core.util.ext.URI_SCHEME_ZIP
 import org.inkstack.core.util.ext.cancelChildrenAndJoin
-import org.inkstack.core.util.ext.compressToPNG
 import org.inkstack.core.util.ext.ensureRamAtLeast
 import org.inkstack.core.util.ext.ensureSuccess
 import org.inkstack.core.util.ext.getCompletionResultOrNull
@@ -197,7 +196,7 @@ class PageLoader @Inject constructor(
 	}
 
 	@CheckResult
-	suspend fun convertBimap(uri: Uri): Uri = convertLock.withLock {
+	suspend fun convertBitmap(uri: Uri): Uri = convertLock.withLock {
 		if (uri.isZipUri()) {
 			runInterruptible(Dispatchers.IO) {
 				ZipFile(uri.schemeSpecificPart).use { zip ->
@@ -214,11 +213,12 @@ class PageLoader @Inject constructor(
 			val file = uri.toFile()
 			runInterruptible(Dispatchers.IO) {
 				context.ensureRamAtLeast(BitmapDecoderCompat.estimateDecodedSize(file))
-				BitmapDecoderCompat.decode(file)
+				// Software bitmap: must be compressible to PNG for the SSIV fallback cache.
+				BitmapDecoderCompat.decode(file, preferHardware = false)
 			}.use { image ->
-				image.compressToPNG(file)
+				// New PNG cache entry — never overwrite the original JPEG/WebP bytes in place.
+				cache.set(uri.toString(), image).toUri()
 			}
-			uri
 		}
 	}
 

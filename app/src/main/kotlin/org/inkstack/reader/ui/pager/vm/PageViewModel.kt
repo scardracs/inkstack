@@ -113,7 +113,7 @@ class PageViewModel(
 			prevJob?.join()
 			state.value = PageState.Converting()
 			try {
-				val newUri = loader.convertBimap(uri)
+				val newUri = loader.convertBitmap(uri)
 				cachedBounds = if (settingsProducer.value.isPagesCropEnabled(isWebtoon)) {
 					loader.getTrimmedBounds(newUri)
 				} else {
