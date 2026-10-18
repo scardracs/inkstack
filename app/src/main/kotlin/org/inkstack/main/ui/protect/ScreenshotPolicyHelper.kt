@@ -17,6 +17,7 @@ import org.inkstack.core.prefs.AppSettings
 import org.inkstack.core.prefs.ScreenshotsPolicy
 import org.inkstack.core.prefs.observeAsFlow
 import org.inkstack.core.ui.DefaultActivityLifecycleCallbacks
+import org.inkstack.settings.protect.ProtectSetupActivity
 import javax.inject.Inject
 
 class ScreenshotPolicyHelper @Inject constructor(
@@ -44,7 +45,8 @@ class ScreenshotPolicyHelper @Inject constructor(
 					}
 				}.collect { isSecure ->
 					withContext(Dispatchers.Main) {
-						if (isSecure) {
+						val keepSecure = activity is ProtectActivity || activity is ProtectSetupActivity
+						if (isSecure || keepSecure) {
 							activity.window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
 						} else {
 							activity.window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
