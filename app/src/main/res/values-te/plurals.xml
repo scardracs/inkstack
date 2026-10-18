@@ -36,4 +36,20 @@
         <item quantity="one">%1$d నిమిషం</item>
         <item quantity="other">%1$d నిమిషాలు</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d రేటింగ్</item>
+		<item quantity="other">%d రేటింగ్‌లు</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d వ్యాఖ్య</item>
+		<item quantity="other">%d వ్యాఖ్యలు</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">కొత్త ఖాతా ప్రస్తుతానికి చేయగలిగినంత పోస్ట్ చేశారు. సుమారు %1$d నిమిషం తర్వాత మళ్లీ ప్రయత్నించండి.</item>
+		<item quantity="other">కొత్త ఖాతా ప్రస్తుతానికి చేయగలిగినంత పోస్ట్ చేశారు. సుమారు %1$d నిమిషాల తర్వాత మళ్లీ ప్రయత్నించండి.</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d కొత్త ప్రత్యుత్తరం</item>
+		<item quantity="other">%d కొత్త ప్రత్యుత్తరాలు</item>
+	</plurals>
 </resources>
