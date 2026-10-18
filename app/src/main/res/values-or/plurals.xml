@@ -20,4 +20,20 @@
 		<item quantity="one">%1$dଟିଏ ଅଧ୍ୟାୟ</item>
 		<item quantity="other">%1$dଟି ଅଧ୍ୟାୟ</item>
 	</plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d ରେଟିଂ</item>
+		<item quantity="other">%d ରେଟିଂ</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d ମନ୍ତବ୍ଯ</item>
+		<item quantity="other">%d ମନ୍ତବ୍ଯଗୁଡ଼ିକ</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">ନୂଆ ଖାତା ପାଇଁ ବର୍ତ୍ତମାନ ସୀମା ପୂର୍ଣ୍ଣ। ପ୍ରାୟ %1$d ମିନିଟ୍ ପରେ ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।</item>
+		<item quantity="other">ନୂଆ ଖାତା ପାଇଁ ବର୍ତ୍ତମାନ ସୀମା ପୂର୍ଣ୍ଣ। ପ୍ରାୟ %1$d ମିନିଟ୍ ପରେ ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d ନୂଆ ଉତ୍ତର</item>
+		<item quantity="other">%d ନୂଆ ଉତ୍ତର</item>
+	</plurals>
 </resources>
