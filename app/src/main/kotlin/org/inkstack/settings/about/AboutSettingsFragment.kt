@@ -55,23 +55,8 @@ class AboutSettingsFragment : BasePreferenceFragment(R.string.about) {
 				true
 			}
 
-			AppSettings.KEY_LINK_WEBLATE -> {
-				openLink(R.string.url_weblate, preference.title)
-				true
-			}
-
 			AppSettings.KEY_LINK_GITHUB -> {
 				openLink(R.string.url_github, preference.title)
-				true
-			}
-
-			AppSettings.KEY_LINK_MANUAL -> {
-				openLink(R.string.url_user_manual, preference.title)
-				true
-			}
-
-			AppSettings.KEY_LINK_DISCORD -> {
-				openLink(R.string.url_discord, preference.title)
 				true
 			}
 
