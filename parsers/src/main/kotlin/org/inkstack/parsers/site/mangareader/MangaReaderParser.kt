@@ -265,7 +265,6 @@ internal abstract class MangaReaderParser(
 			?: docs.selectFirst(".tsinfo div:contains(Author)")?.lastElementChild()?.textOrNull()
 			?: docs.selectFirst(".tsinfo div:contains(Auteur)")?.lastElementChild()?.textOrNull()
 			?: docs.selectFirst(".tsinfo div:contains(Artist)")?.lastElementChild()?.textOrNull()
-			?: docs.selectFirst(".tsinfo div:contains(Durum)")?.lastElementChild()?.textOrNull()
 
 		val nsfw = docs.selectFirst(".restrictcontainer") != null
 			|| docs.selectFirst(".info-right .alr") != null
@@ -406,6 +405,9 @@ internal abstract class MangaReaderParser(
 	}.getOrNull()
 
 	override suspend fun resolveLink(resolver: LinkResolver, link: HttpUrl): Manga? {
+		if (link.pathSegments.size < 2) {
+			return null
+		}
 		val mangaSlug = link.pathSegments[1].nullIfEmpty() ?: return null
 		val url = "/manga/$mangaSlug/"
 		return resolver.resolveManga(
