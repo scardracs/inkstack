@@ -191,7 +191,7 @@ internal class DoujinHentaiNet(context: MangaLoaderContext) :
 				title = name,
 				number = i + 1f,
 				volume = 0,
-				url = href,
+				url = href.toRelativeUrl(domain),
 				uploadDate = dateFormat.parseSafe(dateText),
 				source = source,
 				scanlator = null,
