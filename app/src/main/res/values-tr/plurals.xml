@@ -36,4 +36,20 @@
         <item quantity="one">%1$d dakika</item>
         <item quantity="other">%1$d dakika</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d derecelendirme</item>
+		<item quantity="other">%d derecelendirme</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d yorum</item>
+		<item quantity="other">%d yorumlar</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">Şimdilik yeni bir hesabın yapabileceği kadar paylaşım yaptınız. Yaklaşık %1$d dakika sonra tekrar deneyin.</item>
+		<item quantity="other">Şimdilik yeni bir hesabın yapabileceği kadar paylaşım yaptınız. Yaklaşık %1$d dakika sonra tekrar deneyin.</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d yeni yanıt</item>
+		<item quantity="other">%d yeni yanıtlar</item>
+	</plurals>
 </resources>
