@@ -27,4 +27,20 @@
     <plurals name="minutes">
         <item quantity="other">%1$d menit</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d rating</item>
+		<item quantity="other">%d rating</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d komentar</item>
+		<item quantity="other">%d komentar</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">Sampeyan wis ngepost sak paling akun anyar saiki. Coba maneh ing kira-kira %1$d menit.</item>
+		<item quantity="other">Sampeyan wis ngepost sak paling akun anyar saiki. Coba maneh ing kira-kira %1$d menit.</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d wangsulan anyar</item>
+		<item quantity="other">%d wangsulan anyar</item>
+	</plurals>
 </resources>
