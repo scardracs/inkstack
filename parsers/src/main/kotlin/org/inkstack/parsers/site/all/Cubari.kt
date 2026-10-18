@@ -1,6 +1,9 @@
 package org.inkstack.parsers.site.all
 
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import org.inkstack.parsers.exception.ParseException
+import java.net.InetAddress
 import org.json.JSONArray
 import org.inkstack.parsers.Broken
 import org.inkstack.parsers.MangaLoaderContext
@@ -167,7 +170,7 @@ internal class CubariParser(context: MangaLoaderContext) :
 
 		val imageUrls: List<String> = when (groupValue) {
 			is JSONArray -> (0 until groupValue.length()).map { groupValue.getString(it) }
-			is String -> webClient.httpGet(groupValue.toAbsoluteUrl(domain)).parseJsonArray()
+			is String -> webClient.httpGet(resolveGroupFetchUrl(groupValue)).parseJsonArray()
 				.asTypedList()
 			else -> emptyList()
 		}
@@ -204,6 +207,37 @@ internal class CubariParser(context: MangaLoaderContext) :
 	 * Extract (type, id) from a stored relative manga URL: `/read/<type>/<id...>`.
 	 * The id may contain '/' because cubari uses standard (non-URL-safe) base64.
 	 */
+	private fun resolveGroupFetchUrl(groupValue: String): String {
+		val isAbsolute = groupValue.startsWith("http://", ignoreCase = true) ||
+			groupValue.startsWith("https://", ignoreCase = true)
+		val resolved = groupValue.toAbsoluteUrl(domain)
+		val httpUrl = resolved.toHttpUrlOrNull()
+			?: throw ParseException("Invalid group URL", groupValue)
+		validateGroupFetchHost(httpUrl, isAbsolute)
+		return resolved
+	}
+
+	private fun validateGroupFetchHost(httpUrl: HttpUrl, isAbsolute: Boolean) {
+		val host = httpUrl.host
+		if (host.equals("localhost", ignoreCase = true) ||
+			host.endsWith(".localhost", ignoreCase = true) ||
+			host.equals("metadata.google.internal", ignoreCase = true) ||
+			host.endsWith(".local", ignoreCase = true)
+		) {
+			throw ParseException("Blocked group fetch host", httpUrl.toString())
+		}
+		if (isAbsolute && !host.equals(domain, ignoreCase = true)) {
+			throw ParseException("External group URL is not allowed", httpUrl.toString())
+		}
+		runCatching { InetAddress.getByName(host) }.getOrNull()?.let { address ->
+			if (address.isAnyLocalAddress || address.isLoopbackAddress || address.isLinkLocalAddress ||
+				address.isSiteLocalAddress || address.isMulticastAddress
+			) {
+				throw ParseException("Blocked group fetch address", httpUrl.toString())
+			}
+		}
+	}
+
 	private fun parseMangaUrl(relativeUrl: String): Pair<String, String> {
 		val path = relativeUrl.trimEnd('/')
 		val prefix = "/read/"
