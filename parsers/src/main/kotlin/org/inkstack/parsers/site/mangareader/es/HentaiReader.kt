@@ -86,7 +86,7 @@ internal class HentaiReader(context: MangaLoaderContext) :
 				number = index + 1f,
 				volume = 0,
 				scanlator = null,
-				uploadDate = dateFormat.parseSafe(docs.selectFirst("time")?.text()),
+				uploadDate = dateFormat.parseSafe(element.selectFirst("time")?.text()),
 				branch = null,
 				source = source,
 			)
