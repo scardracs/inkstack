@@ -34,10 +34,9 @@ class MangaPickerViewModel @Inject constructor(
 	@LocalStorageChanges localStorageChanges: SharedFlow<LocalManga?>,
 ) : MangaListViewModel(settings, mangaDataRepository, localStorageChanges) {
 
-	override val content: StateFlow<List<ListModel>>
-		get() = flow {
-			emit(loadList())
-		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, listOf(LoadingState()))
+	override val content: StateFlow<List<ListModel>> = flow {
+		emit(loadList())
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, listOf(LoadingState()))
 
 	override fun onRefresh() = Unit
 
