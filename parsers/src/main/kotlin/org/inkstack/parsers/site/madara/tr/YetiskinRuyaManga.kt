@@ -10,5 +10,5 @@ import org.inkstack.parsers.site.madara.MadaraParser
 @MangaSourceParser("YETISKINRUYAMANGA", "Yetişkin Rüya Manga", "tr")
 internal class YetiskinRuyaManga(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.YETISKINRUYAMANGA, "www.yetiskinruyamanga.com", 16) {
-	override val datePattern = "dD/MM/yyyy"
+	override val datePattern = "dd/MM/yyyy"
 }
