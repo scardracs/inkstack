@@ -1,2 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>	<plurals name="community_rating_count">
+		<item quantity="zero">%d vērtējumu</item>
+		<item quantity="one">%d vērtējums</item>
+		<item quantity="other">%d vērtējumi</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="zero">%d komentāru</item>
+		<item quantity="one">%d komentārs</item>
+		<item quantity="other">%d komentāri</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="zero">Jūs esat publicējis tik daudz, cik jauns konts pagaidām drīkst. Mēģiniet vēlreiz pēc aptuveni %1$d minūtēm.</item>
+		<item quantity="one">Jūs esat publicējis tik daudz, cik jauns konts pagaidām drīkst. Mēģiniet vēlreiz pēc aptuveni %1$d minūtes.</item>
+		<item quantity="other">Jūs esat publicējis tik daudz, cik jauns konts pagaidām drīkst. Mēģiniet vēlreiz pēc aptuveni %1$d minūtēm.</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="zero">%d jaunu atbilžu</item>
+		<item quantity="one">%d jauna atbilde</item>
+		<item quantity="other">%d jaunas atbildes</item>
+	</plurals>
+</resources>
