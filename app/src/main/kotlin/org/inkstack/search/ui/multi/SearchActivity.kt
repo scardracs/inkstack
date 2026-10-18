@@ -19,11 +19,9 @@ import org.inkstack.core.ui.list.ListSelectionController
 import org.inkstack.core.ui.list.OnListItemClickListener
 import org.inkstack.core.ui.widgets.TipView
 import org.inkstack.core.util.ShareHelper
-import org.inkstack.core.util.ext.consumeAllSystemBarsInsets
 import org.inkstack.core.util.ext.invalidateNestedItemDecorations
 import org.inkstack.core.util.ext.observe
 import org.inkstack.core.util.ext.observeEvent
-import org.inkstack.core.util.ext.systemBarsInsets
 import org.inkstack.databinding.ActivitySearchBinding
 import org.inkstack.list.domain.ListFilterOption
 import org.inkstack.list.ui.MangaSelectionDecoration
@@ -37,6 +35,7 @@ import org.inkstack.parsers.model.MangaTag
 import org.inkstack.search.domain.SearchKind
 import org.inkstack.search.ui.multi.adapter.SearchAdapter
 import javax.inject.Inject
+import org.inkstack.core.util.ext.consumeAll
 
 @AndroidEntryPoint
 class SearchActivity :
@@ -101,7 +100,7 @@ class SearchActivity :
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val barsInsets = insets.systemBarsInsets
+		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 		viewBinding.toolbar.updatePadding(
 			top = barsInsets.top,
 			left = barsInsets.left,
@@ -113,7 +112,7 @@ class SearchActivity :
 			right = barsInsets.right,
 			bottom = barsInsets.bottom,
 		)
-		return insets.consumeAllSystemBarsInsets()
+		return insets.consumeAll(WindowInsetsCompat.Type.systemBars())
 	}
 
 	override fun onItemClick(item: MangaListModel, view: View) {
@@ -176,7 +175,7 @@ class SearchActivity :
 	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode?, item: MenuItem): Boolean {
 		return when (item.itemId) {
 			R.id.action_share -> {
-				ShareHelper(this).shareMangaLinks(collectSelectedItems())
+				ShareHelper.shareMangaLinks(this, collectSelectedItems())
 				mode?.finish()
 				true
 			}

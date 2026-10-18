@@ -301,7 +301,7 @@ abstract class MangaListFragment :
 			}
 
 			R.id.action_share -> {
-				ShareHelper(requireContext()).shareMangaLinks(selectedItems)
+				ShareHelper.shareMangaLinks(requireContext(), selectedItems)
 				mode?.finish()
 				true
 			}

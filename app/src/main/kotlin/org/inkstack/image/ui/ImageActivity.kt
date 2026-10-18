@@ -159,7 +159,7 @@ class ImageActivity : BaseActivity<ActivityImageBinding>(),
 	private fun onImageSaved(uri: Uri) {
 		Snackbar.make(viewBinding.root, R.string.page_saved, Snackbar.LENGTH_LONG)
 			.setAction(R.string.share) {
-				ShareHelper(this).shareImage(uri)
+				ShareHelper.shareImage(this, uri)
 			}.show()
 	}
 

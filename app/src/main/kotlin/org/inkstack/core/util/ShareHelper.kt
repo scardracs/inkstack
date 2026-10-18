@@ -16,10 +16,9 @@ private const val TYPE_TEXT = "text/plain"
 private const val TYPE_IMAGE = "image/*"
 private const val TYPE_CBZ = "application/x-cbz"
 
-@Deprecated("")
-class ShareHelper(private val context: Context) {
+object ShareHelper {
 
-	fun shareMangaLink(manga: Manga) {
+	fun shareMangaLink(context: Context, manga: Manga) {
 		ShareCompat.IntentBuilder(context)
 			.setText(manga.toShareText())
 			.setType(TYPE_TEXT)
@@ -27,12 +26,12 @@ class ShareHelper(private val context: Context) {
 			.startChooser()
 	}
 
-	fun shareMangaLinks(manga: Collection<Manga>) {
+	fun shareMangaLinks(context: Context, manga: Collection<Manga>) {
 		if (manga.isEmpty()) {
 			return
 		}
 		if (manga.size == 1) {
-			shareMangaLink(manga.first())
+			shareMangaLink(context, manga.first())
 			return
 		}
 		ShareCompat.IntentBuilder(context)
@@ -59,7 +58,7 @@ class ShareHelper(private val context: Context) {
 		}
 	}
 
-	fun shareCbz(files: Collection<File>) {
+	fun shareCbz(context: Context, files: Collection<File>) {
 		if (files.isEmpty()) {
 			return
 		}
@@ -77,7 +76,7 @@ class ShareHelper(private val context: Context) {
 		intentBuilder.startChooser()
 	}
 
-	fun shareImage(uri: Uri) {
+	fun shareImage(context: Context, uri: Uri) {
 		ShareCompat.IntentBuilder(context)
 			.setStream(uri)
 			.setType(context.contentResolver.getType(uri) ?: TYPE_IMAGE)
@@ -85,7 +84,7 @@ class ShareHelper(private val context: Context) {
 			.startChooser()
 	}
 
-	fun getShareTextIntent(text: String): Intent = ShareCompat.IntentBuilder(context)
+	fun getShareTextIntent(context: Context, text: String): Intent = ShareCompat.IntentBuilder(context)
 		.setText(text)
 		.setType(TYPE_TEXT)
 		.setChooserTitle(R.string.share)

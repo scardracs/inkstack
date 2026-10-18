@@ -20,7 +20,7 @@ class PagesSavedObserver(
 		val snackbar = Snackbar.make(snackbarHost, msg, Snackbar.LENGTH_LONG)
 		value.singleOrNull()?.let { uri ->
 			snackbar.setAction(R.string.share) {
-				ShareHelper(snackbarHost.context).shareImage(uri)
+				ShareHelper.shareImage(snackbarHost.context, uri)
 			}
 		}
 		snackbar.show()

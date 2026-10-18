@@ -111,7 +111,7 @@ class LocalListFragment : MangaListFragment(), FilterCoordinator.Owner {
 
 			R.id.action_share -> {
 				val files = selectedItems.map { it.url.toUri().toFile() }
-				ShareHelper(requireContext()).shareCbz(files)
+				ShareHelper.shareCbz(requireContext(), files)
 				mode?.finish()
 				true
 			}
