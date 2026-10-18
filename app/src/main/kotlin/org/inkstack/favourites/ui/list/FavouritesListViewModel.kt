@@ -56,7 +56,7 @@ class FavouritesListViewModel @Inject constructor(
 	private val markAsReadUseCase: MarkAsReadUseCase,
 	quickFilterFactory: FavoritesListQuickFilter.Factory,
 	private val screenSearchQuery: ScreenSearchQuery,
-	settings: AppSettings,
+	private val settings: AppSettings,
 	mangaDataRepository: MangaDataRepository,
 	@LocalStorageChanges localStorageChanges: SharedFlow<LocalManga?>,
 ) : MangaListViewModel(settings, mangaDataRepository, localStorageChanges), QuickFilterListener {
@@ -138,11 +138,12 @@ class FavouritesListViewModel @Inject constructor(
 	}
 
 	fun setSortOrder(order: ListSortOrder) {
-		if (categoryId == NO_ID) {
-			return
-		}
 		launchJob {
-			repository.setCategoryOrder(categoryId, order)
+			if (categoryId == NO_ID) {
+				settings.allFavoritesSortOrder = order
+			} else {
+				repository.setCategoryOrder(categoryId, order)
+			}
 		}
 	}
 
