@@ -36,4 +36,20 @@
         <item quantity="one">%1$d मिनट</item>
         <item quantity="other">%1$d मिनट</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d रेटिंग</item>
+		<item quantity="other">%d रेटिंग</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d टिप्पणी</item>
+		<item quantity="other">%d टिप्पणियाँ</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">नए खाते की सीमा पूरी हो गई है। लगभग %1$d मिनट में फिर कोशिश करें।</item>
+		<item quantity="other">नए खाते की सीमा पूरी हो गई है। लगभग %1$d मिनट में फिर कोशिश करें।</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d नई उत्तर</item>
+		<item quantity="other">%d नई उत्तर</item>
+	</plurals>
 </resources>
