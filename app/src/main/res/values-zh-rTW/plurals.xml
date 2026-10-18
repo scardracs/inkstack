@@ -27,4 +27,20 @@
     <plurals name="items">
         <item quantity="other">%1$d 個項目</item>
     </plurals>
+	<plurals name="community_rating_count">
+		<item quantity="one">%d 則評分</item>
+		<item quantity="other">%d 則評分</item>
+	</plurals>
+	<plurals name="community_comments_count">
+		<item quantity="one">%d 則留言</item>
+		<item quantity="other">%d 則留言</item>
+	</plurals>
+	<plurals name="community_comment_rate_limited_in">
+		<item quantity="one">新帳戶暫時已達發文上限。約 %1$d 分鐘後可再試。</item>
+		<item quantity="other">新帳戶暫時已達發文上限。約 %1$d 分鐘後可再試。</item>
+	</plurals>
+	<plurals name="community_replies_count">
+		<item quantity="one">%d 則新回覆</item>
+		<item quantity="other">%d 則新回覆</item>
+	</plurals>
 </resources>
