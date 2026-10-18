@@ -44,14 +44,17 @@ object BitmapDecoderCompat {
 	private const val JXL_HEADER_SIZE = 12
 
 	@Blocking
-	fun decode(file: File): Bitmap {
+	fun decode(file: File, preferHardware: Boolean = true): Bitmap {
 		// By content, not name: sites serve JPEG XL under .jpg URLs to browsers that accept it
 		if (isJxl(file)) {
 			return decodeJxl(file.readBytes())
 		}
 		return when (val format = probeMimeType(file)?.subtype) {
 			FORMAT_AVIF -> file.source().buffer().use { decodeAvif(it.readByteBuffer()) }
-			else -> ImageDecoder.decodeBitmap(ImageDecoder.createSource(file))
+			else -> ImageDecoder.decodeBitmap(
+				ImageDecoder.createSource(file),
+				DecoderConfigListener(isMutable = false, preferHardware = preferHardware),
+			)
 		}
 	}
 
@@ -65,7 +68,10 @@ object BitmapDecoderCompat {
 		return when {
 			format == FORMAT_AVIF || AvifDecoder.isAvifImage(byteBuffer) -> decodeAvif(byteBuffer)
 			isJxl(byteBuffer) -> decodeJxl(ByteArray(byteBuffer.remaining()).also { byteBuffer.duplicate().get(it) }, isMutable)
-			else -> ImageDecoder.decodeBitmap(ImageDecoder.createSource(byteBuffer), DecoderConfigListener(isMutable))
+			else -> ImageDecoder.decodeBitmap(
+				ImageDecoder.createSource(byteBuffer),
+				DecoderConfigListener(isMutable = isMutable, preferHardware = !isMutable),
+			)
 		}
 	}
 
@@ -161,6 +167,7 @@ object BitmapDecoderCompat {
 
 	private class DecoderConfigListener(
 		private val isMutable: Boolean,
+		private val preferHardware: Boolean,
 	) : ImageDecoder.OnHeaderDecodedListener {
 
 		override fun onHeaderDecoded(
@@ -169,6 +176,12 @@ object BitmapDecoderCompat {
 			source: ImageDecoder.Source
 		) {
 			decoder.isMutableRequired = isMutable
+			// HARDWARE bitmaps cannot be compressed or drawn into a Canvas; keep SOFTWARE for those paths.
+			decoder.allocator = if (preferHardware && !isMutable) {
+				ImageDecoder.ALLOCATOR_HARDWARE
+			} else {
+				ImageDecoder.ALLOCATOR_SOFTWARE
+			}
 		}
 	}
 }
