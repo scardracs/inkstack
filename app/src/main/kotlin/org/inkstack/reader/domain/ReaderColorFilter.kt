@@ -61,9 +61,9 @@ data class ReaderColorFilter(
 
 	private fun ColorMatrix.inverted() {
 		val matrix = floatArrayOf(
-			-1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-			0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
-			0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
+			-1.0f, 0.0f, 0.0f, 0.0f, 255.0f,
+			0.0f, -1.0f, 0.0f, 0.0f, 255.0f,
+			0.0f, 0.0f, -1.0f, 0.0f, 255.0f,
 			0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
 		)
 		postConcat(ColorMatrix(matrix))
