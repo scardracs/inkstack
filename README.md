@@ -24,6 +24,17 @@ Manga reader for Android 9+ (`minSdk` 28). Built against API 37 (`compileSdk` / 
 
 Store metadata / screenshots: [`fastlane/README.md`](fastlane/README.md).
 
+## Release signing
+
+Upload / release certificate fingerprints (public). Private keystore stays local — see [`keystore/README.md`](keystore/README.md).
+
+| Algorithm | Fingerprint |
+|-----------|-------------|
+| SHA-256 | `5A:EE:EE:85:6E:5B:CA:C2:CC:98:72:A1:FD:8C:A8:49:74:A2:9B:8D:30:D7:56:61:24:8F:D9:F4:B6:B9:13:15` |
+| SHA-1 | `AC:10:D0:48:04:7F:22:71:C4:21:F4:6D:9F:EF:E7:53:7C:D9:6C:BA` |
+
+Public cert: [`keystore/inkstack-release.cer`](keystore/inkstack-release.cer).
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).
