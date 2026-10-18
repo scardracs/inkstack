@@ -63,7 +63,7 @@ class DoublePageSnapHelper(private val settings: AppSettings) : SnapHelper() {
 			scroller = Scroller(target.context, snapInterpolator)
 			initItemDimensionIfNeeded(layoutManager)
 		}
-		super.attachToRecyclerView(recyclerView)
+		super.attachToRecyclerView(target)
 	}
 
 	override fun calculateDistanceToFinalSnap(
