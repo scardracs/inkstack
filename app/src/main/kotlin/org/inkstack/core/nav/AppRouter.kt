@@ -58,7 +58,6 @@ import org.inkstack.core.util.ext.toFileOrNull
 import org.inkstack.core.util.ext.toUriOrNull
 import org.inkstack.core.util.ext.withArgs
 import org.inkstack.details.ui.DetailsActivity
-import org.inkstack.details.ui.pager.ChaptersPagesSheet
 import org.inkstack.details.ui.related.RelatedMangaActivity
 import org.inkstack.details.ui.scrobbling.ScrobblingInfoSheet
 import org.inkstack.download.ui.dialog.DownloadDialogFragment
@@ -523,16 +522,6 @@ class AppRouter private constructor(
         WelcomeSheet().showDistinct()
     }
 
-    fun showChapterPagesSheet() {
-        ChaptersPagesSheet().showDistinct()
-    }
-
-    fun showChapterPagesSheet(defaultTab: Int) {
-        ChaptersPagesSheet().withArgs(1) {
-            putInt(KEY_TAB, defaultTab)
-        }.showDistinct()
-    }
-
     fun showScrobblingSelectorSheet(manga: Manga, scrobblerService: ScrobblerService?) {
         ScrobblingSelectorSheet().withArgs(2) {
             putParcelable(KEY_MANGA, ParcelableManga(manga))
@@ -597,11 +586,6 @@ class AppRouter private constructor(
         fragment != null -> FilterCoordinator.find(fragment) != null
         activity != null -> activity is FilterCoordinator.Owner
         else -> false
-    }
-
-    fun isChapterPagesSheetShown(): Boolean {
-        val sheet = getFragmentManager()?.findFragmentByTag(fragmentTag<ChaptersPagesSheet>()) as? ChaptersPagesSheet
-        return sheet?.dialog?.isShowing == true
     }
 
     fun closeWelcomeSheet(): Boolean {

@@ -41,7 +41,8 @@
 	<dimen name="chapter_grid_width">80dp</dimen>
 	<dimen name="side_card_offset">8dp</dimen>
 	<dimen name="webtoon_pages_gap">24dp</dimen>
-	<dimen name="details_bs_peek_height">120dp</dimen>
+	<!-- Fallback for View BottomSheetBehavior; Compose peek uses ≤1/3 screen height. -->
+	<dimen name="details_bs_peek_height">96dp</dimen>
 	<dimen name="spinner_height">56dp</dimen>
 	<!--
 		Expanded title offset for the source app bar, where the sort selector shares the title's line.

@@ -2,6 +2,7 @@ package org.inkstack.details.ui
 
 import android.app.assist.AssistContent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -14,7 +15,6 @@ import coil3.ImageLoader
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.inkstack.R
@@ -24,28 +24,33 @@ import org.inkstack.core.nav.AppRouter
 import org.inkstack.core.nav.ReaderIntent
 import org.inkstack.core.nav.router
 import org.inkstack.core.os.AppShortcutManager
+import org.inkstack.core.prefs.AppSettings
 import org.inkstack.core.ui.BaseComposeActivity
 import org.inkstack.core.ui.dialog.buildAlertDialog
 import org.inkstack.core.util.ext.isHttpUrl
 import org.inkstack.core.util.ext.observeEvent
 import org.inkstack.core.util.ext.toUriOrNull
+import org.inkstack.details.ui.compose.DetailsHost
 import org.inkstack.details.ui.compose.DetailsMenuVisibility
 import org.inkstack.details.ui.compose.DetailsReadMenuVisibility
-import org.inkstack.details.ui.compose.DetailsScreen
 import org.inkstack.download.ui.worker.DownloadStartedObserver
+import org.inkstack.main.ui.owners.BottomSheetOwner
 import org.inkstack.parsers.model.Manga
 import org.inkstack.parsers.model.MangaChapter
 import org.inkstack.reader.ui.ReaderState
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class DetailsActivity : BaseComposeActivity() {
+class DetailsActivity : BaseComposeActivity(), BottomSheetOwner {
 
 	@Inject
 	lateinit var coil: ImageLoader
 
 	@Inject
 	lateinit var appShortcutManager: AppShortcutManager
+
+	@Inject
+	lateinit var settings: AppSettings
 
 	private val viewModel: DetailsViewModel by viewModels()
 
@@ -57,15 +62,15 @@ class DetailsActivity : BaseComposeActivity() {
 		}
 	}
 
+	override val bottomSheet: View?
+		get() = null
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+
 		val appRouter = router
-		viewModel.onError
-			.filterNot { appRouter.isChapterPagesSheetShown() }
-			.observeEvent(this, DetailsErrorObserver(this, viewModel, exceptionResolver))
-		viewModel.onDownloadStarted
-			.filterNot { appRouter.isChapterPagesSheetShown() }
-			.observeEvent(this, DownloadStartedObserver(window.decorView))
+		viewModel.onError.observeEvent(this, DetailsErrorObserver(this, viewModel, exceptionResolver))
+		viewModel.onDownloadStarted.observeEvent(this, DownloadStartedObserver(window.decorView))
 		viewModel.onMangaRemoved.observeEvent(this) {
 			finishAfterTransition()
 		}
@@ -88,6 +93,7 @@ class DetailsActivity : BaseComposeActivity() {
 					scrobbling = viewModel.isScrobblingAvailable,
 					online = remoteManga != null,
 					stats = isStatsAvailable,
+					chaptersSheet = false,
 				)
 			}
 			val readMenuVisibility = remember(historyInfo, current) {
@@ -97,21 +103,18 @@ class DetailsActivity : BaseComposeActivity() {
 					download = current != null && !current.isLocal,
 				)
 			}
-			DetailsScreen(
+			DetailsHost(
 				imageLoader = coil,
+				settings = settings,
 				viewModel = viewModel,
+				historyInfo = historyInfo,
+				menuVisibility = menuVisibility,
+				readMenuVisibility = readMenuVisibility,
 				onBack = { dispatchNavigateUp() },
 				onRead = { m, chapter, incognito -> openReader(m, chapter, incognito) },
-				onChapterClick = { chapter ->
-					val m = viewModel.getMangaOrNull() ?: return@DetailsScreen
-					openReader(m, chapter, incognito = false)
-				},
 				onFavorite = { m -> appRouter.showFavoriteDialog(m) },
 				onTagClick = { tag -> appRouter.showTagDialog(tag) },
 				onSourceClick = { m -> appRouter.openList(m.source, null, null) },
-				menuVisibility = menuVisibility,
-				readMenuVisibility = readMenuVisibility,
-				historyInfo = historyInfo,
 				onShare = {
 					viewModel.getMangaOrNull()?.let(appRouter::showShareDialog)
 				},
@@ -119,7 +122,7 @@ class DetailsActivity : BaseComposeActivity() {
 					viewModel.getMangaOrNull()?.let { appRouter.showDownloadDialog(it, window.decorView) }
 				},
 				onDelete = {
-					val m = viewModel.getMangaOrNull() ?: return@DetailsScreen
+					val m = viewModel.getMangaOrNull() ?: return@DetailsHost
 					buildAlertDialog(this) {
 						setTitle(R.string.delete_manga)
 						setMessage(getString(R.string.text_delete_local_manga, m.title))
@@ -128,7 +131,7 @@ class DetailsActivity : BaseComposeActivity() {
 					}.show()
 				},
 				onEditOverride = {
-					val m = viewModel.getMangaOrNull() ?: return@DetailsScreen
+					val m = viewModel.getMangaOrNull() ?: return@DetailsHost
 					overrideEditLauncher.launch(AppRouter.overrideEditIntent(this, m))
 				},
 				onScrobbling = {
@@ -150,11 +153,11 @@ class DetailsActivity : BaseComposeActivity() {
 					remoteManga?.let(appRouter::openDetails)
 				},
 				onBrowser = {
-					val m = viewModel.getMangaOrNull() ?: return@DetailsScreen
+					val m = viewModel.getMangaOrNull() ?: return@DetailsHost
 					appRouter.openBrowser(url = m.publicUrl, source = m.source, title = m.title)
 				},
 				onShortcut = {
-					val m = viewModel.getMangaOrNull() ?: return@DetailsScreen
+					val m = viewModel.getMangaOrNull() ?: return@DetailsHost
 					lifecycleScope.launch {
 						if (!appShortcutManager.requestPinShortcut(m)) {
 							Snackbar.make(window.decorView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT)
@@ -162,7 +165,6 @@ class DetailsActivity : BaseComposeActivity() {
 						}
 					}
 				},
-				onChaptersSheet = { appRouter.showChapterPagesSheet() },
 				onForgetHistory = { viewModel.removeFromHistory() },
 			)
 		}
