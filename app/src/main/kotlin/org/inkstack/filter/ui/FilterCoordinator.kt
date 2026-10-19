@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.inkstack.core.model.MangaSource
+import org.inkstack.core.nav.AppRouter
 import org.inkstack.core.parser.MangaRepository
 import org.inkstack.core.util.LocaleComparator
 import org.inkstack.core.util.ext.asFlow
@@ -59,7 +60,7 @@ class FilterCoordinator @Inject constructor(
 ) {
 
     private val coroutineScope = lifecycle.lifecycleScope + Dispatchers.Default
-    private val repository = mangaRepositoryFactory.create(MangaSource(savedStateHandle[RemoteListFragment.ARG_SOURCE]))
+    private val repository = mangaRepositoryFactory.create(MangaSource(requireSourceName(savedStateHandle)))
     private val sourceLocale = (repository.source as? MangaParserSource)?.locale
 
     private val currentListFilter = MutableStateFlow(MangaListFilter.EMPTY)
@@ -530,6 +531,12 @@ class FilterCoordinator @Inject constructor(
 
         private const val TAGS_LIMIT = 12
         private val MAX_YEAR = Calendar.getInstance()[Calendar.YEAR] + 1
+
+        /** Fragment args use [RemoteListFragment.ARG_SOURCE]; Compose activity intents use [AppRouter.KEY_SOURCE]. */
+        fun requireSourceName(savedStateHandle: SavedStateHandle): String =
+            savedStateHandle[RemoteListFragment.ARG_SOURCE]
+                ?: savedStateHandle[AppRouter.KEY_SOURCE]
+                ?: error("Missing source in SavedStateHandle")
 
         fun find(fragment: Fragment): FilterCoordinator? {
             (fragment.activity as? Owner)?.let {

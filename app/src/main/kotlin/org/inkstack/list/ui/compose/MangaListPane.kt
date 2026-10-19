@@ -3,6 +3,7 @@ package org.inkstack.list.ui.compose
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +20,7 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -29,6 +31,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -36,9 +39,11 @@ import coil3.ImageLoader
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import org.inkstack.core.model.getTitle
+import org.inkstack.core.ui.compose.fastscroll.FastScroller
 import org.inkstack.explore.ui.model.MangaSourceItem
 import org.inkstack.explore.ui.model.RecommendationsItem
 import org.inkstack.list.domain.QuickFilterListener
+import org.inkstack.list.ui.model.ButtonFooter
 import org.inkstack.list.ui.model.EmptyState
 import org.inkstack.list.ui.model.ErrorState
 import org.inkstack.list.ui.model.InfoModel
@@ -48,6 +53,7 @@ import org.inkstack.list.ui.model.LoadingFooter
 import org.inkstack.list.ui.model.LoadingState
 import org.inkstack.list.ui.model.MangaListModel
 import org.inkstack.list.ui.model.QuickFilter
+import org.inkstack.list.ui.model.TipModel
 import org.inkstack.parsers.model.Manga
 import org.inkstack.parsers.model.MangaSource
 import org.inkstack.tracker.ui.feed.model.FeedItem
@@ -73,6 +79,12 @@ fun MangaListPane(
 	contentPadding: PaddingValues = PaddingValues(bottom = 96.dp),
 	minCellDp: Int = DEFAULT_MIN_CELL,
 	gridState: LazyGridState = rememberLazyGridState(),
+	onSecondaryErrorAction: ((Throwable) -> Unit)? = null,
+	onFooterClick: (() -> Unit)? = null,
+	onTipPrimary: (() -> Unit)? = null,
+	onTipSecondary: (() -> Unit)? = null,
+	fastScrollerEnabled: Boolean = false,
+	sectionIndexer: ((Int) -> String?)? = null,
 ) {
 	LaunchedEffect(gridState, onLoadMore) {
 		if (onLoadMore == null) return@LaunchedEffect
@@ -87,7 +99,9 @@ fun MangaListPane(
 			.collect { onLoadMore() }
 	}
 
-	val grid: @Composable () -> Unit = {
+	val showFastScroller = fastScrollerEnabled && content.size > 8
+
+	val grid: @Composable BoxScope.() -> Unit = {
 		LazyVerticalGrid(
 			columns = GridCells.Adaptive(minSize = minCellDp.dp),
 			state = gridState,
@@ -150,6 +164,26 @@ fun MangaListPane(
 				is ErrorState -> ErrorStatePane(
 					state = item,
 					onRetry = onRetry,
+					onSecondaryAction = onSecondaryErrorAction,
+				)
+
+				is ButtonFooter -> Box(
+					modifier = Modifier
+						.fillMaxWidth()
+						.padding(horizontal = 16.dp, vertical = 8.dp),
+					contentAlignment = Alignment.Center,
+				) {
+					if (onFooterClick != null) {
+						TextButton(onClick = onFooterClick) {
+							Text(stringResource(item.textResId))
+						}
+					}
+				}
+
+				is TipModel -> TipPane(
+					item = item,
+					onPrimary = onTipPrimary,
+					onSecondary = onTipSecondary,
 				)
 
 				is LoadingState -> Box(
@@ -227,6 +261,13 @@ fun MangaListPane(
 			}
 		}
 		}
+		if (showFastScroller) {
+			FastScroller(
+				state = gridState,
+				itemCount = content.size,
+				sectionIndexer = sectionIndexer,
+			)
+		}
 	}
 
 	if (onRefresh != null) {
@@ -235,12 +276,10 @@ fun MangaListPane(
 			onRefresh = onRefresh,
 			modifier = modifier.fillMaxSize(),
 		) {
-			grid()
+			Box(Modifier.fillMaxSize(), content = grid)
 		}
 	} else {
-		Box(modifier.fillMaxSize()) {
-			grid()
-		}
+		Box(modifier.fillMaxSize(), content = grid)
 	}
 }
 
@@ -281,6 +320,7 @@ private fun EmptyStatePane(
 private fun ErrorStatePane(
 	state: ErrorState,
 	onRetry: (() -> Unit)?,
+	onSecondaryAction: ((Throwable) -> Unit)?,
 ) {
 	Column(
 		modifier = Modifier
@@ -297,6 +337,52 @@ private fun ErrorStatePane(
 		if (state.canRetry && onRetry != null) {
 			TextButton(onClick = onRetry) {
 				Text(stringResource(state.buttonText))
+			}
+		}
+		if (state.secondaryButtonText != 0 && onSecondaryAction != null) {
+			TextButton(onClick = { onSecondaryAction(state.exception) }) {
+				Text(stringResource(state.secondaryButtonText))
+			}
+		}
+	}
+}
+
+@Composable
+private fun TipPane(
+	item: TipModel,
+	onPrimary: (() -> Unit)?,
+	onSecondary: (() -> Unit)?,
+) {
+	Column(
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(horizontal = 16.dp, vertical = 12.dp),
+		verticalArrangement = Arrangement.spacedBy(8.dp),
+	) {
+		if (item.icon != 0) {
+			Icon(
+				painter = painterResource(item.icon),
+				contentDescription = null,
+				tint = MaterialTheme.colorScheme.primary,
+			)
+		}
+		Text(
+			text = stringResource(item.title),
+			style = MaterialTheme.typography.titleSmall,
+		)
+		Text(
+			text = stringResource(item.text),
+			style = MaterialTheme.typography.bodyMedium,
+			color = MaterialTheme.colorScheme.onSurfaceVariant,
+		)
+		if (item.primaryButtonText != 0 && onPrimary != null) {
+			TextButton(onClick = onPrimary) {
+				Text(stringResource(item.primaryButtonText))
+			}
+		}
+		if (item.secondaryButtonText != 0 && onSecondary != null) {
+			TextButton(onClick = onSecondary) {
+				Text(stringResource(item.secondaryButtonText))
 			}
 		}
 	}
@@ -379,5 +465,7 @@ private fun listKey(item: ListModel, index: Int): Any = when (item) {
 	is LoadingFooter -> "loading-footer"
 	is InfoModel -> "info-${item.key}"
 	is MangaSourceItem -> "source-${item.id}"
+	is ButtonFooter -> "footer-button-${item.textResId}"
+	is TipModel -> "tip-${item.key}"
 	else -> "item-$index-${item.javaClass.simpleName}"
 }
