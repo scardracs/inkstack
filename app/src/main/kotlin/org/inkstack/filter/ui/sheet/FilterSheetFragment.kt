@@ -12,6 +12,11 @@ import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -28,10 +33,10 @@ import kotlinx.coroutines.flow.map
 import org.inkstack.R
 import org.inkstack.core.model.titleResId
 import org.inkstack.core.nav.router
+import org.inkstack.core.ui.compose.sheet.ComposeAdaptiveSheet
 import org.inkstack.core.ui.dialog.buildAlertDialog
 import org.inkstack.core.ui.dialog.setEditText
 import org.inkstack.core.ui.model.titleRes
-import org.inkstack.core.ui.sheet.BaseAdaptiveSheet
 import org.inkstack.core.ui.widgets.ChipsView
 import org.inkstack.core.util.AlphanumComparator
 import org.inkstack.core.util.ext.consume
@@ -58,20 +63,43 @@ import org.inkstack.parsers.util.toIntUp
 import java.util.Locale
 import java.util.TreeSet
 
-class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
+/**
+ * Filter sheet on [ComposeAdaptiveSheet]. Content stays View-backed for now
+ * (chips / sliders / saved presets); host is Compose adaptive chrome.
+ */
+class FilterSheetFragment : ComposeAdaptiveSheet(),
     AdapterView.OnItemSelectedListener,
     View.OnClickListener,
     ChipsView.OnChipClickListener,
     ChipsView.OnChipLongClickListener,
     ChipsView.OnChipCloseClickListener {
 
-    override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): SheetFilterBinding {
-        return SheetFilterBinding.inflate(inflater, container, false)
+    private var viewBinding: SheetFilterBinding? = null
+
+    /** Dialog uses Compose glass header; embedded side pane keeps the XML header. */
+    override val useAdaptiveChrome: Boolean
+        get() = showsDialog
+
+    @Composable
+    override fun sheetTitle(): String = stringResource(R.string.filter)
+
+    @Composable
+    override fun SheetContent(onDismissRequest: () -> Unit) {
+        AndroidView(
+            factory = { context ->
+                val binding = SheetFilterBinding.inflate(LayoutInflater.from(context))
+                viewBinding = binding
+                bindFilterContent(binding)
+                binding.root
+            },
+            modifier = Modifier.fillMaxWidth(),
+            onRelease = { viewBinding = null },
+        )
     }
 
-    override fun onViewBindingCreated(binding: SheetFilterBinding, savedInstanceState: Bundle?) {
-        super.onViewBindingCreated(binding, savedInstanceState)
-        if (dialog == null) {
+    private fun bindFilterContent(binding: SheetFilterBinding) {
+        binding.headerBar.isVisible = !showsDialog
+        if (!showsDialog) {
             binding.adjustForEmbeddedLayout()
         }
         val filter = FilterCoordinator.require(this)
@@ -129,6 +157,14 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
         binding.buttonDone.setOnClickListener(this)
     }
 
+    override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+        val typeMask = WindowInsetsCompat.Type.systemBars()
+        viewBinding?.layoutBottom?.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            bottomMargin = insets.getInsets(typeMask).bottom
+        }
+        return insets.consume(v, typeMask, bottom = true)
+    }
+
     private fun SheetFilterBinding.adjustForEmbeddedLayout() {
         layoutBody.updatePadding(top = layoutBody.paddingBottom)
         scrollView.scrollIndicators = 0
@@ -139,14 +175,6 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
             width = LinearLayout.LayoutParams.WRAP_CONTENT
             gravity = Gravity.END or Gravity.CENTER_VERTICAL
         }
-    }
-
-    override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-        val typeMask = WindowInsetsCompat.Type.systemBars()
-        viewBinding?.layoutBottom?.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-            bottomMargin = insets.getInsets(typeMask).bottom
-        }
-        return insets.consume(v, typeMask, bottom = true)
     }
 
     override fun onClick(v: View) {

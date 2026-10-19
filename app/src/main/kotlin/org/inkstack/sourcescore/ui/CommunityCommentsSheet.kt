@@ -5,6 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.TooltipCompat
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
@@ -18,7 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.inkstack.R
 import org.inkstack.core.nav.router
-import org.inkstack.core.ui.sheet.BaseAdaptiveSheet
+import org.inkstack.core.ui.compose.sheet.ComposeAdaptiveSheet
 import org.inkstack.core.util.ext.consume
 import org.inkstack.databinding.SheetCommunityCommentsBinding
 import org.inkstack.sourcescore.data.ApiErrorDto
@@ -28,24 +33,59 @@ import javax.inject.Inject
 /**
  * The comment thread for one work, or one chapter of it.
  *
- * Its own sheet in its own package, launched from a single line on the details screen: that file is
- * upstream Inkstack's and this fork has to keep rebasing onto it, so the community feature touches it
- * at exactly one point.
+ * Compose adaptive host; list/compose UI remains View-backed and can migrate in chunks.
+ * Launched from a single line on the details screen so rebases stay small.
  */
 @AndroidEntryPoint
-class CommunityCommentsSheet : BaseAdaptiveSheet<SheetCommunityCommentsBinding>(), CommentActions {
+class CommunityCommentsSheet : ComposeAdaptiveSheet(), CommentActions {
 
 	@Inject
 	lateinit var nameGate: CommunityNameGate
 
 	private val viewModel by viewModels<CommunityCommentsViewModel>()
 	private var adapter: CommunityCommentAdapter? = null
+	private var viewBinding: SheetCommunityCommentsBinding? = null
+	private var pendingFocusId: String? = null
+	private var contentBound = false
 
-	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?) =
-		SheetCommunityCommentsBinding.inflate(inflater, container, false)
+	@Composable
+	override fun sheetTitle(): String = stringResource(R.string.community_comments)
 
-	override fun onViewBindingCreated(binding: SheetCommunityCommentsBinding, savedInstanceState: Bundle?) {
-		super.onViewBindingCreated(binding, savedInstanceState)
+	override fun onSheetViewCreated(savedInstanceState: Bundle?) {
+		// Open at full height on the first frame so the compose box is reachable immediately.
+		disableFitToContents()
+		setExpanded(isExpanded = true, isLocked = false)
+		pendingFocusId = if (savedInstanceState == null) {
+			requireArguments().getString(ARG_FOCUS_COMMENT_ID)
+		} else {
+			null
+		}
+	}
+
+	@Composable
+	override fun SheetContent(onDismissRequest: () -> Unit) {
+		AndroidView(
+			factory = { context ->
+				val binding = SheetCommunityCommentsBinding.inflate(LayoutInflater.from(context))
+				viewBinding = binding
+				// Title lives in Compose chrome; hide the XML duplicate.
+				binding.textViewTitle.isVisible = false
+				binding.textViewSubtitle.isVisible = true
+				bindCommentsContent(binding)
+				binding.root
+			},
+			modifier = Modifier.fillMaxSize(),
+			onRelease = {
+				adapter = null
+				viewBinding = null
+				contentBound = false
+			},
+		)
+	}
+
+	private fun bindCommentsContent(binding: SheetCommunityCommentsBinding) {
+		if (contentBound) return
+		contentBound = true
 		val workId = requireArguments().getString(ARG_WORK_ID) ?: return
 		// Not `> 0`: a chapter id is a signed 64-bit hash and is negative about half the time, so that
 		// test threw away every other chapter and quietly showed the whole work's comments instead.
@@ -53,14 +93,6 @@ class CommunityCommentsSheet : BaseAdaptiveSheet<SheetCommunityCommentsBinding>(
 		val chapterId = requireArguments().getLong(ARG_CHAPTER_ID, 0L).takeIf { it != 0L }
 
 		adapter = CommunityCommentAdapter(this).also { binding.recyclerView.adapter = it }
-		// Opened from a reply notification: bring that reply into view once it has loaded. Consumed on
-		// first use so a later reload or sort change does not keep yanking the list back to it.
-		var pendingFocusId = if (savedInstanceState == null) requireArguments().getString(ARG_FOCUS_COMMENT_ID) else null
-
-		// Open, at full height, on the first frame. disableFitToContents() alone only sets the
-		// height the sheet is allowed to reach; the behaviour still started collapsed, so the box was
-		// off the bottom of the screen and you had to drag the sheet up before you could type.
-		setExpanded(isExpanded = true, isLocked = false)
 
 		binding.chipGroupSort.setOnCheckedStateChangeListener { _, checked ->
 			viewModel.setSort(
@@ -124,11 +156,6 @@ class CommunityCommentsSheet : BaseAdaptiveSheet<SheetCommunityCommentsBinding>(
 		val typeMask = WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.ime()
 		viewBinding?.root?.updatePadding(bottom = insets.getInsets(typeMask).bottom)
 		return insets.consume(v, typeMask, bottom = true)
-	}
-
-	override fun onDestroyView() {
-		adapter = null
-		super.onDestroyView()
 	}
 
 	// -- actions -------------------------------------------------------------------------------

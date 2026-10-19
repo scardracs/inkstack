@@ -1,39 +1,49 @@
 package org.inkstack.reader.ui.config
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.CompoundButton
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isGone
-import androidx.core.view.isVisible
-import androidx.core.view.updatePadding
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.activityViewModels
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.inkstack.R
 import org.inkstack.core.nav.router
 import org.inkstack.core.parser.MangaRepository
 import org.inkstack.core.prefs.AppSettings
-import org.inkstack.core.ui.sheet.BaseAdaptiveSheet
-import org.inkstack.core.util.ext.consume
+import org.inkstack.core.ui.compose.sheet.ComposeAdaptiveSheet
 import org.inkstack.core.util.ext.findParentCallback
-import org.inkstack.core.util.ext.observe
-import org.inkstack.core.util.ext.viewLifecycleScope
-import org.inkstack.databinding.SheetReaderConfigBinding
 import org.inkstack.reader.domain.PageLoader
 import org.inkstack.reader.ui.ReaderViewModel
 import org.inkstack.reader.ui.ScreenOrientationHelper
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ReaderConfigSheet :
-	BaseAdaptiveSheet<SheetReaderConfigBinding>(),
-	View.OnClickListener,
-	CompoundButton.OnCheckedChangeListener {
+class ReaderConfigSheet : ComposeAdaptiveSheet() {
 
 	private val viewModel by activityViewModels<ReaderViewModel>()
 
@@ -46,10 +56,10 @@ class ReaderConfigSheet :
 	@Inject
 	lateinit var pageLoader: PageLoader
 
-	private lateinit var imageServerDelegate: ImageServerDelegate
-
 	@Inject
 	lateinit var settings: AppSettings
+
+	private lateinit var imageServerDelegate: ImageServerDelegate
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -59,130 +69,168 @@ class ReaderConfigSheet :
 		)
 	}
 
-	override fun onCreateViewBinding(
-		inflater: LayoutInflater,
-		container: ViewGroup?,
-	): SheetReaderConfigBinding {
-		return SheetReaderConfigBinding.inflate(inflater, container, false)
-	}
+	@Composable
+	override fun sheetTitle(): String = stringResource(R.string.options)
 
-	override fun onViewBindingCreated(
-		binding: SheetReaderConfigBinding,
-		savedInstanceState: Bundle?,
-	) {
-		super.onViewBindingCreated(binding, savedInstanceState)
-		observeScreenOrientation()
-		binding.buttonSavePage.setOnClickListener(this)
-		binding.buttonScreenRotate.setOnClickListener(this)
-		binding.buttonSettings.setOnClickListener(this)
-		binding.buttonImageServer.setOnClickListener(this)
-		binding.buttonColorFilter.setOnClickListener(this)
-		binding.buttonScrollTimer.setOnClickListener(this)
-		binding.buttonBookmark.setOnClickListener(this)
-		binding.switchScreenLockRotation.setOnCheckedChangeListener(this)
+	@Composable
+	override fun SheetContent(onDismissRequest: () -> Unit) {
+		val scope = rememberCoroutineScope()
+		val context = LocalContext.current
+		val isBookmarkAdded by viewModel.isBookmarkAdded.collectAsState()
+		val autoOrientation by orientationHelper.observeAutoOrientation()
+			.collectAsState(initial = false)
+		var imageServerAvailable by remember { mutableStateOf(false) }
+		var imageServerLabel by remember { mutableStateOf<String?>(null) }
+		var rotationLocked by remember { mutableStateOf(orientationHelper.isLocked) }
 
-		viewModel.isBookmarkAdded.observe(viewLifecycleOwner) {
-			binding.buttonBookmark.setText(if (it) R.string.bookmark_remove else R.string.bookmark_add)
-			binding.buttonBookmark.setCompoundDrawablesRelativeWithIntrinsicBounds(
-				if (it) R.drawable.ic_bookmark_checked else R.drawable.ic_bookmark, 0, 0, 0,
+		LaunchedEffect(Unit) {
+			imageServerAvailable = imageServerDelegate.isAvailable()
+			if (imageServerAvailable) {
+				imageServerLabel = imageServerDelegate.getValue()
+			}
+		}
+
+		Column(
+			modifier = Modifier
+				.fillMaxWidth()
+				.verticalScroll(rememberScrollState())
+				.padding(vertical = 4.dp),
+		) {
+			SheetActionRow(
+				icon = R.drawable.ic_save,
+				label = stringResource(R.string.save_page),
+				onClick = {
+					findParentCallback(Callback::class.java)?.onSavePageClick() ?: return@SheetActionRow
+					onDismissRequest()
+				},
+			)
+			SheetActionRow(
+				icon = if (isBookmarkAdded) R.drawable.ic_bookmark_checked else R.drawable.ic_bookmark,
+				label = stringResource(
+					if (isBookmarkAdded) R.string.bookmark_remove else R.string.bookmark_add,
+				),
+				onClick = { viewModel.toggleBookmark() },
+			)
+			if (imageServerAvailable) {
+				val serverValue = imageServerLabel ?: stringResource(R.string.automatic)
+				SheetActionRow(
+					icon = R.drawable.ic_images,
+					label = stringResource(
+						R.string.inline_preference_pattern,
+						stringResource(R.string.image_server),
+						serverValue,
+					),
+					onClick = {
+						scope.launch {
+							if (imageServerDelegate.showDialog(context)) {
+								imageServerLabel = imageServerDelegate.getValue()
+								pageLoader.invalidate(clearCache = true)
+								viewModel.switchChapterBy(0)
+							}
+						}
+					},
+				)
+			}
+			if (!autoOrientation) {
+				SheetActionRow(
+					icon = R.drawable.ic_screen_rotation,
+					label = stringResource(R.string.rotate_screen),
+					onClick = {
+						orientationHelper.isLandscape = !orientationHelper.isLandscape
+					},
+				)
+			} else {
+				Row(
+					modifier = Modifier
+						.fillMaxWidth()
+						.clickable {
+							rotationLocked = !rotationLocked
+							orientationHelper.isLocked = rotationLocked
+						}
+						.padding(horizontal = 16.dp, vertical = 12.dp),
+					verticalAlignment = Alignment.CenterVertically,
+					horizontalArrangement = Arrangement.spacedBy(16.dp),
+				) {
+					Icon(
+						painter = painterResource(R.drawable.ic_screen_rotation_lock),
+						contentDescription = null,
+						modifier = Modifier.size(24.dp),
+						tint = MaterialTheme.colorScheme.onSurfaceVariant,
+					)
+					Text(
+						text = stringResource(R.string.lock_screen_rotation),
+						style = MaterialTheme.typography.bodyLarge,
+						modifier = Modifier.weight(1f),
+					)
+					Switch(
+						checked = rotationLocked,
+						onCheckedChange = {
+							rotationLocked = it
+							orientationHelper.isLocked = it
+						},
+					)
+				}
+			}
+			SheetActionRow(
+				icon = R.drawable.ic_timer,
+				label = stringResource(R.string.automatic_scroll),
+				onClick = {
+					findParentCallback(Callback::class.java)?.onScrollTimerClick(false)
+						?: return@SheetActionRow
+					onDismissRequest()
+				},
+			)
+			SheetActionRow(
+				icon = R.drawable.ic_appearance,
+				label = stringResource(R.string.color_correction),
+				onClick = {
+					val page = viewModel.getCurrentPage() ?: return@SheetActionRow
+					val manga = viewModel.getMangaOrNull() ?: return@SheetActionRow
+					router.openColorFilterConfig(manga, page)
+				},
+			)
+			SheetActionRow(
+				icon = R.drawable.ic_settings,
+				label = stringResource(R.string.settings),
+				onClick = {
+					router.openReaderSettings()
+					onDismissRequest()
+				},
 			)
 		}
-
-		viewLifecycleScope.launch {
-			val isAvailable = imageServerDelegate.isAvailable()
-			if (isAvailable) {
-				bindImageServerTitle()
-			}
-			binding.buttonImageServer.isVisible = isAvailable
-		}
-	}
-
-	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val typeMask = WindowInsetsCompat.Type.systemBars()
-		viewBinding?.scrollView?.updatePadding(
-			bottom = insets.getInsets(typeMask).bottom,
-		)
-		return insets.consume(v, typeMask, bottom = true)
-	}
-
-	override fun onClick(v: View) {
-		when (v.id) {
-			R.id.button_settings -> {
-				router.openReaderSettings()
-				dismissAllowingStateLoss()
-			}
-
-			R.id.button_scroll_timer -> {
-				findParentCallback(Callback::class.java)?.onScrollTimerClick(false) ?: return
-				dismissAllowingStateLoss()
-			}
-
-			R.id.button_save_page -> {
-				findParentCallback(Callback::class.java)?.onSavePageClick() ?: return
-				dismissAllowingStateLoss()
-			}
-
-			R.id.button_screen_rotate -> {
-				orientationHelper.isLandscape = !orientationHelper.isLandscape
-			}
-
-			R.id.button_bookmark -> {
-				viewModel.toggleBookmark()
-			}
-
-			R.id.button_color_filter -> {
-				val page = viewModel.getCurrentPage() ?: return
-				val manga = viewModel.getMangaOrNull() ?: return
-				router.openColorFilterConfig(manga, page)
-			}
-
-			R.id.button_image_server -> viewLifecycleScope.launch {
-				if (imageServerDelegate.showDialog(v.context)) {
-					bindImageServerTitle()
-					pageLoader.invalidate(clearCache = true)
-					viewModel.switchChapterBy(0)
-				}
-			}
-		}
-	}
-
-	override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
-		when (buttonView.id) {
-			R.id.switch_screen_lock_rotation -> {
-				orientationHelper.isLocked = isChecked
-			}
-		}
-	}
-
-	private fun observeScreenOrientation() {
-		orientationHelper.observeAutoOrientation()
-			.onEach {
-				with(requireViewBinding()) {
-					buttonScreenRotate.isGone = it
-					switchScreenLockRotation.isVisible = it
-					updateOrientationLockSwitch()
-				}
-			}.launchIn(viewLifecycleScope)
-	}
-
-	private fun updateOrientationLockSwitch() {
-		val switch = viewBinding?.switchScreenLockRotation ?: return
-		switch.setOnCheckedChangeListener(null)
-		switch.isChecked = orientationHelper.isLocked
-		switch.setOnCheckedChangeListener(this)
-	}
-
-	private suspend fun bindImageServerTitle() {
-		viewBinding?.buttonImageServer?.text = getString(
-			R.string.inline_preference_pattern,
-			getString(R.string.image_server),
-			imageServerDelegate.getValue() ?: getString(R.string.automatic),
-		)
 	}
 
 	interface Callback {
 		fun onSavePageClick()
 		fun onScrollTimerClick(isLongClick: Boolean)
 		fun onBookmarkClick()
+	}
+}
+
+@Composable
+private fun SheetActionRow(
+	icon: Int,
+	label: String,
+	onClick: () -> Unit,
+) {
+	Row(
+		modifier = Modifier
+			.fillMaxWidth()
+			.clickable(onClick = onClick)
+			.padding(horizontal = 16.dp, vertical = 14.dp),
+		verticalAlignment = Alignment.CenterVertically,
+		horizontalArrangement = Arrangement.spacedBy(16.dp),
+	) {
+		Icon(
+			painter = painterResource(icon),
+			contentDescription = null,
+			modifier = Modifier.size(24.dp),
+			tint = MaterialTheme.colorScheme.onSurfaceVariant,
+		)
+		Text(
+			text = label,
+			style = MaterialTheme.typography.bodyLarge,
+			modifier = Modifier.weight(1f),
+		)
 	}
 }

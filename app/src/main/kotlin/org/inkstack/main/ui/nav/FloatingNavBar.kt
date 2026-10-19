@@ -42,7 +42,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
@@ -57,7 +56,11 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.ui.graphics.luminance
 import org.inkstack.R
+import org.inkstack.core.ui.compose.InkstackGlassSurface
+import org.inkstack.core.ui.compose.inkstackGlassContentColor
 
 data class FloatingNavBarItem(
 	@IdRes val id: Int,
@@ -171,13 +174,9 @@ private fun FloatingNavItemsSurface(
 	onItemSelected: (Int) -> Unit,
 	onItemReselected: (Int) -> Unit,
 ) {
-	Surface(
-		modifier = Modifier
-			.shadow(8.dp, RoundedCornerShape(50))
-			.wrapContentWidth(),
+	InkstackGlassSurface(
+		modifier = Modifier.wrapContentWidth(),
 		shape = RoundedCornerShape(50),
-		color = Color(colors.container),
-		contentColor = MaterialTheme.colorScheme.onSurface,
 	) {
 		Row(
 			modifier = Modifier
@@ -273,8 +272,15 @@ private fun FloatingNavItem(
 		animationSpec = SpringColor,
 		label = "navItemContainer",
 	)
+	// Dark glass chrome: force chiaro (near-white) for unselected icons, not grey-on-charcoal.
+	val glassContent = inkstackGlassContentColor()
+	val isDark = isSystemInDarkTheme() || MaterialTheme.colorScheme.surface.luminance() < 0.5f
 	val content by animateColorAsState(
-		targetValue = if (selected) Color(colors.selectedContent) else Color(colors.unselectedContent),
+		targetValue = when {
+			selected -> Color(colors.selectedContent)
+			isDark -> glassContent
+			else -> Color(colors.unselectedContent)
+		},
 		animationSpec = SpringColor,
 		label = "navItemContent",
 	)

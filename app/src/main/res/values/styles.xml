@@ -22,6 +22,9 @@
 
 	<style name="Widget.Inkstack.BottomSheet.Modal" parent="Widget.Material3.BottomSheet.Modal">
 		<item name="paddingBottomSystemWindowInsets">false</item>
+		<!-- Full-bleed: Material defaults margin left/right system insets, which leaves a hairline gap. -->
+		<item name="marginLeftSystemWindowInsets">false</item>
+		<item name="marginRightSystemWindowInsets">false</item>
 	</style>
 
 	<style name="Widget.Inkstack.BottomSheet.DragHandle" parent="Widget.Material3.BottomSheet.DragHandle">

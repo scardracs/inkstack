@@ -2,7 +2,6 @@ package org.inkstack.main.ui.compose
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -13,8 +12,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -29,6 +26,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import org.inkstack.R
+import org.inkstack.core.ui.compose.InkstackGlassShape
+import org.inkstack.core.ui.compose.InkstackGlassSurface
+import org.inkstack.core.ui.compose.inkstackGlassContentColor
+import org.inkstack.core.ui.compose.inkstackGlassContentColorMuted
 
 
 data class MainOverflowItem(
@@ -49,25 +50,25 @@ fun MainSearchBar(
 ) {
 	var menuExpanded by remember { mutableStateOf(false) }
 	val visibleItems = menuItems.filter { it.visible }
-	Surface(
+	InkstackGlassSurface(
 		modifier = modifier
 			.fillMaxWidth()
 			.padding(horizontal = 16.dp, vertical = 8.dp),
-		shape = RoundedCornerShape(28.dp),
-		color = MaterialTheme.colorScheme.surfaceContainerHigh,
-		tonalElevation = 0.dp,
-		shadowElevation = 0.dp,
+		shape = InkstackGlassShape,
 	) {
+		val content = inkstackGlassContentColor()
+		val muted = inkstackGlassContentColorMuted()
 		TextField(
 			value = query,
 			onValueChange = onQueryChange,
 			modifier = Modifier.fillMaxWidth(),
-			placeholder = { Text(stringResource(R.string.search_manga)) },
+			placeholder = { Text(stringResource(R.string.search_manga), color = muted) },
 			leadingIcon = {
 				IconButton(onClick = { onSearch(query) }) {
 					Icon(
 						Icons.Filled.Search,
 						contentDescription = stringResource(R.string.search_manga),
+						tint = content,
 					)
 				}
 			},
@@ -76,6 +77,7 @@ fun MainSearchBar(
 					Icon(
 						Icons.Filled.MoreVert,
 						contentDescription = stringResource(R.string.more),
+						tint = content,
 					)
 				}
 				DropdownMenu(
@@ -111,7 +113,17 @@ fun MainSearchBar(
 				focusedIndicatorColor = Color.Transparent,
 				unfocusedIndicatorColor = Color.Transparent,
 				disabledIndicatorColor = Color.Transparent,
+				focusedTextColor = content,
+				unfocusedTextColor = content,
+				cursorColor = content,
+				focusedLeadingIconColor = content,
+				unfocusedLeadingIconColor = content,
+				focusedTrailingIconColor = content,
+				unfocusedTrailingIconColor = content,
+				focusedPlaceholderColor = muted,
+				unfocusedPlaceholderColor = muted,
 			),
 		)
 	}
 }
+
