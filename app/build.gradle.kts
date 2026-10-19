@@ -204,8 +204,6 @@ kotlin {
 			"-opt-in=kotlinx.serialization.ExperimentalSerializationApi",
 			"-opt-in=org.inkstack.parsers.InternalParsersApi",
 			"-Xjspecify-annotations=strict",
-			"-Xannotation-default-target=first-only",
-			"-Xtype-enhancement-improvements-strict-mode",
 		)
 	}
 }
@@ -285,6 +283,7 @@ dependencies {
 	implementation(libs.androidx.lifecycle.runtime.compose)
 	implementation(libs.androidx.lifecycle.viewmodel.compose)
 	implementation(libs.androidx.hilt.navigation.compose)
+	implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
 
 	implementation(libs.androidx.appcompat)
 	implementation(libs.androidx.core)
