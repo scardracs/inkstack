@@ -19,12 +19,22 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.NewReleases
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
@@ -40,6 +50,9 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -60,22 +73,40 @@ import org.inkstack.core.ui.compose.MangaCover
 import org.inkstack.core.util.ext.mangaExtra
 import org.inkstack.details.ui.DetailsViewModel
 import org.inkstack.details.ui.model.ChapterListItem
+import org.inkstack.details.ui.model.HistoryInfo
 import org.inkstack.details.ui.model.MangaBranch
 import org.inkstack.parsers.model.ContentRating
 import org.inkstack.parsers.model.Manga
 import org.inkstack.parsers.model.MangaChapter
 import org.inkstack.parsers.util.ifNullOrEmpty
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun DetailsScreen(
 	imageLoader: ImageLoader,
 	onBack: () -> Unit,
-	onRead: (Manga, MangaChapter?) -> Unit,
+	onRead: (Manga, MangaChapter?, incognito: Boolean) -> Unit,
 	onChapterClick: (MangaChapter) -> Unit,
 	onFavorite: (Manga) -> Unit = {},
 	onTagClick: (org.inkstack.parsers.model.MangaTag) -> Unit = {},
 	onSourceClick: (Manga) -> Unit = {},
+	menuVisibility: DetailsMenuVisibility = DetailsMenuVisibility(),
+	readMenuVisibility: DetailsReadMenuVisibility = DetailsReadMenuVisibility(),
+	historyInfo: HistoryInfo? = null,
+	onShare: () -> Unit = {},
+	onDownload: () -> Unit = {},
+	onDelete: () -> Unit = {},
+	onEditOverride: () -> Unit = {},
+	onScrobbling: () -> Unit = {},
+	onStats: () -> Unit = {},
+	onFindSimilar: () -> Unit = {},
+	onAlternatives: () -> Unit = {},
+	onReplaceSource: () -> Unit = {},
+	onOnline: () -> Unit = {},
+	onBrowser: () -> Unit = {},
+	onShortcut: () -> Unit = {},
+	onChaptersSheet: () -> Unit = {},
+	onForgetHistory: () -> Unit = {},
 	viewModel: DetailsViewModel = hiltViewModel(),
 ) {
 	val context = LocalContext.current
@@ -89,6 +120,12 @@ fun DetailsScreen(
 	val emptyReason by viewModel.emptyReason.collectAsState()
 	val manga = details?.toManga()
 	val description = details?.description?.toString().ifNullOrEmpty { manga?.description }
+	var overflowExpanded by remember { mutableStateOf(false) }
+	var readMenuExpanded by remember { mutableStateOf(false) }
+	val fabLabel = when {
+		historyInfo?.canContinue == true -> stringResource(R.string._continue)
+		else -> stringResource(R.string.read)
+	}
 
 	Scaffold(
 		modifier = Modifier.fillMaxSize(),
@@ -106,13 +143,143 @@ fun DetailsScreen(
 						Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
 					}
 				},
+				actions = {
+					IconButton(onClick = { overflowExpanded = true }) {
+						Icon(Icons.Default.MoreVert, contentDescription = stringResource(R.string.more))
+					}
+					DropdownMenu(
+						expanded = overflowExpanded,
+						onDismissRequest = { overflowExpanded = false },
+					) {
+						if (menuVisibility.share) {
+							DropdownMenuItem(
+								text = { Text(stringResource(R.string.share)) },
+								onClick = { overflowExpanded = false; onShare() },
+							)
+						}
+						if (menuVisibility.download) {
+							DropdownMenuItem(
+								text = { Text(stringResource(R.string.download)) },
+								onClick = { overflowExpanded = false; onDownload() },
+							)
+						}
+						if (menuVisibility.delete) {
+							DropdownMenuItem(
+								text = { Text(stringResource(R.string.delete)) },
+								onClick = { overflowExpanded = false; onDelete() },
+							)
+						}
+						if (menuVisibility.editOverride) {
+							DropdownMenuItem(
+								text = { Text(stringResource(R.string.edit)) },
+								onClick = { overflowExpanded = false; onEditOverride() },
+							)
+						}
+						if (menuVisibility.scrobbling) {
+							DropdownMenuItem(
+								text = { Text(stringResource(R.string.tracking)) },
+								onClick = { overflowExpanded = false; onScrobbling() },
+							)
+						}
+						if (menuVisibility.stats) {
+							DropdownMenuItem(
+								text = { Text(stringResource(R.string.statistics)) },
+								onClick = { overflowExpanded = false; onStats() },
+							)
+						}
+						if (menuVisibility.findSimilar) {
+							DropdownMenuItem(
+								text = { Text(stringResource(R.string.find_similar)) },
+								onClick = { overflowExpanded = false; onFindSimilar() },
+							)
+						}
+						if (menuVisibility.alternatives) {
+							DropdownMenuItem(
+								text = { Text(stringResource(R.string.alternatives)) },
+								onClick = { overflowExpanded = false; onAlternatives() },
+							)
+						}
+						if (menuVisibility.replaceSource) {
+							DropdownMenuItem(
+								text = { Text(stringResource(R.string.replace_source)) },
+								onClick = { overflowExpanded = false; onReplaceSource() },
+							)
+						}
+						if (menuVisibility.online) {
+							DropdownMenuItem(
+								text = { Text(stringResource(R.string.online_variant)) },
+								onClick = { overflowExpanded = false; onOnline() },
+							)
+						}
+						if (menuVisibility.browser) {
+							DropdownMenuItem(
+								text = { Text(stringResource(R.string.open_in_browser)) },
+								onClick = { overflowExpanded = false; onBrowser() },
+							)
+						}
+						if (menuVisibility.shortcut) {
+							DropdownMenuItem(
+								text = { Text(stringResource(R.string.create_shortcut)) },
+								onClick = { overflowExpanded = false; onShortcut() },
+							)
+						}
+						if (menuVisibility.chaptersSheet) {
+							DropdownMenuItem(
+								text = { Text(stringResource(R.string.chapters)) },
+								onClick = { overflowExpanded = false; onChaptersSheet() },
+							)
+						}
+					}
+				},
 				colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
 			)
 		},
 		floatingActionButton = {
 			if (manga != null) {
-				FloatingActionButton(onClick = { onRead(manga, null) }) {
-					Icon(Icons.Default.PlayArrow, contentDescription = stringResource(R.string.read))
+				Box {
+					FloatingActionButton(
+						onClick = {},
+						modifier = Modifier.combinedClickable(
+							interactionSource = remember { MutableInteractionSource() },
+							indication = null,
+							onClick = { onRead(manga, null, false) },
+							onLongClick = { readMenuExpanded = true },
+						),
+					) {
+						Icon(Icons.Default.PlayArrow, contentDescription = fabLabel)
+					}
+					DropdownMenu(
+						expanded = readMenuExpanded,
+						onDismissRequest = { readMenuExpanded = false },
+					) {
+						if (readMenuVisibility.incognito) {
+							DropdownMenuItem(
+								text = { Text(stringResource(R.string.incognito_mode)) },
+								onClick = {
+									readMenuExpanded = false
+									onRead(manga, null, true)
+								},
+							)
+						}
+						if (readMenuVisibility.forget) {
+							DropdownMenuItem(
+								text = { Text(stringResource(R.string.remove_from_history)) },
+								onClick = {
+									readMenuExpanded = false
+									onForgetHistory()
+								},
+							)
+						}
+						if (readMenuVisibility.download) {
+							DropdownMenuItem(
+								text = { Text(stringResource(R.string.download)) },
+								onClick = {
+									readMenuExpanded = false
+									onDownload()
+								},
+							)
+						}
+					}
 				}
 			}
 		},
@@ -362,6 +529,7 @@ private fun ChapterRow(
 			)
 			.padding(horizontal = 16.dp, vertical = 12.dp),
 		verticalAlignment = Alignment.CenterVertically,
+		horizontalArrangement = Arrangement.spacedBy(8.dp),
 	) {
 		Column(modifier = Modifier.weight(1f)) {
 			Text(
@@ -385,6 +553,30 @@ private fun ChapterRow(
 					overflow = TextOverflow.Ellipsis,
 				)
 			}
+		}
+		if (item.isUnread && item.isNew) {
+			Icon(
+				imageVector = Icons.Default.NewReleases,
+				contentDescription = null,
+				tint = MaterialTheme.colorScheme.primary,
+				modifier = Modifier.size(18.dp),
+			)
+		}
+		if (item.isBookmarked) {
+			Icon(
+				imageVector = Icons.Default.Bookmark,
+				contentDescription = null,
+				tint = MaterialTheme.colorScheme.secondary,
+				modifier = Modifier.size(18.dp),
+			)
+		}
+		if (item.isDownloaded) {
+			Icon(
+				imageVector = Icons.Default.Download,
+				contentDescription = null,
+				tint = MaterialTheme.colorScheme.onSurfaceVariant,
+				modifier = Modifier.size(18.dp),
+			)
 		}
 	}
 }
