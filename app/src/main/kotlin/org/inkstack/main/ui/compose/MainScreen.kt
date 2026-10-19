@@ -58,8 +58,6 @@ import org.inkstack.main.ui.nav.FloatingNavBarColors
 import org.inkstack.main.ui.nav.FloatingNavBarItem
 import org.inkstack.parsers.model.Manga
 import org.inkstack.parsers.model.MangaSource
-import org.inkstack.search.domain.ScreenSearchQuery
-import org.inkstack.search.ui.suggestion.SearchSuggestionScope
 import org.inkstack.suggestions.ui.SuggestionsViewModel
 import org.inkstack.suggestions.ui.compose.SuggestionsScreen
 import org.inkstack.tracker.ui.feed.FeedViewModel
@@ -76,7 +74,6 @@ import com.google.android.material.R as materialR
 @Composable
 fun MainScreen(
 	settings: AppSettings,
-	screenSearchQuery: ScreenSearchQuery,
 	imageLoader: ImageLoader,
 	onOpenDetails: (Manga) -> Unit,
 	onOpenReader: (Manga) -> Unit,
@@ -116,11 +113,8 @@ fun MainScreen(
 		}
 	}
 
-	val searchScope = selectedId.toSearchScope()
-	LaunchedEffect(searchScope) {
-		screenSearchQuery.setActiveScope(searchScope)
-	}
-	val query by screenSearchQuery.query(searchScope).collectAsState()
+	// One global search query for every tab — never filters History/Favourites in place.
+	var query by rememberSaveable { mutableStateOf("") }
 
 	val firstId = navItems.firstOrNull()?.id
 	var exitArmed by remember { mutableStateOf(false) }
@@ -195,13 +189,10 @@ fun MainScreen(
 			Box(Modifier.padding(top = statusBar.calculateTopPadding())) {
 				MainSearchBar(
 					query = query,
-					onQueryChange = { screenSearchQuery.set(searchScope, it) },
+					onQueryChange = { query = it },
 					onSearch = { text ->
-						if (searchScope == SearchSuggestionScope.ALL) {
-							onOpenSearch(text)
-						} else {
-							screenSearchQuery.set(searchScope, text)
-						}
+						onOpenSearch(text.trim())
+						query = ""
 					},
 					menuItems = menuItems,
 				)
@@ -477,8 +468,3 @@ private fun rememberNavItems(settings: AppSettings, feedCounter: Int): List<Floa
 	}
 }
 
-private fun Int.toSearchScope(): SearchSuggestionScope = when (this) {
-	NavItem.HISTORY.id -> SearchSuggestionScope.HISTORY
-	NavItem.FAVORITES.id -> SearchSuggestionScope.FAVOURITES
-	else -> SearchSuggestionScope.ALL
-}

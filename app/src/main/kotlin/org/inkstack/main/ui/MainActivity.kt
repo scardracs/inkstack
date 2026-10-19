@@ -24,7 +24,6 @@ import org.inkstack.details.service.MangaPrefetchService
 import org.inkstack.local.ui.LocalIndexUpdateService
 import org.inkstack.local.ui.LocalStorageCleanupWorker
 import org.inkstack.main.ui.compose.MainScreen
-import org.inkstack.search.domain.ScreenSearchQuery
 import org.inkstack.sourcescore.data.CommunitySettings
 import org.inkstack.sourcescore.domain.CommunityReplyNotifier
 import org.inkstack.sourcescore.ui.CommunityCommentsSheet
@@ -48,9 +47,6 @@ class MainActivity : BaseComposeActivity() {
 	lateinit var settings: AppSettings
 
 	@Inject
-	lateinit var screenSearchQuery: ScreenSearchQuery
-
-	@Inject
 	lateinit var imageLoader: ImageLoader
 
 	private val viewModel by viewModels<MainViewModel>()
@@ -71,7 +67,6 @@ class MainActivity : BaseComposeActivity() {
 		setComposeContent {
 			MainScreen(
 				settings = settings,
-				screenSearchQuery = screenSearchQuery,
 				imageLoader = imageLoader,
 				mainViewModel = viewModel,
 				onOpenDetails = { manga -> router.openDetails(manga) },

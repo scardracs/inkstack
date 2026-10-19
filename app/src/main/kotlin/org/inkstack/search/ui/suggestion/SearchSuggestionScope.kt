@@ -1,15 +1,11 @@
 package org.inkstack.search.ui.suggestion
 
 /**
- * What the shared search bar should look through.
- *
- * The bar is the same on every screen, but on History and Favourites it narrows to that screen's
- * contents instead of offering library-wide suggestions, so typing a title, a source or a list name
- * filters what you were already looking at.
+ * Scope for optional live filtering of the current main tab while typing in the shared search bar.
+ * Submitting search always opens the global multi-source search from every tab.
  */
 enum class SearchSuggestionScope {
 
-	/** Library-wide suggestions: the behaviour everywhere else. */
 	ALL,
 	HISTORY,
 	FAVOURITES,

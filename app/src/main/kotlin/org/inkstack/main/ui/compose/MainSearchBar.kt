@@ -30,6 +30,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import org.inkstack.R
 
+
 data class MainOverflowItem(
 	val id: String,
 	val titleRes: Int,
@@ -63,7 +64,12 @@ fun MainSearchBar(
 			modifier = Modifier.fillMaxWidth(),
 			placeholder = { Text(stringResource(R.string.search_manga)) },
 			leadingIcon = {
-				Icon(Icons.Filled.Search, contentDescription = null)
+				IconButton(onClick = { onSearch(query) }) {
+					Icon(
+						Icons.Filled.Search,
+						contentDescription = stringResource(R.string.search_manga),
+					)
+				}
 			},
 			trailingIcon = {
 				IconButton(onClick = { menuExpanded = true }) {
