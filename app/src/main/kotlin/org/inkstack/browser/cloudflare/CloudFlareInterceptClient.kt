@@ -88,7 +88,7 @@ class CloudFlareInterceptClient(
 				charset = "UTF-8"
 			}
 
-			return WebResourceResponse(mimeType, charset, response.body?.byteStream()).apply {
+			return WebResourceResponse(mimeType, charset, response.body.byteStream()).apply {
 				val headers = mutableMapOf<String, String>()
 				response.headers.forEach { headers[it.first] = it.second }
 				responseHeaders = headers

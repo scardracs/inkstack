@@ -6,6 +6,7 @@ import org.inkstack.core.model.getLocalizedTitle
 import org.inkstack.core.ui.model.DateTimeAgo
 import org.inkstack.parsers.model.MangaChapter
 
+@ConsistentCopyVisibility
 data class ListHeader private constructor(
 	private val textRaw: Any,
 	@StringRes val buttonTextRes: Int,

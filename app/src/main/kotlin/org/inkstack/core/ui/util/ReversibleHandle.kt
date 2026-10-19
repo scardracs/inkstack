@@ -14,6 +14,7 @@ fun interface ReversibleHandle {
 	suspend fun reverse()
 }
 
+@OptIn(kotlinx.coroutines.DelicateCoroutinesApi::class)
 fun ReversibleHandle.reverseAsync() = processLifecycleScope.launch(Dispatchers.Default, CoroutineStart.ATOMIC) {
 	runCatchingCancellable {
 		withContext(NonCancellable) {

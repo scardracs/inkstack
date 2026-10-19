@@ -70,7 +70,7 @@ open class RemoteListViewModel @Inject constructor(
 	@LocalStorageChanges localStorageChanges: SharedFlow<LocalManga?>
 ) : MangaListViewModel(settings, mangaDataRepository, localStorageChanges), FilterCoordinator.Owner {
 
-	val source = MangaSource(savedStateHandle[RemoteListFragment.ARG_SOURCE])
+	val source = MangaSource(FilterCoordinator.requireSourceName(savedStateHandle))
 	val isRandomLoading = MutableStateFlow(false)
 	val onOpenManga = MutableEventFlow<Manga>()
     val onSourceBroken = MutableEventFlow<Unit>()

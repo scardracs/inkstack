@@ -12,7 +12,7 @@ import org.inkstack.parsers.site.wpcomics.WpComicsParser
 import org.inkstack.parsers.exception.NotFoundException
 import org.inkstack.parsers.model.*
 import org.inkstack.parsers.util.*
-import java.net.URL
+import java.net.URI
 import java.util.*
 
 @MangaSourceParser("MEHENTAIVN", "MeHentaiVN", "vi", ContentType.HENTAI)
@@ -198,12 +198,12 @@ internal class MeHentaiVN(context: MangaLoaderContext) :
 		}
 	}
 
-	private fun checkImgUrl (url: String?) : String {
+	private fun checkImgUrl(url: String?): String {
 		if (url.isNullOrEmpty()) return ""
-		val urlImage = URL(url)
+		val host = runCatching { URI(url).toURL().host }.getOrDefault("")
 
 		// Need updating frequently
-		if (urlImage.host.contains("duckduckgo.com")) return url.split("?u=")[1]
+		if (host.contains("duckduckgo.com")) return url.split("?u=")[1]
 
 		return url
 	}

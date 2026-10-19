@@ -103,11 +103,12 @@ class WebViewRequestInterceptorExecutor @Inject constructor(
 
                 var webView: WebView? = null
                 try {
-                    webView = obtainWebView()
+                    val activeWebView = obtainWebView()
+                    webView = activeWebView
                     val client = RequestInterceptorWebViewClient(callback, config, interceptor)
-                    webView.webViewClient = client
+                    activeWebView.webViewClient = client
 
-                    webView.webChromeClient = object : WebChromeClient() {
+                    activeWebView.webChromeClient = object : WebChromeClient() {
                         override fun onPermissionRequest(request: PermissionRequest?) {
                             if (request?.resources?.contains(PermissionRequest.RESOURCE_PROTECTED_MEDIA_ID) == true) {
                                 request.grant(request.resources)
@@ -117,7 +118,7 @@ class WebViewRequestInterceptorExecutor @Inject constructor(
                         }
                     }
 
-                    webView.loadUrl(url)
+                    activeWebView.loadUrl(url)
 
                     val timeoutRunnable = Runnable {
                         Log.w(TAG_VRF, "Timeout, stopping capture")
@@ -128,37 +129,29 @@ class WebViewRequestInterceptorExecutor @Inject constructor(
                     resultDeferred.invokeOnCompletion { ex ->
                         mainHandler.removeCallbacks(timeoutRunnable)
                         // Clean up WebView after operation completes - must run on main thread
-                        webView?.let { wv ->
-                            Log.d(TAG_VRF, "Cleaning up WebView after operation")
-                            if (Thread.currentThread() == Looper.getMainLooper().thread) {
-                                releaseWebView(wv)
-                                if (ex != null) continuation.resumeWithException(ex)
-                                else continuation.resume(resultDeferred.getCompleted())
-                            } else {
-                                mainHandler.post {
-                                    releaseWebView(wv)
-                                    if (ex != null) continuation.resumeWithException(ex)
-                                    else continuation.resume(resultDeferred.getCompleted())
-                                }
-                            }
-                        } ?: run {
-                            // No WebView to clean up, resume immediately
+                        Log.d(TAG_VRF, "Cleaning up WebView after operation")
+                        if (Thread.currentThread() == Looper.getMainLooper().thread) {
+                            releaseWebView(activeWebView)
                             if (ex != null) continuation.resumeWithException(ex)
                             else continuation.resume(resultDeferred.getCompleted())
+                        } else {
+                            mainHandler.post {
+                                releaseWebView(activeWebView)
+                                if (ex != null) continuation.resumeWithException(ex)
+                                else continuation.resume(resultDeferred.getCompleted())
+                            }
                         }
                     }
                     continuation.invokeOnCancellation {
                         client.stopCapturing()
                         mainHandler.removeCallbacks(timeoutRunnable)
                         // Clean up WebView on cancellation - must run on main thread
-                        webView?.let { wv ->
-                            Log.d(TAG_VRF, "Cleaning up WebView on cancellation")
-                            if (Thread.currentThread() == Looper.getMainLooper().thread) {
-                                releaseWebView(wv)
-                            } else {
-                                mainHandler.post {
-                                    releaseWebView(wv)
-                                }
+                        Log.d(TAG_VRF, "Cleaning up WebView on cancellation")
+                        if (Thread.currentThread() == Looper.getMainLooper().thread) {
+                            releaseWebView(activeWebView)
+                        } else {
+                            mainHandler.post {
+                                releaseWebView(activeWebView)
                             }
                         }
                         if (!resultDeferred.isCompleted) resultDeferred.cancel()

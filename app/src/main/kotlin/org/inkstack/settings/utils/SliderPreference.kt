@@ -10,6 +10,7 @@ import androidx.customview.view.AbsSavedState
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
 import com.google.android.material.slider.Slider
+import com.google.android.material.slider.TickVisibilityMode
 import org.inkstack.R
 import org.inkstack.core.util.ext.setValueRounded
 
@@ -64,7 +65,11 @@ class SliderPreference @JvmOverloads constructor(
 		slider.valueFrom = valueFrom.toFloat()
 		slider.valueTo = valueTo.toFloat()
 		slider.stepSize = stepSize.toFloat()
-		slider.isTickVisible = isTickVisible
+		slider.tickVisibilityMode = if (isTickVisible) {
+			TickVisibilityMode.TICK_VISIBILITY_AUTO_LIMIT
+		} else {
+			TickVisibilityMode.TICK_VISIBILITY_HIDDEN
+		}
 		slider.setValueRounded(currentValue.toFloat())
 		slider.isEnabled = isEnabled
 	}

@@ -42,29 +42,37 @@ class SentryReportSender : ReportSender {
 	private fun CrashReportData.toSentryEvent(): SentryEvent {
 		val stackTrace = getString(ReportField.STACK_TRACE)
 		val event = SentryEvent()
-		val exceptions = stackTrace?.let(SentryStackTraceParser::parse).orEmpty()
+		val exceptions = stackTrace.takeIf { it.isNotEmpty() }
+			?.let(SentryStackTraceParser::parse)
+			.orEmpty()
 		if (exceptions.isEmpty()) {
 			// Nothing parseable: still send something rather than dropping the report on the floor.
 			event.message = Message().apply {
-				message = stackTrace ?: toJSON()
+				message = stackTrace.ifEmpty { toJSON() }
 			}
 		} else {
 			event.exceptions = exceptions
 		}
 		event.level = if (getString(ReportField.IS_SILENT).toBoolean()) SentryLevel.ERROR else SentryLevel.FATAL
-		getString(ReportField.INSTALLATION_ID)?.let { installationId ->
+		getString(ReportField.INSTALLATION_ID).takeIf { it.isNotEmpty() }?.let { installationId ->
 			event.user = User().apply { id = installationId }
 		}
-		getString(ReportField.APP_VERSION_NAME)?.let { versionName ->
+		getString(ReportField.APP_VERSION_NAME).takeIf { it.isNotEmpty() }?.let { versionName ->
 			val versionCode = getString(ReportField.APP_VERSION_CODE)
-			val packageName = getString(ReportField.PACKAGE_NAME) ?: BuildConfig.APPLICATION_ID
-			event.release = "$packageName@$versionName" + versionCode?.let { "+$it" }.orEmpty()
+			val packageName = getString(ReportField.PACKAGE_NAME)
+				.ifEmpty { BuildConfig.APPLICATION_ID }
+			event.release = "$packageName@$versionName" +
+				versionCode.takeIf { it.isNotEmpty() }?.let { "+$it" }.orEmpty()
 		}
 		// The report may be sent long after the crash - even after an app update - so the values
 		// captured at crash time are recorded as tags rather than left to Sentry's own device context,
 		// which describes the device as it is at send time.
-		getString(ReportField.ANDROID_VERSION)?.let { event.setTag("android_version", it) }
-		getString(ReportField.PHONE_MODEL)?.let { event.setTag("phone_model", it) }
+		getString(ReportField.ANDROID_VERSION).takeIf { it.isNotEmpty() }?.let {
+			event.setTag("android_version", it)
+		}
+		getString(ReportField.PHONE_MODEL).takeIf { it.isNotEmpty() }?.let {
+			event.setTag("phone_model", it)
+		}
 		get(ReportField.CUSTOM_DATA.name)?.let { event.setExtra("screen_history", it.toString()) }
 		get(ReportField.CRASH_CONFIGURATION.name)?.let { event.setExtra("crash_configuration", it.toString()) }
 		return event

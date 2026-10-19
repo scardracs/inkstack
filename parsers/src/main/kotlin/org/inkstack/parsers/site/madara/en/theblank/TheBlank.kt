@@ -240,7 +240,7 @@ internal class TheBlank(context: MangaLoaderContext) :
             append("&orderby=")
             append(orderParam)
         }
-        val doc = webClient.httpGet(url.toString()).parseHtml()
+        val doc = webClient.httpGet(url).parseHtml()
         val props = doc.getInertiaData()
         
         var dataArray: org.json.JSONArray? = props.optJSONArray("data")

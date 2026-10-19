@@ -146,7 +146,12 @@ internal class Prochan(context: MangaLoaderContext) : PagedMangaParser(
 			if (altTitlesMatch != null) {
 				return try {
 					val altTitlesArray = JSONArray(altTitlesMatch.groupValues[1])
-					altTitlesArray.mapJSONToSet { it as String }
+					buildSet {
+						for (i in 0 until altTitlesArray.length()) {
+							val title = altTitlesArray.optString(i)
+							if (title.isNotEmpty()) add(title)
+						}
+					}
 				} catch (e: Exception) {
 					emptySet()
 				}
@@ -211,18 +216,14 @@ internal class Prochan(context: MangaLoaderContext) : PagedMangaParser(
                     val appImagesArray = JSONArray(cleanJson)
 
                     appImagesArray.mapJSONNotNull { imageObj ->
-                        if (imageObj is JSONObject) {
-                            val desktopUrl = imageObj.optString("desktop")
-                            if (desktopUrl.isNotBlank()) {
-                                MangaPage(
-                                    id = generateUid(desktopUrl),
-                                    url = desktopUrl,
-                                    preview = null,
-                                    source = source,
-                                )
-                            } else {
-                                null
-                            }
+                        val desktopUrl = imageObj.optString("desktop")
+                        if (desktopUrl.isNotBlank()) {
+                            MangaPage(
+                                id = generateUid(desktopUrl),
+                                url = desktopUrl,
+                                preview = null,
+                                source = source,
+                            )
                         } else {
                             null
                         }

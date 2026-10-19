@@ -64,10 +64,10 @@ class RequestInterceptorWebViewClient(
         }
     }
 
-    override fun onPageFinished(view: WebView, url: String) {
-        super.onPageFinished(view, url)
-        injectPageScript(view, url)
-        schedulePolling(view)
+    override fun onPageFinished(webView: WebView, url: String) {
+        super.onPageFinished(webView, url)
+        injectPageScript(webView, url)
+        schedulePolling(webView)
     }
 
     /**

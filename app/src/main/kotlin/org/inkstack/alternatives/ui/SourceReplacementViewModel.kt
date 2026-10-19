@@ -392,8 +392,7 @@ class SourceReplacementViewModel @Inject constructor(
 		_planningCurrentSource.value = null
 		results.value = emptyList()
 		planningJob = launchLoadingJob(Dispatchers.Default) {
-			var ready: PlanReady? = null
-			try {
+			val ready = try {
 				val scopeOptions = alternativesUseCase.getSourceScopeOptions(
 					ref = originSource,
 					sameLanguageOnly = true,
@@ -436,7 +435,7 @@ class SourceReplacementViewModel @Inject constructor(
 				_selectedSource.value = best?.source
 				activeMatches.value = emptyMap()
 				updateMatchedCount()
-				ready = PlanReady(best?.matchedCount ?: 0, mangaQueue.size)
+				PlanReady(best?.matchedCount ?: 0, mangaQueue.size)
 			} catch (e: CancellationException) {
 				throw e
 			} catch (e: Throwable) {
@@ -449,7 +448,7 @@ class SourceReplacementViewModel @Inject constructor(
 			} finally {
 				_isPlanning.value = false
 			}
-			ready?.let(onPlanReady::call)
+			onPlanReady.call(ready)
 		}
 	}
 

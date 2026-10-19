@@ -35,6 +35,7 @@ import coil3.request.bitmapConfig
 import coil3.request.transformations
 import coil3.size.Size
 import coil3.transform.Transformation
+import me.saket.telephoto.zoomable.EnabledZoomGestures
 import me.saket.telephoto.zoomable.ZoomSpec
 import me.saket.telephoto.zoomable.coil3.ZoomableAsyncImage
 import me.saket.telephoto.zoomable.rememberZoomableImageState
@@ -162,7 +163,7 @@ fun ReaderPageImage(
 						state = imageState,
 						modifier = Modifier.fillMaxSize(),
 						contentScale = ContentScale.FillWidth,
-						gesturesEnabled = true,
+						gestures = EnabledZoomGestures.ZoomAndPan,
 						colorFilter = colorFilter,
 						onClick = onClick?.let { { _ -> it() } },
 					)

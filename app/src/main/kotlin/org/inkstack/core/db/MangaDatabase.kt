@@ -157,6 +157,7 @@ fun MangaDatabase(context: Context): MangaDatabase = Room
 	.addCallback(DatabasePrePopulateCallback(context.resources))
 	.build()
 
+@OptIn(kotlinx.coroutines.DelicateCoroutinesApi::class)
 fun InvalidationTracker.removeObserverAsync(observer: InvalidationTracker.Observer) {
 	val scope = processLifecycleScope
 	if (scope.isActive) {

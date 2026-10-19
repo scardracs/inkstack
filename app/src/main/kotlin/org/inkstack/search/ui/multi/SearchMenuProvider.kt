@@ -1,5 +1,7 @@
 package org.inkstack.search.ui.multi
 
+import android.app.Activity
+import android.os.Build
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -56,7 +58,16 @@ class SearchMenuProvider(
 				query = viewModel.query,
 				kind = newKind,
 			)
-			activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out, 0)
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+				activity.overrideActivityTransition(
+					Activity.OVERRIDE_TRANSITION_OPEN,
+					android.R.anim.fade_in,
+					android.R.anim.fade_out,
+				)
+			} else {
+				@Suppress("DEPRECATION")
+				activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+			}
 			activity.finishAfterTransition()
 		}
 		return true

@@ -93,7 +93,7 @@ class MangaPageFetcher(
 		requestMillis = sentRequestAtMillis,
 		responseMillis = receivedResponseAtMillis,
 		headers = headers.toNetworkHeaders(),
-		body = body?.source()?.let(::NetworkResponseBody),
+		body = body.source().let(::NetworkResponseBody),
 		delegate = this,
 	)
 

@@ -244,6 +244,7 @@ class KitsuRepository(
 	}
 
 	private fun JSONObject.getAsLong(name: String): Long = when (val rawValue = opt(name)) {
+		null -> throw IllegalArgumentException("Value at \"$name\" is null")
 		is Long -> rawValue
 		is Number -> rawValue.toLong()
 		is String -> rawValue.toLong()

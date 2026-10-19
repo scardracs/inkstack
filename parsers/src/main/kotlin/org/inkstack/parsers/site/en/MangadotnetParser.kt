@@ -70,7 +70,7 @@ internal class Mangadotnet(context: MangaLoaderContext) :
 
 	private fun decodeRsc(flat: JSONArray): Any? {
 		val cache = arrayOfNulls<Any>(flat.length())
-		val nil = Object()
+		val nil = Any()
 
 		fun resolve(i: Int): Any? {
 			if (i < 0 || i >= flat.length()) return null

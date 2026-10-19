@@ -28,6 +28,7 @@ import org.inkstack.R
 import org.inkstack.core.exceptions.resolve.ExceptionResolver
 import org.inkstack.core.ui.BaseActivity
 import org.inkstack.core.ui.BaseActivityEntryPoint
+import org.inkstack.core.ui.BaseComposeActivity
 import org.inkstack.core.ui.util.ActionModeDelegate
 import com.google.android.material.R as materialR
 
@@ -81,6 +82,7 @@ abstract class BaseAdaptiveSheet<B : ViewBinding> : AppCompatDialogFragment(),
 		val binding = requireViewBinding()
 		if (actionModeDelegate == null) {
 			actionModeDelegate = (activity as? BaseActivity<*>)?.actionModeDelegate
+				?: (activity as? BaseComposeActivity)?.actionModeDelegate
 		}
 		onViewBindingCreated(binding, savedInstanceState)
 	}

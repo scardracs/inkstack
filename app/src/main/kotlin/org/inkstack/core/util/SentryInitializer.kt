@@ -52,7 +52,7 @@ object SentryInitializer {
 			// Nothing that could carry what the user is reading.
 			options.isAttachScreenshot = false
 			options.isAttachViewHierarchy = false
-			options.isSendDefaultPii = false
+			// sendDefaultPii defaults to false; leave Data Collection unset so PII stays off.
 			options.isEnableSystemEventBreadcrumbs = false
 			options.isEnableNetworkEventBreadcrumbs = false
 			// Kept: which screen was open is the main clue for diagnosing an ANR.
