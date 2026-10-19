@@ -2,11 +2,9 @@ package org.inkstack.settings
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.FrameLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
@@ -20,18 +18,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
-import androidx.fragment.app.FragmentTransaction
-import androidx.fragment.app.commit
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import dagger.hilt.android.AndroidEntryPoint
@@ -46,9 +40,13 @@ import org.inkstack.core.util.ext.buildBundle
 import org.inkstack.core.util.ext.getQuantityStringSafe
 import org.inkstack.core.util.ext.observeEvent
 import org.inkstack.settings.about.AboutSettingsFragment
+import org.inkstack.settings.about.changelog.ChangelogFragment
+import org.inkstack.settings.compose.PreferenceFragmentPane
 import org.inkstack.settings.compose.SettingsDestination
 import org.inkstack.settings.compose.SettingsScreen
 import org.inkstack.settings.compose.rememberRootSettingsDestinations
+import org.inkstack.settings.compose.sections.AboutSettingsScreen
+import org.inkstack.settings.compose.sections.SuggestionsSettingsScreen
 import org.inkstack.settings.discord.DiscordSettingsFragment
 import org.inkstack.settings.search.SettingsItem
 import org.inkstack.settings.search.SettingsSearchViewModel
@@ -58,6 +56,17 @@ import org.inkstack.settings.sources.manage.SourcesManageFragment
 import org.inkstack.settings.tracker.TrackerSettingsFragment
 import org.inkstack.settings.userdata.BackupsSettingsFragment
 
+private sealed class SettingsRoute {
+	data object Root : SettingsRoute()
+	data object About : SettingsRoute()
+	data object Suggestions : SettingsRoute()
+	data class PreferenceHost(
+		val fragmentClass: Class<out Fragment>,
+		val title: String,
+		val args: Bundle? = null,
+	) : SettingsRoute()
+}
+
 @AndroidEntryPoint
 class SettingsActivity :
 	BaseComposeActivity(),
@@ -65,16 +74,23 @@ class SettingsActivity :
 
 	private val searchViewModel: SettingsSearchViewModel by viewModels()
 
-	private var showRoot by mutableStateOf(true)
-	private var sectionTitle by mutableStateOf("")
-	private var pendingDeepLink: Fragment? = null
+	private var route by mutableStateOf<SettingsRoute>(SettingsRoute.Root)
+	private var nestedPreferenceStack by mutableStateOf<List<SettingsRoute.PreferenceHost>>(emptyList())
 
-	private val backToRootCallback = object : OnBackPressedCallback(false) {
+	private val backCallback = object : OnBackPressedCallback(false) {
 		override fun handleOnBackPressed() {
-			if (supportFragmentManager.backStackEntryCount > 0) {
-				supportFragmentManager.popBackStack()
-			} else {
-				clearSection()
+			when {
+				nestedPreferenceStack.size > 1 -> {
+					nestedPreferenceStack = nestedPreferenceStack.dropLast(1)
+					route = nestedPreferenceStack.last()
+				}
+				nestedPreferenceStack.isNotEmpty() || route !is SettingsRoute.Root -> {
+					nestedPreferenceStack = emptyList()
+					route = SettingsRoute.Root
+					isEnabled = false
+					setTitle(R.string.settings)
+				}
+				else -> isEnabled = false
 			}
 		}
 	}
@@ -82,20 +98,10 @@ class SettingsActivity :
 	@OptIn(ExperimentalMaterial3Api::class)
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		sectionTitle = getString(R.string.settings)
-		onBackPressedDispatcher.addCallback(this, backToRootCallback)
-		supportFragmentManager.addOnBackStackChangedListener { syncRootVisibility() }
+		onBackPressedDispatcher.addCallback(this, backCallback)
 
 		if (savedInstanceState == null) {
-			pendingDeepLink = resolveDeepLinkFragment()
-			if (pendingDeepLink != null) {
-				showRoot = false
-				backToRootCallback.isEnabled = true
-			}
-		} else {
-			showRoot = supportFragmentManager.findFragmentById(R.id.container) == null
-			backToRootCallback.isEnabled = !showRoot
-			sectionTitle = title?.toString() ?: getString(R.string.settings)
+			resolveDeepLinkRoute()?.let { openRoute(it) }
 		}
 
 		searchViewModel.onNavigateToPreference.observeEvent(this, ::navigateToPreference)
@@ -113,15 +119,39 @@ class SettingsActivity :
 				)
 			}
 			val destinations = rememberRootSettingsDestinations(sourcesSummary)
+			val current = route
 
-			// One scaffold so section fragments sit below a real TopAppBar (edge-to-edge safe).
-			// Root keeps its own SettingsScreen scaffold; content insets are zeroed to avoid double padding.
-			InkstackScaffold(
-				modifier = Modifier.fillMaxSize(),
-				topBar = {
-					if (!showRoot) {
+			when (current) {
+				SettingsRoute.Root -> SettingsScreen(
+					destinations = destinations,
+					onBack = { dispatchNavigateUp() },
+					onOpen = ::openDestination,
+					modifier = Modifier.fillMaxSize(),
+				)
+
+				SettingsRoute.About -> AboutSettingsScreen(
+					onBack = { onBackPressedDispatcher.onBackPressed() },
+					onOpenChangelog = {
+						openRoute(
+							SettingsRoute.PreferenceHost(
+								ChangelogFragment::class.java,
+								getString(R.string.changelog),
+							),
+						)
+					},
+					modifier = Modifier.fillMaxSize(),
+				)
+
+				SettingsRoute.Suggestions -> SuggestionsSettingsScreen(
+					onBack = { onBackPressedDispatcher.onBackPressed() },
+					modifier = Modifier.fillMaxSize(),
+				)
+
+				is SettingsRoute.PreferenceHost -> InkstackScaffold(
+					modifier = Modifier.fillMaxSize(),
+					topBar = {
 						TopAppBar(
-							title = { Text(sectionTitle) },
+							title = { Text(current.title) },
 							navigationIcon = {
 								IconButton(onClick = { onBackPressedDispatcher.onBackPressed() }) {
 									Icon(
@@ -133,45 +163,17 @@ class SettingsActivity :
 							windowInsets = WindowInsets.statusBars,
 							colors = TopAppBarDefaults.topAppBarColors(),
 						)
-					}
-				},
-				// TopAppBar owns status-bar insets; content only needs nav-bar insets.
-				contentWindowInsets = if (showRoot) {
-					WindowInsets(0, 0, 0, 0)
-				} else {
-					WindowInsets.navigationBars
-				},
-			) { padding ->
-				Box(modifier = Modifier.fillMaxSize()) {
-					AndroidView(
-						factory = { context ->
-							FrameLayout(context).apply {
-								id = R.id.container
-								layoutParams = FrameLayout.LayoutParams(
-									FrameLayout.LayoutParams.MATCH_PARENT,
-									FrameLayout.LayoutParams.MATCH_PARENT,
-								)
-							}
-						},
+					},
+					contentWindowInsets = WindowInsets.navigationBars,
+				) { padding ->
+					Box(
 						modifier = Modifier
 							.fillMaxSize()
-							.padding(if (showRoot) PaddingValues() else padding),
-					)
-					LaunchedEffect(Unit) {
-						val deepLink = pendingDeepLink
-						if (deepLink != null) {
-							pendingDeepLink = null
-							supportFragmentManager.commit {
-								setReorderingAllowed(true)
-								replace(R.id.container, deepLink)
-							}
-						}
-					}
-					if (showRoot) {
-						SettingsScreen(
-							destinations = destinations,
-							onBack = { dispatchNavigateUp() },
-							onOpen = ::openDestination,
+							.padding(padding),
+					) {
+						PreferenceFragmentPane(
+							fragmentClass = current.fragmentClass,
+							args = current.args,
 							modifier = Modifier.fillMaxSize(),
 						)
 					}
@@ -185,104 +187,169 @@ class SettingsActivity :
 		pref: Preference,
 	): Boolean {
 		val fragmentName = pref.fragment ?: return false
-		openFragment(
-			fragmentClass = FragmentFactory.loadFragmentClass(classLoader, fragmentName),
-			args = pref.peekExtras(),
-			isFromRoot = false,
-		)
+		val fragmentClass = FragmentFactory.loadFragmentClass(classLoader, fragmentName)
+		when {
+			fragmentClass == SuggestionsSettingsFragment::class.java -> openRoute(SettingsRoute.Suggestions)
+			fragmentClass == AboutSettingsFragment::class.java -> openRoute(SettingsRoute.About)
+			else -> openRoute(
+				SettingsRoute.PreferenceHost(
+					fragmentClass = fragmentClass,
+					title = pref.title?.toString() ?: getString(R.string.settings),
+					args = pref.peekExtras(),
+				),
+			)
+		}
 		return true
 	}
 
 	fun setSectionTitle(title: CharSequence?) {
 		val resolved = title?.toString() ?: getString(R.string.settings)
-		sectionTitle = resolved
 		setTitle(resolved)
+		val current = route
+		if (current is SettingsRoute.PreferenceHost) {
+			route = current.copy(title = resolved)
+			nestedPreferenceStack = nestedPreferenceStack.dropLast(1) + route as SettingsRoute.PreferenceHost
+		}
 	}
 
 	fun openFragment(fragmentClass: Class<out Fragment>, args: Bundle?, isFromRoot: Boolean) {
-		searchViewModel.discardSearch()
-		showRoot = false
-		backToRootCallback.isEnabled = true
-		val hasFragment = supportFragmentManager.findFragmentById(R.id.container) != null
-		supportFragmentManager.commit {
-			setReorderingAllowed(true)
-			replace(R.id.container, fragmentClass, args)
-			setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-			if (!isFromRoot && hasFragment) {
-				addToBackStack(null)
+		openRoute(
+			SettingsRoute.PreferenceHost(
+				fragmentClass = fragmentClass,
+				title = title?.toString() ?: getString(R.string.settings),
+				args = args,
+			),
+			replaceStack = isFromRoot,
+		)
+	}
+
+	private fun openDestination(destination: SettingsDestination) {
+		when (destination.key) {
+			"about" -> openRoute(SettingsRoute.About)
+			"services" -> {
+				// Services hub still Preference; suggestions is Compose via deep-link / search
+				openRoute(
+					SettingsRoute.PreferenceHost(
+						ServicesSettingsFragment::class.java,
+						getString(destination.titleRes),
+					),
+					replaceStack = true,
+				)
+			}
+			else -> {
+				val fragmentClass = when (destination.key) {
+					"appearance" -> AppearanceSettingsFragment::class.java
+					AppSettings.KEY_REMOTE_SOURCES -> SourcesSettingsFragment::class.java
+					"reader" -> ReaderSettingsFragment::class.java
+					"network" -> StorageAndNetworkSettingsFragment::class.java
+					"downloads" -> DownloadsSettingsFragment::class.java
+					"tracker" -> TrackerSettingsFragment::class.java
+					"userdata" -> BackupsSettingsFragment::class.java
+					else -> return
+				}
+				openRoute(
+					SettingsRoute.PreferenceHost(
+						fragmentClass,
+						getString(destination.titleRes),
+					),
+					replaceStack = true,
+				)
 			}
 		}
 	}
 
-	private fun openDestination(destination: SettingsDestination) {
-		val fragmentClass = when (destination.key) {
-			"appearance" -> AppearanceSettingsFragment::class.java
-			AppSettings.KEY_REMOTE_SOURCES -> SourcesSettingsFragment::class.java
-			"reader" -> ReaderSettingsFragment::class.java
-			"network" -> StorageAndNetworkSettingsFragment::class.java
-			"downloads" -> DownloadsSettingsFragment::class.java
-			"tracker" -> TrackerSettingsFragment::class.java
-			"services" -> ServicesSettingsFragment::class.java
-			"userdata" -> BackupsSettingsFragment::class.java
-			"about" -> AboutSettingsFragment::class.java
-			else -> return
-		}
-		setSectionTitle(getString(destination.titleRes))
-		openFragment(fragmentClass, null, isFromRoot = true)
-	}
-
 	private fun navigateToPreference(item: SettingsItem) {
-		val args = buildBundle(1) {
-			putString(ARG_PREF_KEY, item.key)
-		}
-		openFragment(item.fragmentClass, args, true)
-	}
-
-	private fun clearSection() {
-		val current = supportFragmentManager.findFragmentById(R.id.container) ?: run {
-			showRoot = true
-			backToRootCallback.isEnabled = false
-			return
-		}
-		supportFragmentManager.commit {
-			setReorderingAllowed(true)
-			remove(current)
-			setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
-		}
-		showRoot = true
-		backToRootCallback.isEnabled = false
-		setSectionTitle(getString(R.string.settings))
-	}
-
-	private fun syncRootVisibility() {
-		val hasFragment = supportFragmentManager.findFragmentById(R.id.container) != null
-		if (!hasFragment && supportFragmentManager.backStackEntryCount == 0) {
-			showRoot = true
-			backToRootCallback.isEnabled = false
-			setSectionTitle(getString(R.string.settings))
-		} else {
-			showRoot = false
-			backToRootCallback.isEnabled = true
+		when {
+			item.fragmentClass == AboutSettingsFragment::class.java -> openRoute(SettingsRoute.About)
+			item.fragmentClass == SuggestionsSettingsFragment::class.java -> openRoute(SettingsRoute.Suggestions)
+			else -> openRoute(
+				SettingsRoute.PreferenceHost(
+					item.fragmentClass,
+					item.title.toString(),
+					buildBundle(1) { putString(ARG_PREF_KEY, item.key) },
+				),
+				replaceStack = true,
+			)
 		}
 	}
 
-	private fun resolveDeepLinkFragment(): Fragment? = when (intent?.action) {
-		AppRouter.ACTION_READER -> ReaderSettingsFragment()
-		AppRouter.ACTION_SUGGESTIONS -> SuggestionsSettingsFragment()
-		AppRouter.ACTION_HISTORY -> BackupsSettingsFragment()
-		AppRouter.ACTION_TRACKER -> TrackerSettingsFragment()
-		AppRouter.ACTION_PERIODIC_BACKUP -> PeriodicalBackupSettingsFragment()
-		AppRouter.ACTION_SOURCES -> SourcesSettingsFragment()
-		AppRouter.ACTION_MANAGE_DISCORD -> DiscordSettingsFragment()
-		AppRouter.ACTION_PROXY -> ProxySettingsFragment()
-		AppRouter.ACTION_MANAGE_DOWNLOADS -> DownloadsSettingsFragment()
-		AppRouter.ACTION_SOURCE -> SourceSettingsFragment.newInstance(
-			MangaSource(intent.getStringExtra(AppRouter.KEY_SOURCE)),
+	private fun openRoute(next: SettingsRoute, replaceStack: Boolean = false) {
+		route = next
+		backCallback.isEnabled = next !is SettingsRoute.Root
+		when (next) {
+			is SettingsRoute.PreferenceHost -> {
+				nestedPreferenceStack = if (replaceStack) listOf(next) else nestedPreferenceStack + next
+				setTitle(next.title)
+			}
+			SettingsRoute.About -> {
+				nestedPreferenceStack = emptyList()
+				setTitle(R.string.about)
+			}
+			SettingsRoute.Suggestions -> {
+				nestedPreferenceStack = emptyList()
+				setTitle(R.string.suggestions)
+			}
+			SettingsRoute.Root -> {
+				nestedPreferenceStack = emptyList()
+				setTitle(R.string.settings)
+			}
+		}
+	}
+
+	private fun resolveDeepLinkRoute(): SettingsRoute? = when (intent?.action) {
+		AppRouter.ACTION_READER -> SettingsRoute.PreferenceHost(
+			ReaderSettingsFragment::class.java,
+			getString(R.string.reader_settings),
 		)
-		AppRouter.ACTION_MANAGE_SOURCES -> SourcesManageFragment()
+		AppRouter.ACTION_SUGGESTIONS -> SettingsRoute.Suggestions
+		AppRouter.ACTION_HISTORY -> SettingsRoute.PreferenceHost(
+			BackupsSettingsFragment::class.java,
+			getString(R.string.backup_restore),
+		)
+		AppRouter.ACTION_TRACKER -> SettingsRoute.PreferenceHost(
+			TrackerSettingsFragment::class.java,
+			getString(R.string.check_for_new_chapters),
+		)
+		AppRouter.ACTION_PERIODIC_BACKUP -> SettingsRoute.PreferenceHost(
+			PeriodicalBackupSettingsFragment::class.java,
+			getString(R.string.periodic_backups),
+		)
+		AppRouter.ACTION_SOURCES -> SettingsRoute.PreferenceHost(
+			SourcesSettingsFragment::class.java,
+			getString(R.string.remote_sources),
+		)
+		AppRouter.ACTION_MANAGE_DISCORD -> SettingsRoute.PreferenceHost(
+			DiscordSettingsFragment::class.java,
+			getString(R.string.discord),
+		)
+		AppRouter.ACTION_PROXY -> SettingsRoute.PreferenceHost(
+			ProxySettingsFragment::class.java,
+			getString(R.string.proxy),
+		)
+		AppRouter.ACTION_MANAGE_DOWNLOADS -> SettingsRoute.PreferenceHost(
+			DownloadsSettingsFragment::class.java,
+			getString(R.string.downloads),
+		)
+		AppRouter.ACTION_SOURCE -> {
+			val fragment = SourceSettingsFragment.newInstance(
+				MangaSource(intent.getStringExtra(AppRouter.KEY_SOURCE)),
+			)
+			SettingsRoute.PreferenceHost(
+				SourceSettingsFragment::class.java,
+				getString(R.string.remote_sources),
+				fragment.arguments,
+			)
+		}
+		AppRouter.ACTION_MANAGE_SOURCES -> SettingsRoute.PreferenceHost(
+			SourcesManageFragment::class.java,
+			getString(R.string.manage_sources),
+		)
 		Intent.ACTION_VIEW -> when (intent.data?.host) {
-			HOST_ABOUT -> AboutSettingsFragment()
-			HOST_SYNC_SETTINGS -> SyncSettingsFragment()
+			HOST_ABOUT -> SettingsRoute.About
+			HOST_SYNC_SETTINGS -> SettingsRoute.PreferenceHost(
+				SyncSettingsFragment::class.java,
+				getString(R.string.sync_settings),
+			)
 			else -> null
 		}
 		else -> null
