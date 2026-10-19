@@ -33,6 +33,8 @@ fun ReaderPager(
 	imageLoader: ImageLoader,
 	onPageRangeChanged: (lower: Int, upper: Int) -> Unit,
 	onTap: () -> Unit,
+	onTapAt: ((xFraction: Float, yFraction: Float) -> Unit)? = null,
+	zoomEnabled: Boolean = false,
 	modifier: Modifier = Modifier,
 ) {
 	val aspectRatios = remember { mutableStateMapOf<Long, Float>() }
@@ -64,7 +66,9 @@ fun ReaderPager(
 				imageLoader = imageLoader,
 				knownAspectRatio = aspectRatios[page.id],
 				onAspectRatio = { ratio -> aspectRatios[page.id] = ratio },
+				zoomEnabled = zoomEnabled,
 				onClick = onTap,
+				onTapAt = onTapAt,
 				modifier = Modifier.fillMaxWidth(),
 			)
 		}

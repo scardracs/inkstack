@@ -340,13 +340,11 @@ class ReaderViewModel @Inject constructor(
                 return@launchJob
             }
             ensureActive()
-            if (!isWebtoonPullGestureEnabled.value) {
-                if (upperPos >= pages.lastIndex - BOUNDS_PAGE_OFFSET) {
-                    loadPrevNextChapter(pages.last().chapterId, isNext = true)
-                }
-                if (lowerPos <= BOUNDS_PAGE_OFFSET) {
-                    loadPrevNextChapter(pages.first().chapterId, isNext = false)
-                }
+            if (upperPos >= pages.lastIndex - BOUNDS_PAGE_OFFSET) {
+                loadPrevNextChapter(pages.last().chapterId, isNext = true)
+            }
+            if (lowerPos <= BOUNDS_PAGE_OFFSET) {
+                loadPrevNextChapter(pages.first().chapterId, isNext = false)
             }
             if (pageLoader.isPrefetchApplicable()) {
                 pageLoader.prefetch(pages.trySublist(upperPos + 1, upperPos + PREFETCH_LIMIT))

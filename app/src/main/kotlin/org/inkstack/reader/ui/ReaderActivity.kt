@@ -27,12 +27,14 @@ import org.inkstack.core.ui.dialog.setCheckbox
 import org.inkstack.core.util.ext.observeEvent
 import org.inkstack.reader.data.TapGridSettings
 import org.inkstack.reader.domain.PageLoader
+import org.inkstack.reader.domain.TapGridArea
 import org.inkstack.reader.ui.compose.ReaderScreen
 import org.inkstack.reader.ui.compose.ReaderScrollController
 import org.inkstack.reader.ui.config.ReaderConfigSheet
 import org.inkstack.sourcescore.ui.CommunityCommentsSheet
 import org.inkstack.sourcescore.ui.CommunityRatingDelegate
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class ReaderActivity :
@@ -95,6 +97,13 @@ class ReaderActivity :
 				systemUiVisible = uiVisible,
 				onToggleUi = { toggleUiVisibility() },
 				onScrollController = { scrollController = it },
+				onTapAt = { x, y ->
+					scrollTimer.onUserInteraction()
+					val area = tapAreaFromFraction(x, y)
+					if (!controlDelegate.onGridTouch(area)) {
+						toggleUiVisibility()
+					}
+				},
 			)
 		}
 	}
@@ -178,9 +187,7 @@ class ReaderActivity :
 	override fun onSavePageClick() = viewModel.saveCurrentPage(pageSaveHelper)
 
 	override fun onScrollTimerClick(isLongClick: Boolean) {
-		if (isLongClick) {
-			scrollTimer.setActive(!scrollTimer.isActive.value)
-		}
+		scrollTimer.setActive(!scrollTimer.isActive.value)
 	}
 
 	override fun toggleScreenOrientation() {
@@ -193,6 +200,28 @@ class ReaderActivity :
 		uiVisible = visible
 		val fullscreen = settings.isReaderFullscreenEnabled
 		systemUiController.setSystemUiVisible(visible || !fullscreen)
+	}
+
+	private fun tapAreaFromFraction(x: Float, y: Float): TapGridArea {
+		val xIndex = (x.coerceIn(0f, 1f) * 2f).roundToInt().coerceIn(0, 2)
+		val yIndex = (y.coerceIn(0f, 1f) * 2f).roundToInt().coerceIn(0, 2)
+		return when (xIndex) {
+			0 -> when (yIndex) {
+				0 -> TapGridArea.TOP_LEFT
+				1 -> TapGridArea.CENTER_LEFT
+				else -> TapGridArea.BOTTOM_LEFT
+			}
+			1 -> when (yIndex) {
+				0 -> TapGridArea.TOP_CENTER
+				1 -> TapGridArea.CENTER
+				else -> TapGridArea.BOTTOM_CENTER
+			}
+			else -> when (yIndex) {
+				0 -> TapGridArea.TOP_RIGHT
+				1 -> TapGridArea.CENTER_RIGHT
+				else -> TapGridArea.BOTTOM_RIGHT
+			}
+		}
 	}
 
 	private fun askForIncognitoMode() {

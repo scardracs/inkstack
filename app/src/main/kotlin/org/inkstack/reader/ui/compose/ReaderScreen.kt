@@ -92,12 +92,14 @@ fun ReaderScreen(
 	systemUiVisible: Boolean,
 	onToggleUi: () -> Unit,
 	onScrollController: ((ReaderScrollController?) -> Unit)? = null,
+	onTapAt: ((xFraction: Float, yFraction: Float) -> Unit)? = null,
 ) {
 	val content by viewModel.content.collectAsState()
 	val mode by viewModel.readerMode.collectAsState()
 	val uiState by viewModel.uiState.collectAsState()
 	val isLoading by viewModel.isLoading.collectAsState()
 	val webtoonGaps by viewModel.isWebtoonGapsEnabled.collectAsState()
+	val zoomEnabled by viewModel.isWebtoonZooEnabled.collectAsState()
 	val settingsProducer = viewModel.readerSettingsProducer
 	val context = LocalContext.current
 	val scope = rememberCoroutineScope()
@@ -153,6 +155,8 @@ fun ReaderScreen(
 				imageLoader = imageLoader,
 				onPageRangeChanged = { lo, hi -> viewModel.onCurrentPageChanged(lo, hi) },
 				onTap = onToggleUi,
+				onTapAt = onTapAt,
+				zoomEnabled = zoomEnabled,
 				modifier = Modifier.fillMaxSize(),
 			)
 		}
