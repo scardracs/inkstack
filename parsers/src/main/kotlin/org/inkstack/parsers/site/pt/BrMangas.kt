@@ -10,7 +10,7 @@ import org.inkstack.parsers.network.UserAgents
 import org.inkstack.parsers.util.*
 import java.util.*
 
-@Broken
+@Broken("Selectors outdated (empty list)")
 @MangaSourceParser("BRMANGAS", "BrMangas", "pt")
 internal class BrMangas(context: MangaLoaderContext) : PagedMangaParser(context, MangaParserSource.BRMANGAS, 25) {
 

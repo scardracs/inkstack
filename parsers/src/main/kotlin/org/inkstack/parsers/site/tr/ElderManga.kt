@@ -2,7 +2,6 @@ package org.inkstack.parsers.site.tr
 
 import org.json.JSONArray
 import org.jsoup.nodes.Document
-import org.inkstack.parsers.Broken
 import org.inkstack.parsers.MangaLoaderContext
 import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.config.ConfigKey
@@ -13,7 +12,6 @@ import org.inkstack.parsers.util.json.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-@Broken
 @MangaSourceParser("ELDERMANGA", "Elder Manga", "tr")
 internal class ElderManga(context: MangaLoaderContext):
     PagedMangaParser(context, MangaParserSource.ELDERMANGA, 25) {
@@ -56,7 +54,7 @@ internal class ElderManga(context: MangaLoaderContext):
         val url = buildString {
             append("https://")
 			append(domain)
-            append("/search")
+            append("/manga")
             append("?page=")
 			append(page.toString())
 
@@ -114,11 +112,21 @@ internal class ElderManga(context: MangaLoaderContext):
         }
 
         val doc = loadSiteDocument(url)
-        return doc.select("section[aria-label='series area'] .card").map { card ->
-            val href = card.selectFirstOrThrow("a").attrAsRelativeUrl("href")
+        val cards = doc.select("section[aria-label='series area'] .card").ifEmpty {
+            doc.select("a.group[href*='/manga/'], a[href*='/manga/']").filter {
+                it.selectFirst("h2, h3, img") != null &&
+                    !it.attr("href").contains("-bolum-")
+            }
+        }
+        return cards.mapNotNull { card ->
+            val link = if (card.normalName() == "a") card else card.selectFirst("a") ?: return@mapNotNull null
+            val href = link.attrAsRelativeUrl("href")
+            val title = card.selectFirst("h2, h3")?.text().orEmpty()
+                .ifEmpty { link.selectFirst("img[alt]")?.attr("alt").orEmpty() }
+            if (title.isEmpty()) return@mapNotNull null
             Manga(
                 id = generateUid(href),
-                title = card.selectFirst("h2")?.text().orEmpty(),
+                title = title,
                 altTitles = emptySet(),
                 url = href,
                 publicUrl = href.toAbsoluteUrl(domain),
@@ -187,7 +195,7 @@ internal class ElderManga(context: MangaLoaderContext):
     }
 
     private suspend fun fetchTags(): Set<MangaTag> {
-        val doc = loadSiteDocument("https://$domain/search")
+        val doc = loadSiteDocument("https://$domain/manga")
         val script = doc.select("script").find { it.html().contains("self.__next_f.push([1,\"10:[\\\"\\$,\\\"section") }?.html()
             ?: return emptySet()
 

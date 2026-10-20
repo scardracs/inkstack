@@ -6,7 +6,7 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 
-@Broken
+@Broken("Site blocked (HTTP 401)")
 @MangaSourceParser("ESOMANGA", "EsoManga", "tr")
 internal class EsoManga(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.ESOMANGA, "esomanga.com", 10) {

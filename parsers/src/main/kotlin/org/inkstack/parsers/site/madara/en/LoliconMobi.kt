@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.ContentType
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 
-@Broken
+@Broken("Site unreachable (connection error)")
 @MangaSourceParser("LOLICONMOBI", "LoliconMobi", "en", ContentType.HENTAI)
 internal class LoliconMobi(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.LOLICONMOBI, "lolicon.mobi") {

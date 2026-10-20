@@ -8,7 +8,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.zmanga.ZMangaParser
 import java.util.*
 
-@Broken
+@Broken("Selectors outdated (empty list)")
 @MangaSourceParser("HENSEKAI", "Hensekai", "id", ContentType.HENTAI)
 internal class Hensekai(context: MangaLoaderContext) :
 	ZMangaParser(context, MangaParserSource.HENSEKAI, "hensekai.com") {

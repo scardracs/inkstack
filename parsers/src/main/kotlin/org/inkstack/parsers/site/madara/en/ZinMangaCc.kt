@@ -6,7 +6,7 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 
-@Broken
+@Broken("Selectors outdated (ajax 400)")
 @MangaSourceParser("ZINMANGA_CC", "ZinManga.cc", "en")
 internal class ZinMangaCc(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.ZINMANGA_CC, "zinmanga.cc")

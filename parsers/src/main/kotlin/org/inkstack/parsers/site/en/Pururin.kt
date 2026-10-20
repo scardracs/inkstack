@@ -14,7 +14,7 @@ import org.inkstack.parsers.model.*
 import org.inkstack.parsers.util.*
 import java.util.*
 
-@Broken
+@Broken("Site unreachable (connection error)")
 @MangaSourceParser("PURURIN", "Pururin", "en", ContentType.HENTAI)
 internal class Pururin(context: MangaLoaderContext) :
 	PagedMangaParser(context, MangaParserSource.PURURIN, pageSize = 20) {

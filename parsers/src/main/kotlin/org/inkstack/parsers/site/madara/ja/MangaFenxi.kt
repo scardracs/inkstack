@@ -9,7 +9,7 @@ import org.inkstack.parsers.site.madara.MadaraParser
 import org.inkstack.parsers.util.*
 import java.util.*
 
-@Broken
+@Broken("Site unreachable (connection error)")
 @MangaSourceParser("MANGAFENXI", "MangaFenxi", "ja")
 internal class MangaFenxi(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.MANGAFENXI, "mangafenxi.net", 40) {

@@ -10,7 +10,7 @@ import org.inkstack.parsers.site.mangareader.MangaReaderParser
 import org.inkstack.parsers.util.*
 import java.text.SimpleDateFormat
 
-@Broken
+@Broken("Selectors outdated (empty list)")
 @MangaSourceParser("REVOLUTIONSCANTRAD", "RevolutionScantrad", "fr")
 internal class RevolutionScantrad(context: MangaLoaderContext) :
 	MangaReaderParser(

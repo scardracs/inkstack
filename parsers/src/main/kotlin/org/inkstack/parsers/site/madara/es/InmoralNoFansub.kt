@@ -6,7 +6,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 import org.inkstack.parsers.Broken
 
-@Broken
+@Broken("Selectors outdated (connection error)")
 @MangaSourceParser("INMORALNOFANSUB", "InmoralNoFansub", "es")
 internal class InmoralNoFansub(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.INMORALNOFANSUB, "inmoralnofansub.xyz") {

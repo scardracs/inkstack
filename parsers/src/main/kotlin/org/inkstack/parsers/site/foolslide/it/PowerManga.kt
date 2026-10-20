@@ -6,7 +6,7 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.foolslide.FoolSlideParser
 
-@Broken
+@Broken("Site blocked (HTTP 401)")
 @MangaSourceParser("POWERMANGA", "PowerManga", "it")
 internal class PowerManga(context: MangaLoaderContext) :
 	FoolSlideParser(context, MangaParserSource.POWERMANGA, "reader.powermanga.org") {

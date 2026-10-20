@@ -8,7 +8,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.mangareader.MangaReaderParser
 import java.util.*
 
-@Broken
+@Broken("Site unreachable (timeout)")
 @MangaSourceParser("MANGASHIRO", "MangaShiro", "id")
 internal class MangaShiro(context: MangaLoaderContext) :
 	MangaReaderParser(context, MangaParserSource.MANGASHIRO, "mangashiro.me", pageSize = 20, searchPageSize = 10) {

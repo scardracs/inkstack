@@ -6,7 +6,7 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 
-@Broken
+@Broken("Rate limited (HTTP 429)")
 @MangaSourceParser("DOMALFANSB", "DomalFansub", "tr")
 internal class DomalFansb(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.DOMALFANSB, "domalfansb.com.tr") {

@@ -10,7 +10,7 @@ import org.inkstack.parsers.util.parseHtml
 import org.inkstack.parsers.util.urlEncoded
 import java.util.*
 
-@Broken
+@Broken("Site blocked (HTTP 401)")
 @MangaSourceParser("ZAHARD", "Zahard", "en")
 internal class Zahard(context: MangaLoaderContext) :
 	MangaReaderParser(context, MangaParserSource.ZAHARD, "zahard.xyz", pageSize = 20, searchPageSize = 30) {

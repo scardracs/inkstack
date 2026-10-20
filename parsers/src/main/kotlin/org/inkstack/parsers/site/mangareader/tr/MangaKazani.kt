@@ -6,7 +6,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.mangareader.MangaReaderParser
 import org.inkstack.parsers.Broken
 
-@Broken
+@Broken("Site unreachable (connection error)")
 @MangaSourceParser("MANGAKAZANI", "MangaKazani", "tr")
 internal class MangaKazani(context: MangaLoaderContext) :
 	MangaReaderParser(context, MangaParserSource.MANGAKAZANI, "mangakazani.com", pageSize = 19, searchPageSize = 10) {

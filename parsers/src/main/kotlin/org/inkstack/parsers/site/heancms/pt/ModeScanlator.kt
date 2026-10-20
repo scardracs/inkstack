@@ -6,7 +6,7 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.*
 import org.inkstack.parsers.site.heancms.HeanCms
 
-@Broken
+@Broken("Site unreachable (connection error)")
 @MangaSourceParser("MODESCANLATOR", "ModeScanlator", "pt")
 internal class ModeScanlator(context: MangaLoaderContext) :
 	HeanCms(context, MangaParserSource.MODESCANLATOR, "site.modescanlator.net") {

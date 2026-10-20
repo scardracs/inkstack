@@ -8,7 +8,7 @@ import org.inkstack.parsers.model.*
 import org.inkstack.parsers.site.madara.MadaraParser
 import org.inkstack.parsers.util.*
 
-@Broken
+@Broken("Site unreachable (HTTP_436)")
 @MangaSourceParser("TMOMANGA", "TmoManga", "es")
 internal class TmoManga(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.TMOMANGA, "tmomanga.com") {

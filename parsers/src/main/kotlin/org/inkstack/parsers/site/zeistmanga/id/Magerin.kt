@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.zeistmanga.ZeistMangaParser
 
 
-@Broken
+@Broken("Selectors outdated (bad JSON)")
 @MangaSourceParser("MAGERIN", "Magerin", "id")
 internal class Magerin(context: MangaLoaderContext) :
 	ZeistMangaParser(context, MangaParserSource.MAGERIN, "www.magerin.com")

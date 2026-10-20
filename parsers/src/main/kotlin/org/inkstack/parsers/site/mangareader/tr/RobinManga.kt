@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.mangareader.MangaReaderParser
 import org.inkstack.parsers.Broken
 
-@Broken
+@Broken("Selectors outdated (empty list)")
 @MangaSourceParser("ROBINMANGA", "RobinManga", "tr")
 internal class RobinManga(context: MangaLoaderContext) :
 	MangaReaderParser(

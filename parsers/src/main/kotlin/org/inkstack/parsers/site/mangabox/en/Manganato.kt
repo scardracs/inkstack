@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.mangabox.MangaboxParser
 import org.inkstack.parsers.Broken
 
-@Broken
+@Broken("Selectors outdated (HTTP 403)")
 @MangaSourceParser("MANGANATO", "Manganato", "en")
 internal class Manganato(context: MangaLoaderContext) :
 	MangaboxParser(context, MangaParserSource.MANGANATO) {

@@ -160,7 +160,7 @@ internal abstract class UzayMangaParser(
 		val url = buildString {
 			append("https://")
 			append(domain)
-			append("/search?page=")
+			append("/manga?page=")
 			append(page)
 			append("&search=")
 			append(filter.query?.urlEncoded().orEmpty())
@@ -280,8 +280,9 @@ internal abstract class UzayMangaParser(
 			else -> card.selectFirst("a[href*='/manga/']") ?: card.selectFirst("a")
 		} ?: return null
 		val href = link.attrAsRelativeUrl("href")
-		val title = card.selectFirst("h2")?.textOrNull()
-			?: link.selectFirst("h2")?.textOrNull()
+		val title = card.selectFirst("h2, h3")?.textOrNull()
+			?: link.selectFirst("h2, h3")?.textOrNull()
+			?: link.selectFirst("img[alt]")?.attr("alt")?.nullIfEmpty()
 			?: link.attr("title").nullIfEmpty()
 			?: return null
 		return Manga(
@@ -302,10 +303,15 @@ internal abstract class UzayMangaParser(
 	}
 
 	private fun extractDirectoryCards(doc: Document): List<Element> {
-		val section = doc.selectFirst("section[aria-label='series area']") ?: return emptyList()
-		val cards = section.select(".card").ifEmpty {
-			section.select("a[href*='/manga/']").filter { element ->
-				element.selectFirst("h2, img") != null
+		val section = doc.selectFirst("section[aria-label='series area']")
+		val cards = when {
+			section != null -> section.select(".card").ifEmpty {
+				section.select("a[href*='/manga/']").filter { element ->
+					element.selectFirst("h2, h3, img") != null
+				}
+			}
+			else -> doc.select("a.group[href*='/manga/'], a[href*='/manga/']").filter { element ->
+				element.selectFirst("h2, h3, img") != null
 			}
 		}
 		return cards.filterNot { element ->
@@ -313,7 +319,7 @@ internal abstract class UzayMangaParser(
 				element.normalName() == "a" -> element.attr("href")
 				else -> element.selectFirst("a")?.attr("href").orEmpty()
 			}
-			href.contains("/chapter/") || href.contains("/bolum/")
+			href.contains("/chapter/") || href.contains("/bolum/") || href.contains("-bolum-")
 		}
 	}
 
@@ -403,7 +409,7 @@ internal abstract class UzayMangaParser(
 	}
 
 	private suspend fun fetchTags(): Set<MangaTag> {
-		val doc = loadSiteDocument("https://$domain/search")
+		val doc = loadSiteDocument("https://$domain/manga")
 		val script = doc.select("script")
 			.firstOrNull { it.html().contains("\"category\":[") }
 			?.html()

@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.mmrcms.MmrcmsParser
 import java.util.*
 
-@Broken
+@Broken("Selectors outdated (empty list)")
 @MangaSourceParser("BENTOSCAN", "BentoScan", "fr")
 internal class BentoScan(context: MangaLoaderContext) :
 	MmrcmsParser(context, MangaParserSource.BENTOSCAN, "bentoscan.com") {

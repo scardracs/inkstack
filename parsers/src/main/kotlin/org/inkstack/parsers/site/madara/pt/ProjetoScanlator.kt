@@ -6,7 +6,7 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 
-@Broken
+@Broken("Selectors outdated (connection error)")
 @MangaSourceParser("PROJETOSCANLATOR", "ProjetoScanlator", "pt")
 internal class ProjetoScanlator(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.PROJETOSCANLATOR, "projetoscanlator.com", 10) {

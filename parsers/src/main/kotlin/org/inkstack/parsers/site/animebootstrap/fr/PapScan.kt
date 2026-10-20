@@ -12,7 +12,7 @@ import org.inkstack.parsers.util.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-@Broken
+@Broken("Selectors outdated (empty list)")
 @MangaSourceParser("PAPSCAN", "PapScan", "fr")
 internal class PapScan(context: MangaLoaderContext) :
 	AnimeBootstrapParser(context, MangaParserSource.PAPSCAN, "papscan.com") {

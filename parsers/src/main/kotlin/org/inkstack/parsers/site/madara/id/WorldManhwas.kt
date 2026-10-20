@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.ContentType
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 
-@Broken
+@Broken("Site blocked (HTTP 401)")
 @MangaSourceParser("WORLDMANHWAS", "WorldManhwas", "id", ContentType.HENTAI)
 internal class WorldManhwas(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.WORLDMANHWAS, "worldmanhwas.zone", 10) {

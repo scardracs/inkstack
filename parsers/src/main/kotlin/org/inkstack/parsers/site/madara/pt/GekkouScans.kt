@@ -8,7 +8,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 import java.util.*
 
-@Broken
+@Broken("Site unreachable (connection error)")
 @MangaSourceParser("GEKKOUSCANS", "GekkouScans", "pt", ContentType.HENTAI)
 internal class GekkouScans(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.GEKKOUSCANS, "gekkou.site") {

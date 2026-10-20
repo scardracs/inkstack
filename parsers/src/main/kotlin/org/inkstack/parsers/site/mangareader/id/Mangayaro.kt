@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.mangareader.MangaReaderParser
 import java.util.*
 
-@Broken
+@Broken("Site unreachable (connection refused)")
 @MangaSourceParser("MANGAYARO", "MangaYaro", "id")
 internal class Mangayaro(context: MangaLoaderContext) :
 	MangaReaderParser(

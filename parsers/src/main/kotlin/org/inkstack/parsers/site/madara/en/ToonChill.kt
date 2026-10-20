@@ -6,7 +6,7 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 
-@Broken
+@Broken("Selectors outdated (empty list)")
 @MangaSourceParser("TOONCHILL", "ToonChill", "en")
 internal class ToonChill(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.TOONCHILL, "toonchill.com", 32)

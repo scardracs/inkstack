@@ -31,7 +31,7 @@ import java.util.*
  * sharing the same chapter number but carrying distinct [MangaChapter.branch] values.
  */
 
-@Broken
+@Broken("Selectors outdated (empty list)")
 @MangaSourceParser("CUBARI", "Cubari", type = ContentType.OTHER)
 internal class CubariParser(context: MangaLoaderContext) :
 	AbstractMangaParser(context, MangaParserSource.CUBARI) {

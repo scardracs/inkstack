@@ -103,17 +103,16 @@ internal abstract class NineMangaParser(
             }
         }
         val doc = webClient.httpGet(url).parseHtml()
-        val root = doc.body().selectFirstOrThrow("ul.direlist")
+        val root = doc.body().selectFirstOrThrow("div.manga-list")
         val baseHost = root.baseUri().toHttpUrl().host
-        return root.select("li").map { node ->
+        return root.select("div.manga-item").map { node ->
             val href = node.selectFirstOrThrow("a").attrAsAbsoluteUrl("href")
             val relUrl = href.toRelativeUrl(baseHost)
-            val dd = node.selectFirst("dd")
             Manga(
                 id = generateUid(relUrl),
                 url = relUrl,
                 publicUrl = href,
-                title = dd?.selectFirst("a.bookname")?.text()?.toCamelCase().orEmpty(),
+                title = node.selectFirst("div.manga-name")?.text()?.toCamelCase().orEmpty(),
                 altTitles = emptySet(),
                 coverUrl = node.selectFirst("img")?.src(),
                 rating = RATING_UNKNOWN,
@@ -122,7 +121,7 @@ internal abstract class NineMangaParser(
                 tags = emptySet(),
                 state = null,
                 source = source,
-                description = dd?.selectFirst("p")?.html(),
+                description = node.selectFirst(".manga-intro")?.html(),
             )
         }
     }
@@ -267,7 +266,8 @@ internal abstract class NineMangaParser(
         return 0L
     }
 
-    @Broken
+    // List selectors fixed (div.manga-list); details/chapters still behind redesigned markup + ad redirects.
+    @Broken("Details/chapters redesigned (ad redirects)")
     @MangaSourceParser("NINEMANGA_EN", "NineManga English", "en")
     class English(context: MangaLoaderContext) : NineMangaParser(
         context,
@@ -275,7 +275,7 @@ internal abstract class NineMangaParser(
         "www.niadd.com",
     )
 
-    @Broken
+    @Broken("Details/chapters redesigned (ad redirects)")
     @MangaSourceParser("NINEMANGA_ES", "NineManga Español", "es")
     class Spanish(context: MangaLoaderContext) : NineMangaParser(
         context,
@@ -283,7 +283,7 @@ internal abstract class NineMangaParser(
         "es.niadd.com",
     )
 
-    @Broken
+    @Broken("Details/chapters redesigned (ad redirects)")
     @MangaSourceParser("NINEMANGA_RU", "NineManga Русский", "ru")
     class Russian(context: MangaLoaderContext) : NineMangaParser(
         context,
@@ -291,7 +291,7 @@ internal abstract class NineMangaParser(
         "ru.niadd.com",
     )
 
-    @Broken
+    @Broken("Details/chapters redesigned (ad redirects)")
     @MangaSourceParser("NINEMANGA_DE", "NineManga Deutsch", "de")
     class Deutsch(context: MangaLoaderContext) : NineMangaParser(
         context,
@@ -299,7 +299,7 @@ internal abstract class NineMangaParser(
         "de.niadd.com",
     )
 
-    @Broken
+    @Broken("Details/chapters redesigned (ad redirects)")
     @MangaSourceParser("NINEMANGA_BR", "NineManga Brasil", "pt")
     class Brazil(context: MangaLoaderContext) : NineMangaParser(
         context,
@@ -307,7 +307,7 @@ internal abstract class NineMangaParser(
         "br.niadd.com",
     )
 
-    @Broken
+    @Broken("Details/chapters redesigned (ad redirects)")
     @MangaSourceParser("NINEMANGA_IT", "NineManga Italiano", "it")
     class Italiano(context: MangaLoaderContext) : NineMangaParser(
         context,
@@ -315,7 +315,7 @@ internal abstract class NineMangaParser(
         "it.niadd.com",
     )
 
-    @Broken
+    @Broken("Details/chapters redesigned (ad redirects)")
     @MangaSourceParser("NINEMANGA_FR", "NineManga Français", "fr")
     class Francais(context: MangaLoaderContext) : NineMangaParser(
         context,

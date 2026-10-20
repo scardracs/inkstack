@@ -10,7 +10,7 @@ import org.inkstack.parsers.util.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-@Broken
+@Broken("Site unreachable (connection error)")
 @MangaSourceParser("PO2SCANS", "Po2Scans", "en")
 internal class Po2Scans(context: MangaLoaderContext) :
 	SinglePageMangaParser(context, MangaParserSource.PO2SCANS) {

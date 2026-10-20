@@ -8,7 +8,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.mangareader.MangaReaderParser
 import java.util.*
 
-@Broken
+@Broken("Selectors outdated (empty list)")
 @MangaSourceParser("KATAKOMIK", "KataKomik", "id")
 internal class KataKomik(context: MangaLoaderContext) :
 	MangaReaderParser(context, MangaParserSource.KATAKOMIK, "katakomik.my.id", pageSize = 20, searchPageSize = 10) {

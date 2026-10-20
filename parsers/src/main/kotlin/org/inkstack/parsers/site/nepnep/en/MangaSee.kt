@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.nepnep.NepnepParser
 
 // site closed in favour of weeb central
-@Broken
+@Broken("Site unreachable (connection error)")
 @MangaSourceParser("MANGASEE", "MangaSee", "en")
 internal class MangaSee(context: MangaLoaderContext) :
 	NepnepParser(context, MangaParserSource.MANGASEE, "mangasee123.com")

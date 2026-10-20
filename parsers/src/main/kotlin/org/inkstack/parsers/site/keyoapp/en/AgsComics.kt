@@ -9,7 +9,7 @@ import org.inkstack.parsers.util.styleValueOrNull
 import org.inkstack.parsers.util.cssUrl
 import org.inkstack.parsers.Broken
 
-@Broken // It seems like the site is dead.
+@Broken("Selectors outdated (empty list)")
 @MangaSourceParser("AGSCOMICS", "AgsComics", "en")
 internal class AgsComics(context: MangaLoaderContext) :
 	KeyoappParser(context, MangaParserSource.AGSCOMICS, "agrcomics.com") {

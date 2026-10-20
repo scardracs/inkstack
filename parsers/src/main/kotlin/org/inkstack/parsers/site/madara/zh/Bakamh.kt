@@ -6,7 +6,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 import org.inkstack.parsers.Broken
 
-@Broken
+@Broken("Protected by Cloudflare")
 @MangaSourceParser("BAKAMH", "Bakamh", "zh")
 internal class Bakamh(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.BAKAMH, "bakamh.com") {

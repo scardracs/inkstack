@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.MangaListFilterCapabilities
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.mangareader.MangaReaderParser
 
-@Broken
+@Broken("Selectors outdated (empty list)")
 @MangaSourceParser("SHADOWMANGAS", "ShadowMangas", "es")
 internal class Shadowmangas(context: MangaLoaderContext) :
 	MangaReaderParser(context, MangaParserSource.SHADOWMANGAS, "shadowmangas.com", pageSize = 10, searchPageSize = 10) {

@@ -6,7 +6,7 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.ContentType
 import org.inkstack.parsers.model.MangaParserSource
 
-@Broken
+@Broken("Protected by Cloudflare")
 @MangaSourceParser("HENTAILIB", "HentaiLib", "ru", type = ContentType.HENTAI)
 internal class HentaiLibParser(context: MangaLoaderContext) : LibSocialParser(
 	context = context,

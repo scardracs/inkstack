@@ -7,7 +7,7 @@ import org.inkstack.parsers.site.mangareader.MangaReaderParser
 import org.inkstack.parsers.util.*
 import org.inkstack.parsers.Broken
 
-@Broken // The website is broken
+@Broken("Selectors outdated (empty list)")
 @MangaSourceParser("CONSTELLARCOMIC", "ConstellarComic", "en", ContentType.HENTAI)
 internal class Constellarcomic(context: MangaLoaderContext) :
 	MangaReaderParser(

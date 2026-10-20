@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 import org.inkstack.parsers.Broken
 
-@Broken
+@Broken("Site unreachable (connection error)")
 @MangaSourceParser("FREECOMICONLINE", "FreeComicOnline", "en", ContentType.HENTAI)
 internal class FreeComicOnline(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.FREECOMICONLINE, "freecomiconline.me") {

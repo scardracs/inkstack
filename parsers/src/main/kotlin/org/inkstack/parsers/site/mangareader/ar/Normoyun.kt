@@ -10,7 +10,7 @@ import org.inkstack.parsers.site.mangareader.MangaReaderParser
 import org.inkstack.parsers.util.*
 import java.text.SimpleDateFormat
 
-@Broken
+@Broken("Site unreachable (TLS error)")
 @MangaSourceParser("NORMOYUN", "MangaSwat", "ar")
 internal class Normoyun(context: MangaLoaderContext) :
 	MangaReaderParser(context, MangaParserSource.NORMOYUN, "swatscans.com", pageSize = 42, searchPageSize = 39) {

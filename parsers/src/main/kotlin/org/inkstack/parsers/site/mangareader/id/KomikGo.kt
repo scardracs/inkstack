@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.ContentType
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.mangareader.MangaReaderParser
 
-@Broken
+@Broken("Site unreachable (timeout)")
 @MangaSourceParser("KOMIKGO", "KomikGo", "id", ContentType.HENTAI)
 internal class KomikGo(context: MangaLoaderContext) :
 	MangaReaderParser(context, MangaParserSource.KOMIKGO, "komikgo.xyz", pageSize = 20, searchPageSize = 10)

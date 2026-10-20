@@ -6,7 +6,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 import org.inkstack.parsers.Broken
 
-@Broken
+@Broken("Selectors outdated (empty list)")
 @MangaSourceParser("COCORIP", "Cocorip", "es")
 internal class Cocorip(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.COCORIP, "cocorip.net", 16) {

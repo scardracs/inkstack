@@ -7,7 +7,7 @@ import org.inkstack.parsers.site.madara.MadaraParser
 import org.inkstack.parsers.Broken
 import java.util.*
 
-@Broken
+@Broken("Selectors outdated (redirect loop)")
 @MangaSourceParser("MANHUAKEY", "ManhuaKey", "th")
 internal class Manhuakey(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.MANHUAKEY, "www.manhuakey.com", 10) {

@@ -10,7 +10,7 @@ import org.inkstack.parsers.site.madara.MadaraParser
 import org.inkstack.parsers.util.*
 import java.text.SimpleDateFormat
 
-@Broken
+@Broken("Selectors outdated (ajax 404)")
 @MangaSourceParser("NEOX_SCANS", "NeoxScans", "pt")
 internal class Neoxscans(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.NEOX_SCANS, "mangalivre.net", 18) {

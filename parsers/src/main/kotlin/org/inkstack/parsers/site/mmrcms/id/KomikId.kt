@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.mmrcms.MmrcmsParser
 import java.util.*
 
-@Broken
+@Broken("Selectors outdated (list 404)")
 @MangaSourceParser("KOMIKID", "KomikId", "id")
 internal class KomikId(context: MangaLoaderContext) :
 	MmrcmsParser(context, MangaParserSource.KOMIKID, "komiku.org") {

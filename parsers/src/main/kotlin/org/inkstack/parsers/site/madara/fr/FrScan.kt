@@ -9,7 +9,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 import org.inkstack.parsers.util.*
 
-@Broken
+@Broken("Selectors outdated (empty list)")
 @MangaSourceParser("FRSCAN", "Fr-Scan", "fr")
 internal class FrScan(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.FRSCAN, "fr-scan.com") {

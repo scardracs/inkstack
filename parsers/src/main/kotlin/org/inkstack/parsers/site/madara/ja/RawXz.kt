@@ -6,7 +6,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 import org.inkstack.parsers.Broken
 
-@Broken
+@Broken("Site unreachable (connection error)")
 @MangaSourceParser("RAWXZ", "RawXz", "ja")
 internal class RawXz(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.RAWXZ, "rawxz.ac") {

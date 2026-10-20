@@ -10,7 +10,7 @@ import org.inkstack.parsers.util.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-@Broken
+@Broken("Selectors outdated (empty list)")
 @MangaSourceParser("MANGAPURE", "MangaPure", "en")
 internal class MangaPure(context: MangaLoaderContext) :
     MadaraParser(context, MangaParserSource.MANGAPURE, "mangapure.net") {

@@ -6,7 +6,7 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.model.ContentType
 
-@Broken
+@Broken("Selectors outdated (empty list)")
 @MangaSourceParser("SOLARMTL", "SolarMTL", "en", type = ContentType.MANGA)
 internal class SolarMTL(context: MangaLoaderContext):
     MTLParser(context, source = MangaParserSource.SOLARMTL, "solarmtl.com")

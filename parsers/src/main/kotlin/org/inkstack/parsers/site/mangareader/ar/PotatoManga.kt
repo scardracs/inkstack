@@ -11,7 +11,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.mangareader.MangaReaderParser
 import org.inkstack.parsers.util.*
 
-@Broken
+@Broken("Selectors outdated (empty list)")
 @MangaSourceParser("POTATOMANGA", "PotatoManga", "ar")
 internal class PotatoManga(context: MangaLoaderContext) :
 	MangaReaderParser(context, MangaParserSource.POTATOMANGA, "potatomanga.xyz", pageSize = 30, searchPageSize = 10) {

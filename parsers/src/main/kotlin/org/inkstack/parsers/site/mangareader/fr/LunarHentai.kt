@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.MangaListFilterCapabilities
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.mangareader.MangaReaderParser
 
-@Broken
+@Broken("Site unreachable (connection error)")
 @MangaSourceParser("LUNARHENTAI", "GloryScans", "fr")
 internal class LunarHentai(context: MangaLoaderContext) :
 	MangaReaderParser(context, MangaParserSource.LUNARHENTAI, "gloryscans.fr", pageSize = 40, searchPageSize = 10) {

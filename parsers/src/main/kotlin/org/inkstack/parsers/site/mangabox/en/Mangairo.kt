@@ -17,7 +17,7 @@ import org.inkstack.parsers.site.mangabox.MangaboxParser
 import org.inkstack.parsers.util.*
 import java.util.*
 
-@Broken
+@Broken("Selectors outdated (empty list)")
 @MangaSourceParser("MANGAIRO", "MangaIro", "en")
 internal class Mangairo(context: MangaLoaderContext) :
 	MangaboxParser(context, MangaParserSource.MANGAIRO) {

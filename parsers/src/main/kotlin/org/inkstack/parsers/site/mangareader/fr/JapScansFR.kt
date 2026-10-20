@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.mangareader.MangaReaderParser
 import java.util.Locale
 
-@Broken
+@Broken("Site unreachable (connection error)")
 @MangaSourceParser("JAPSCANSFR", "JapScans.fr", "fr")
 internal class JapScansFR(context: MangaLoaderContext) :
 	MangaReaderParser(context, MangaParserSource.JAPSCANSFR, "japscans.fr", pageSize = 20, searchPageSize = 10) {

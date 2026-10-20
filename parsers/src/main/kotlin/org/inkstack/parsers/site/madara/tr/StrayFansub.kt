@@ -6,7 +6,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 import org.inkstack.parsers.Broken
 
-@Broken // The website is not functioning and displays the Plesk panel
+@Broken("Site unreachable (timeout)")
 @MangaSourceParser("STRAYFANSUB", "StrayFansub", "tr")
 internal class StrayFansub(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.STRAYFANSUB, "strayfansub.com", 16) {

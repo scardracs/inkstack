@@ -16,7 +16,7 @@ import org.inkstack.parsers.util.*
 import org.inkstack.parsers.util.json.getIntOrDefault
 import java.util.*
 
-@Broken
+@Broken("Protected by Cloudflare")
 @MangaSourceParser("BENTOMANGA", "BentoManga", "fr")
 internal class BentomangaParser(context: MangaLoaderContext) :
 	PagedMangaParser(context, MangaParserSource.BENTOMANGA, 10) {

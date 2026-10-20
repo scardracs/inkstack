@@ -6,7 +6,7 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.mangareader.MangaReaderParser
 
-@Broken
+@Broken("Selectors outdated (empty list)")
 @MangaSourceParser("ELARCPAGE", "ElarcPage", "en")
 internal class Elarcpage(context: MangaLoaderContext) :
 	MangaReaderParser(context, MangaParserSource.ELARCPAGE, "elarctoon.com", pageSize = 20, searchPageSize = 10) {

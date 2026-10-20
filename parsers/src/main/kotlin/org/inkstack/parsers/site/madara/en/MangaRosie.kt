@@ -6,7 +6,7 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 
-@Broken
+@Broken("Site unreachable (connection error)")
 @MangaSourceParser("MANGAROSIE", "Toon69", "en")
 internal class MangaRosie(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.MANGAROSIE, "toon69.com", pageSize = 16) {

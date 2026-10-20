@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.MangaListFilterCapabilities
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.mangareader.MangaReaderParser
 
-@Broken
+@Broken("Selectors outdated (empty list)")
 @MangaSourceParser("FUTARI", "Futari", "id")
 internal class Futari(context: MangaLoaderContext) :
 	MangaReaderParser(context, MangaParserSource.FUTARI, "futari.info", pageSize = 25, searchPageSize = 10) {

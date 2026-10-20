@@ -11,7 +11,7 @@ import org.inkstack.parsers.util.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-@Broken
+@Broken("Selectors outdated (empty list)")
 @MangaSourceParser("LERMANGAONLINE", "LerMangaOnline", "pt")
 internal class LerMangaOnline(context: MangaLoaderContext) :
 	PagedMangaParser(context, MangaParserSource.LERMANGAONLINE, 20) {

@@ -6,7 +6,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 import org.inkstack.parsers.Broken
 
-@Broken
+@Broken("Selectors outdated (empty list)")
 @MangaSourceParser("DAPROB", "Daprob", "es")
 internal class Daprob(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.DAPROB, "daprob.com") {

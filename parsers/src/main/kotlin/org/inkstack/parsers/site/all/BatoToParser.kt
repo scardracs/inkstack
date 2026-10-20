@@ -19,7 +19,7 @@ import org.inkstack.parsers.util.json.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-@Broken
+@Broken("Selectors outdated (bad JSON)")
 @MangaSourceParser("XBATCAT", "XBatCat")
 internal class BatoToV4Parser(context: MangaLoaderContext) :
     PagedMangaParser(context, MangaParserSource.XBATCAT, 36) {

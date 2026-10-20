@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.ContentType
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 
-@Broken
+@Broken("Selectors outdated (empty list)")
 @MangaSourceParser("MANGA1K", "Manga1k", "en", ContentType.HENTAI)
 internal class Manga1k(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.MANGA1K, "manga1k.com", 20) {

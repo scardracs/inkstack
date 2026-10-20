@@ -13,7 +13,7 @@ import org.inkstack.parsers.network.UserAgents
 import org.inkstack.parsers.util.*
 import java.util.*
 
-@Broken
+@Broken("Site unreachable (connection error)")
 @MangaSourceParser("SCANS_MANGAS_ME", "ScansMangas.me", "fr")
 internal class ScansMangasMe(context: MangaLoaderContext) :
 	SinglePageMangaParser(context, MangaParserSource.SCANS_MANGAS_ME) {

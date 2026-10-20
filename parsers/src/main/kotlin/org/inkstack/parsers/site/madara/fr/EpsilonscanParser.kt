@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.ContentType
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 
-@Broken
+@Broken("Protected by Cloudflare")
 @MangaSourceParser("EPSILONSCAN", "EpsilonScan", "fr", ContentType.HENTAI)
 internal class EpsilonscanParser(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.EPSILONSCAN, "beta.epsilonscan.to") {

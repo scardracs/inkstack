@@ -6,7 +6,7 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 
-@Broken
+@Broken("Site unreachable (HTTP_456)")
 @MangaSourceParser("MANWE", "Manwe", "tr")
 internal class Manwe(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.MANWE, "manwe.pro", 20)

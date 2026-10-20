@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.mangareader.MangaReaderParser
 import org.inkstack.parsers.Broken
 
-@Broken
+@Broken("Selectors outdated (empty list)")
 @MangaSourceParser("UKIYOTOON", "UkiyoToon", "es")
 internal class UkiyoToon(context: MangaLoaderContext) :
 	MangaReaderParser(context, MangaParserSource.UKIYOTOON, "nakamatoon.com", 30, 10) {

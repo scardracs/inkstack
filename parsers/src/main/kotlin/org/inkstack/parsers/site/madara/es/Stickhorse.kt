@@ -6,7 +6,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 import org.inkstack.parsers.Broken
 
-@Broken // Host error
+@Broken("Site unreachable (timeout)")
 @MangaSourceParser("STICKHORSE", "StickHorse", "es")
 internal class Stickhorse(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.STICKHORSE, "www.stickhorse.cl") {

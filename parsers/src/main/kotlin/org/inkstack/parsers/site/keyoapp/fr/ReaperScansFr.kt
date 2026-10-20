@@ -6,7 +6,7 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.keyoapp.KeyoappParser
 
-@Broken
+@Broken("Selectors outdated (list 404)")
 @MangaSourceParser("REAPERSCANS_FR", "ReaperScans.fr", "fr")
 internal class ReaperScansFr(context: MangaLoaderContext) :
 	KeyoappParser(context, MangaParserSource.REAPERSCANS_FR, "reaper-scans.fr")

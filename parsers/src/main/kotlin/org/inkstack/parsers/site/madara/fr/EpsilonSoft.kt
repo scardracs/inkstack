@@ -6,7 +6,7 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.*
 import org.inkstack.parsers.site.madara.MadaraParser
 
-@Broken
+@Broken("Protected by Cloudflare")
 @MangaSourceParser("EPSILONSOFT", "EpsilonSoft", "fr")
 internal class EpsilonSoft(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.EPSILONSOFT, "beta.epsilonsoft.to") {

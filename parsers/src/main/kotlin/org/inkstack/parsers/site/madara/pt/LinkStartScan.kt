@@ -6,7 +6,7 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 
-@Broken
+@Broken("Site unreachable (timeout)")
 @MangaSourceParser("LINKSTARTSCAN", "LinkStartScan", "pt")
 internal class LinkStartScan(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.LINKSTARTSCAN, "www.linkstartscan.xyz") {

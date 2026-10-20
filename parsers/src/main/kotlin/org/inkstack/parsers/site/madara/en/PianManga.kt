@@ -6,7 +6,7 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 
-@Broken
+@Broken("Selectors outdated (HTTP 522)")
 @MangaSourceParser("PIANMANGA", "PianManga", "en")
 internal class PianManga(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.PIANMANGA, "pianmanga.me", pageSize = 10) {

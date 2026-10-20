@@ -10,7 +10,7 @@ import org.inkstack.parsers.util.*
 import java.text.SimpleDateFormat
 import org.inkstack.parsers.Broken
 
-@Broken
+@Broken("Selectors outdated (empty list)")
 @MangaSourceParser("BRAKEOUT", "Brakeout", "es")
 internal class Brakeout(context: MangaLoaderContext) :
 	HeanCmsAlt(context, MangaParserSource.BRAKEOUT, "brakeout.xyz", 10) {

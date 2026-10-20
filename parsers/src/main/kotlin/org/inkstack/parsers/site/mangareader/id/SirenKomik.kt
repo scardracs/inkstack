@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.MangaListFilterCapabilities
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.mangareader.MangaReaderParser
 
-@Broken
+@Broken("Site unreachable (connection error)")
 @MangaSourceParser("SIRENKOMIK", "SirenKomik", "id")
 internal class SirenKomik(context: MangaLoaderContext) :
 	MangaReaderParser(context, MangaParserSource.SIRENKOMIK, "sirenkomik.xyz", pageSize = 20, searchPageSize = 10) {
