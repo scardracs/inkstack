@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -56,92 +57,97 @@ fun MangaGridItem(
 		.build()
 	val shape = RoundedCornerShape(16.dp)
 	val progress = item.readingProgress()
-	MangaCover(
-		model = request,
-		contentDescription = item.title,
+	Column(
 		modifier = modifier
 			.fillMaxWidth()
-			.clip(shape)
-			.then(
-				if (selected) {
-					Modifier.border(3.dp, MaterialTheme.colorScheme.primary, shape)
-				} else {
-					Modifier
-				},
-			)
 			.combinedClickable(
 				onClick = onClick,
 				onLongClick = onLongClick,
 			),
-		imageLoader = imageLoader,
-		overlay = {
-			ReadingProgressBadge(
-				progress = progress,
-				modifier = Modifier
-					.align(Alignment.TopEnd)
-					.padding(dimensionResource(R.dimen.card_indicator_offset)),
-			)
-			val status = item.statusBadges()
-			Row(
-				modifier = Modifier
-					.align(Alignment.TopStart)
-					.padding(dimensionResource(R.dimen.card_indicator_offset)),
-				horizontalArrangement = Arrangement.spacedBy(4.dp),
-				verticalAlignment = Alignment.CenterVertically,
-			) {
-				if (item.counter > 0) {
+	) {
+		MangaCover(
+			model = request,
+			contentDescription = item.title,
+			modifier = Modifier
+				.fillMaxWidth()
+				.clip(shape)
+				.then(
+					if (selected) {
+						Modifier.border(3.dp, MaterialTheme.colorScheme.primary, shape)
+					} else {
+						Modifier
+					},
+				),
+			imageLoader = imageLoader,
+			overlay = {
+				ReadingProgressBadge(
+					progress = progress,
+					modifier = Modifier
+						.align(Alignment.TopEnd)
+						.padding(dimensionResource(R.dimen.card_indicator_offset)),
+				)
+				val status = item.statusBadges()
+				Row(
+					modifier = Modifier
+						.align(Alignment.TopStart)
+						.padding(dimensionResource(R.dimen.card_indicator_offset)),
+					horizontalArrangement = Arrangement.spacedBy(4.dp),
+					verticalAlignment = Alignment.CenterVertically,
+				) {
+					if (item.counter > 0) {
+						Box(
+							modifier = Modifier
+								.size(dimensionResource(R.dimen.card_indicator_size_glyph))
+								.background(MaterialTheme.colorScheme.error, CircleShape),
+							contentAlignment = Alignment.Center,
+						) {
+							Text(
+								text = if (item.counter > 99) "99+" else item.counter.toString(),
+								color = MaterialTheme.colorScheme.onError,
+								style = MaterialTheme.typography.labelSmall,
+							)
+						}
+					}
+					if (status.isFavorite) {
+						StatusGlyph(Icons.Filled.Favorite, Color(0xFFE91E63))
+					}
+					if (status.isPinned) {
+						StatusGlyph(Icons.Filled.PushPin, MaterialTheme.colorScheme.onSurface)
+					}
+					if (status.isSaved) {
+						StatusGlyph(Icons.Filled.Storage, MaterialTheme.colorScheme.onSurface)
+					}
+				}
+				if (selected) {
 					Box(
 						modifier = Modifier
-							.size(dimensionResource(R.dimen.card_indicator_size_glyph))
-							.background(MaterialTheme.colorScheme.error, CircleShape),
+							.align(Alignment.TopStart)
+							.padding(8.dp)
+							.size(24.dp)
+							.background(MaterialTheme.colorScheme.primary, CircleShape),
 						contentAlignment = Alignment.Center,
 					) {
-						Text(
-							text = if (item.counter > 99) "99+" else item.counter.toString(),
-							color = MaterialTheme.colorScheme.onError,
-							style = MaterialTheme.typography.labelSmall,
+						Icon(
+							imageVector = Icons.Filled.Check,
+							contentDescription = null,
+							tint = MaterialTheme.colorScheme.onPrimary,
+							modifier = Modifier.size(16.dp),
 						)
 					}
 				}
-				if (status.isFavorite) {
-					StatusGlyph(Icons.Filled.Favorite, Color(0xFFE91E63))
-				}
-				if (status.isPinned) {
-					StatusGlyph(Icons.Filled.PushPin, MaterialTheme.colorScheme.onSurface)
-				}
-				if (status.isSaved) {
-					StatusGlyph(Icons.Filled.Storage, MaterialTheme.colorScheme.onSurface)
-				}
-			}
-			if (selected) {
-				Box(
-					modifier = Modifier
-						.align(Alignment.TopStart)
-						.padding(8.dp)
-						.size(24.dp)
-						.background(MaterialTheme.colorScheme.primary, CircleShape),
-					contentAlignment = Alignment.Center,
-				) {
-					Icon(
-						imageVector = Icons.Filled.Check,
-						contentDescription = null,
-						tint = MaterialTheme.colorScheme.onPrimary,
-						modifier = Modifier.size(16.dp),
-					)
-				}
-			}
-			Text(
-				text = item.title,
-				color = MaterialTheme.colorScheme.onPrimary,
-				style = MaterialTheme.typography.labelMedium,
-				maxLines = 2,
-				overflow = TextOverflow.Ellipsis,
-				modifier = Modifier
-					.align(Alignment.BottomStart)
-					.padding(10.dp),
-			)
-		},
-	)
+			},
+		)
+		Text(
+			text = item.title,
+			color = MaterialTheme.colorScheme.onSurface,
+			style = MaterialTheme.typography.labelMedium,
+			maxLines = 2,
+			overflow = TextOverflow.Ellipsis,
+			modifier = Modifier
+				.fillMaxWidth()
+				.padding(top = 6.dp, start = 2.dp, end = 2.dp),
+		)
+	}
 }
 
 @Composable

@@ -49,7 +49,7 @@ Use the emulator toolbar **Screenshot** action, or the same `adb exec-out screen
 
 - Five PNGs present, correct names, readable at thumbnail size.
 - `title.txt`, `short_description.txt`, and `full_description.txt` match the app’s current branding and features.
-- Changelog file `changelogs/<versionCode>.txt` matches `versionCode` in `app/build.gradle.kts` (currently `1` for 0.1.0).
+- Changelog file `changelogs/<versionCode>.txt` matches `versionCode` in `app/build.gradle.kts` (currently `2` for 1.0.0). Full notes live in `CHANGELOG.md`.
 
 ## F-Droid
 

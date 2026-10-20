@@ -55,8 +55,8 @@ android {
 		applicationId = "org.inkstack"
 		minSdk = 28
 		targetSdk = 37
-		versionCode = 1
-		versionName = "0.1.0"
+		versionCode = (findProperty("versionCode") as String?)?.toIntOrNull() ?: 2
+		versionName = (findProperty("versionName") as String?) ?: "1.0.0"
 		ndk {
 			// ARM only. x86 and x86_64 devices - Intel Chromebooks, emulators, BlueStacks - run these
 			// through Android's ARM translation, so the x86 copies of every native library were

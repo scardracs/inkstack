@@ -9,7 +9,7 @@ Use with `fastlane/metadata/android/en-US/` and Play Console / F-Droid submissio
 | Title | Inkstack | Inkstack |
 | Short description | See `short_description.txt` | Reader manga offline, sorgenti, sync, scrobbling, UI Material Expressive |
 | Full description | See `full_description.txt` | Tradurre bullet: offline, parser/sorgenti, backup/sync, scrobbling, tema, privacy |
-| Changelog | `changelogs/1.txt` (versionCode 1 → 0.1.0) | Stesso contenuto o riassunto in italiano |
+| Changelog | `changelogs/2.txt` (versionCode 2 → 1.0.0); full notes in `CHANGELOG.md` | Stesso contenuto o riassunto in italiano |
 
 ## Asset grafici / Graphics
 
@@ -20,7 +20,7 @@ Use with `fastlane/metadata/android/en-US/` and Play Console / F-Droid submissio
 
 ## Build e policy
 
-- [ ] `versionName` 0.1.0 / `versionCode` 1 allineati a `changelogs/1.txt`
+- [ ] `versionName` 1.0.0 / `versionCode` 2 allineati a `changelogs/2.txt`
 - [ ] Target SDK / min SDK documentati (Android 16+)
 - [ ] Licenza GPL-3.0 indicata in store / F-Droid metadata
 - [ ] Data safety / privacy form (Play): account scrobbling opzionali, backup locale/remoto secondo implementazione

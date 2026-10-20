@@ -1,21 +1,15 @@
 package org.inkstack.core.ui.util
 
-import android.view.ViewGroup
 import android.view.Window
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.view.ActionMode
-import androidx.appcompat.widget.ActionBarContextView
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.ColorUtils
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updateLayoutParams
-import androidx.core.view.updatePadding
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import org.inkstack.core.util.ext.getThemeColor
-import com.google.android.material.R as materialR
 
+/**
+ * Back-press + listener fan-out for legacy AppCompat [ActionMode] (e.g. sheets).
+ * List multi-select uses Compose [org.inkstack.core.ui.compose.SelectionChromeHost] instead.
+ */
 class ActionModeDelegate : OnBackPressedCallback(false) {
 
 	private var activeActionMode: ActionMode? = null
@@ -31,36 +25,12 @@ class ActionModeDelegate : OnBackPressedCallback(false) {
 		activeActionMode = mode
 		isEnabled = true
 		listeners?.forEach { it.onActionModeStarted(mode) }
-		if (window != null) {
-			val ctx = window.context
-			val actionModeColor = ColorUtils.compositeColors(
-				ContextCompat.getColor(ctx, materialR.color.m3_appbar_overlay_color),
-				ctx.getThemeColor(materialR.attr.colorSurface),
-			)
-			// Push the whole bar below the status bar via margin — not padding. Padding stretches
-			// ActionBarContextView and leaves menu icons vertically off-center relative to close/title.
-			val insets = ViewCompat.getRootWindowInsets(window.decorView)
-				?.getInsets(WindowInsetsCompat.Type.systemBars()) ?: return
-			window.decorView.findViewById<ActionBarContextView?>(androidx.appcompat.R.id.action_mode_bar)?.apply {
-				setBackgroundColor(actionModeColor)
-				updatePadding(top = 0)
-				updateLayoutParams<ViewGroup.MarginLayoutParams> {
-					topMargin = insets.top
-				}
-			}
-		}
 	}
 
 	fun onSupportActionModeFinished(mode: ActionMode, window: Window?) {
 		activeActionMode = null
 		isEnabled = false
 		listeners?.forEach { it.onActionModeFinished(mode) }
-		window?.decorView?.findViewById<ActionBarContextView?>(androidx.appcompat.R.id.action_mode_bar)?.apply {
-			updatePadding(top = 0)
-			updateLayoutParams<ViewGroup.MarginLayoutParams> {
-				topMargin = 0
-			}
-		}
 	}
 
 	fun addListener(listener: ActionModeListener) {

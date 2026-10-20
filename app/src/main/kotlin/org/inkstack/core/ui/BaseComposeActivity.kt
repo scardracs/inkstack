@@ -21,6 +21,7 @@ import org.inkstack.R
 import org.inkstack.core.exceptions.resolve.ExceptionResolver
 import org.inkstack.core.nav.AppRouter
 import org.inkstack.core.ui.compose.InkstackTheme
+import org.inkstack.core.ui.compose.SelectionChromeHost
 import org.inkstack.core.ui.util.ActionModeDelegate
 import org.inkstack.main.ui.protect.ScreenshotPolicyHelper
 
@@ -39,6 +40,10 @@ abstract class BaseComposeActivity :
 
 	@JvmField
 	val actionModeDelegate = ActionModeDelegate()
+
+	/** Compose multi-select chrome (glass bar). Prefer this over AppCompat ActionMode. */
+	@JvmField
+	val selectionChrome = SelectionChromeHost()
 
 	private lateinit var entryPoint: BaseActivityEntryPoint
 

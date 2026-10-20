@@ -9,11 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -56,16 +53,6 @@ fun MangaCover(
 				contentScale = ContentScale.Crop,
 			)
 		}
-		Box(
-			modifier = Modifier
-				.fillMaxWidth()
-				.align(Alignment.BottomCenter)
-				.background(
-					Brush.verticalGradient(
-						colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.72f)),
-					),
-				),
-		)
 		overlay()
 	}
 }

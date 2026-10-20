@@ -40,6 +40,7 @@ import org.inkstack.R
 import org.inkstack.core.nav.router
 import org.inkstack.core.prefs.AppSettings
 import org.inkstack.core.prefs.NavItem
+import org.inkstack.core.ui.compose.SelectionAwareTopBar
 import org.inkstack.core.ui.dialog.RememberCheckListener
 import org.inkstack.core.ui.dialog.RememberSelectionDialogListener
 import org.inkstack.core.ui.dialog.buildAlertDialog
@@ -187,15 +188,17 @@ fun MainScreen(
 		snackbarHost = { SnackbarHost(snackbarHostState) },
 		topBar = {
 			Box(Modifier.padding(top = statusBar.calculateTopPadding())) {
-				MainSearchBar(
-					query = query,
-					onQueryChange = { query = it },
-					onSearch = { text ->
-						onOpenSearch(text.trim())
-						query = ""
-					},
-					menuItems = menuItems,
-				)
+				SelectionAwareTopBar {
+					MainSearchBar(
+						query = query,
+						onQueryChange = { query = it },
+						onSearch = { text ->
+							onOpenSearch(text.trim())
+							query = ""
+						},
+						menuItems = menuItems,
+					)
+				}
 			}
 		},
 	) { innerPadding ->

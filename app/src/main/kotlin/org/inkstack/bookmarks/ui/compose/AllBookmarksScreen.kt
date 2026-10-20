@@ -1,10 +1,8 @@
 package org.inkstack.bookmarks.ui.compose
 
 import android.view.Menu
-import android.view.MenuItem
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.view.ActionMode
+import androidx.appcompat.view.menu.MenuBuilder
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -57,6 +55,10 @@ import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import org.inkstack.R
+import org.inkstack.core.ui.BaseComposeActivity
+import org.inkstack.core.ui.compose.SelectionChromeHost
+import org.inkstack.core.ui.compose.SelectionChromeSession
+import org.inkstack.list.ui.compose.toChromeActions
 import org.inkstack.bookmarks.domain.Bookmark
 import org.inkstack.bookmarks.ui.AllBookmarksViewModel
 import org.inkstack.core.nav.ReaderIntent
@@ -328,14 +330,15 @@ private fun ErrorPane(state: ErrorState) {
 
 @Stable
 private class BookmarkSelectionState(
-	private val activity: AppCompatActivity?,
+	private val activity: FragmentActivity?,
+	private val chrome: SelectionChromeHost?,
 	private val contentProvider: () -> List<ListModel>,
-	private val onAction: (itemId: Int, ids: Set<Long>, finish: () -> Unit) -> Boolean,
+	private val actionHandler: (itemId: Int, ids: Set<Long>, finish: () -> Unit) -> Boolean,
 ) {
 	var selectedIds by mutableStateOf(emptySet<Long>())
 		private set
 
-	private var actionMode: ActionMode? = null
+	private var session: BookmarkSelectionSession? = null
 
 	fun onItemClick(id: Long, open: () -> Unit) {
 		if (selectedIds.isEmpty()) {
@@ -348,59 +351,79 @@ private class BookmarkSelectionState(
 	fun onItemLongClick(id: Long) {
 		if (selectedIds.isEmpty()) {
 			selectedIds = setOf(id)
-			actionMode = activity?.startSupportActionMode(callback)
-			if (actionMode == null) {
-				selectedIds = emptySet()
-			}
+			startSession()
 		} else {
 			toggle(id)
 		}
 	}
 
 	fun clear() {
-		actionMode?.finish()
+		val active = session
+		session = null
 		selectedIds = emptySet()
-		actionMode = null
+		if (active != null) {
+			chrome?.hide(active)
+		}
 	}
 
 	private fun toggle(id: Long) {
 		val next = if (id in selectedIds) selectedIds - id else selectedIds + id
 		selectedIds = next
 		if (next.isEmpty()) {
-			actionMode?.finish()
-			actionMode = null
+			clear()
 		} else {
-			actionMode?.invalidate()
+			session?.publish()
 		}
 	}
 
 	private fun selectAll() {
 		selectedIds = contentProvider().mapNotNull { (it as? Bookmark)?.pageId }.toSet()
-		actionMode?.invalidate()
+		session?.publish()
 	}
 
-	private val callback = object : ActionMode.Callback {
-		override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-			mode.menuInflater.inflate(R.menu.mode_bookmarks, menu)
-			return true
-		}
-
-		override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
-			mode.title = selectedIds.size.toString()
-			return true
-		}
-
-		override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
-			if (item.itemId == R.id.action_select_all) {
-				selectAll()
-				return true
-			}
-			return onAction(item.itemId, selectedIds) { mode.finish() }
-		}
-
-		override fun onDestroyActionMode(mode: ActionMode) {
+	private fun startSession() {
+		val host = chrome ?: run {
 			selectedIds = emptySet()
-			actionMode = null
+			return
+		}
+		val ctx = activity ?: run {
+			selectedIds = emptySet()
+			return
+		}
+		val newSession = BookmarkSelectionSession(ctx)
+		session = newSession
+		newSession.publish()
+		host.show(newSession)
+	}
+
+	private inner class BookmarkSelectionSession(
+		context: android.content.Context,
+	) : SelectionChromeSession {
+		private val menu: Menu = MenuBuilder(context).also {
+			activity?.menuInflater?.inflate(R.menu.mode_bookmarks, it)
+		}
+
+		override var title: String = ""
+			private set
+		override var actions: List<org.inkstack.core.ui.compose.SelectionChromeAction> = emptyList()
+			private set
+
+		fun publish() {
+			title = selectedIds.size.toString()
+			actions = menu.toChromeActions()
+			chrome?.refresh()
+		}
+
+		override fun onAction(id: Int) {
+			if (id == R.id.action_select_all) {
+				selectAll()
+				return
+			}
+			actionHandler(id, selectedIds) { dismiss() }
+		}
+
+		override fun dismiss() {
+			clear()
 		}
 	}
 }
@@ -411,14 +434,16 @@ private fun rememberBookmarkSelection(
 	onAction: (itemId: Int, ids: Set<Long>, finish: () -> Unit) -> Boolean,
 ): BookmarkSelectionState {
 	val context = LocalContext.current
-	val activity = remember(context) { context.findActivity() as? AppCompatActivity }
+	val activity = remember(context) { context.findActivity() as? FragmentActivity }
+	val chrome = remember(activity) { (activity as? BaseComposeActivity)?.selectionChrome }
 	val contentState = rememberUpdatedState(content)
 	val actionState = rememberUpdatedState(onAction)
-	val state = remember(activity) {
+	val state = remember(activity, chrome) {
 		BookmarkSelectionState(
 			activity = activity,
+			chrome = chrome,
 			contentProvider = { contentState.value },
-			onAction = { itemId, ids, finish -> actionState.value(itemId, ids, finish) },
+			actionHandler = { itemId, ids, finish -> actionState.value(itemId, ids, finish) },
 		)
 	}
 	DisposableEffect(state) {

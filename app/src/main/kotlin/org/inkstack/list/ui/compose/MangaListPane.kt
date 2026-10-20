@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -447,7 +448,9 @@ private fun FeedItemCell(
 		Text(
 			text = item.title,
 			style = MaterialTheme.typography.bodySmall,
+			color = MaterialTheme.colorScheme.onSurface,
 			maxLines = 2,
+			overflow = TextOverflow.Ellipsis,
 			modifier = Modifier.padding(top = 6.dp),
 		)
 	}

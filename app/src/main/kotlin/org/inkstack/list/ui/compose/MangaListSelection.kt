@@ -4,8 +4,7 @@ import android.content.Context
 import android.view.Menu
 import android.view.MenuItem
 import androidx.annotation.MenuRes
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.view.ActionMode
+import androidx.appcompat.view.menu.MenuBuilder
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Stable
@@ -20,6 +19,10 @@ import org.inkstack.R
 import org.inkstack.core.model.isLocal
 import org.inkstack.core.nav.AppRouter
 import org.inkstack.core.nav.router
+import org.inkstack.core.ui.BaseComposeActivity
+import org.inkstack.core.ui.compose.SelectionChromeAction
+import org.inkstack.core.ui.compose.SelectionChromeHost
+import org.inkstack.core.ui.compose.SelectionChromeSession
 import org.inkstack.core.util.ShareHelper
 import org.inkstack.core.util.ext.findActivity
 import org.inkstack.explore.ui.model.RecommendationsItem
@@ -28,12 +31,13 @@ import org.inkstack.list.ui.model.MangaListModel
 import org.inkstack.parsers.model.Manga
 
 /**
- * Multi-select for Compose manga grids, backed by AppCompat [ActionMode] so the existing
- * `mode_*` menus keep all quick actions (share, favourite, save, remove, …).
+ * Multi-select for Compose manga grids. Uses [SelectionChromeHost] (Compose glass bar) and reuses
+ * existing `mode_*` menu XML for actions — no AppCompat ActionMode / View chrome.
  */
 @Stable
 class MangaListSelectionState internal constructor(
-	private val activity: AppCompatActivity?,
+	private val activity: FragmentActivity?,
+	private val chrome: SelectionChromeHost?,
 	private val contentProvider: () -> List<ListModel>,
 	@MenuRes private val menuRes: Int,
 	private val onCustomAction: (itemId: Int, ids: Set<Long>, manga: Set<Manga>, finish: () -> Unit) -> Boolean,
@@ -44,7 +48,7 @@ class MangaListSelectionState internal constructor(
 	val isActive: Boolean
 		get() = selectedIds.isNotEmpty()
 
-	private var actionMode: ActionMode? = null
+	private var session: MangaSelectionSession? = null
 
 	fun selectedManga(): Set<Manga> = collectSelectedManga(contentProvider(), selectedIds)
 
@@ -59,45 +63,97 @@ class MangaListSelectionState internal constructor(
 	fun onMangaLongClick(id: Long) {
 		if (selectedIds.isEmpty()) {
 			selectedIds = setOf(id)
-			actionMode = activity?.startSupportActionMode(callback)
-			if (actionMode == null) {
-				selectedIds = emptySet()
-			}
+			startSession()
 		} else {
 			toggle(id)
 		}
 	}
 
 	fun clear() {
-		actionMode?.finish()
+		val active = session
+		session = null
 		selectedIds = emptySet()
-		actionMode = null
+		if (active != null) {
+			chrome?.hide(active)
+		}
 	}
 
 	private fun toggle(id: Long) {
 		val next = if (id in selectedIds) selectedIds - id else selectedIds + id
 		selectedIds = next
 		if (next.isEmpty()) {
-			actionMode?.finish()
-			actionMode = null
+			clear()
 		} else {
-			actionMode?.invalidate()
+			session?.publish()
 		}
 	}
 
 	private fun selectAll() {
 		selectedIds = contentProvider().mangaIds()
-		actionMode?.invalidate()
+		session?.publish()
 	}
 
-	private val callback = object : ActionMode.Callback {
-		override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-			mode.menuInflater.inflate(menuRes, menu)
-			return menu.hasVisibleItems()
+	private fun startSession() {
+		val host = chrome ?: run {
+			selectedIds = emptySet()
+			return
+		}
+		val ctx = activity ?: run {
+			selectedIds = emptySet()
+			return
+		}
+		val newSession = MangaSelectionSession(ctx)
+		session = newSession
+		newSession.publish()
+		host.show(newSession)
+	}
+
+	private inner class MangaSelectionSession(
+		private val context: Context,
+	) : SelectionChromeSession {
+		private val menu: Menu = MenuBuilder(context).also {
+			activity?.menuInflater?.inflate(menuRes, it)
 		}
 
-		override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
-			mode.title = selectedIds.size.toString()
+		override var title: String = ""
+			private set
+
+		override var actions: List<SelectionChromeAction> = emptyList()
+			private set
+
+		fun publish() {
+			title = selectedIds.size.toString()
+			prepareMenuVisibility(menu)
+			actions = menu.toChromeActions()
+			chrome?.refresh()
+		}
+
+		override fun onAction(id: Int) {
+			val ids = selectedIds
+			val manga = selectedManga()
+			val finish = { dismiss() }
+			if (id == R.id.action_select_all) {
+				selectAll()
+				return
+			}
+			val router = (activity as? FragmentActivity)?.router
+			val handled = handleCommonMangaQuickAction(
+				itemId = id,
+				context = context,
+				router = router,
+				manga = manga,
+				finish = finish,
+			) || onCustomAction(id, ids, manga, finish)
+			if (!handled) {
+				// no-op
+			}
+		}
+
+		override fun dismiss() {
+			clear()
+		}
+
+		private fun prepareMenuVisibility(menu: Menu) {
 			val selected = selectedManga()
 			val hasNoLocal = selected.isNotEmpty() && selected.none { it.isLocal }
 			val hasSingleSource = selected.map { it.source }.distinct().size == 1
@@ -105,31 +161,6 @@ class MangaListSelectionState internal constructor(
 			menu.findItem(R.id.action_save)?.isVisible = hasNoLocal
 			menu.findItem(R.id.action_replace_source)?.isVisible = hasNoLocal && hasSingleSource
 			menu.findItem(R.id.action_edit_override)?.isVisible = isSingle
-			return true
-		}
-
-		override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
-			val ids = selectedIds
-			val manga = selectedManga()
-			val finish = { mode.finish() }
-			if (item.itemId == R.id.action_select_all) {
-				selectAll()
-				return true
-			}
-			val context = activity ?: return false
-			val router = (context as? FragmentActivity)?.router
-			return handleCommonMangaQuickAction(
-				itemId = item.itemId,
-				context = context,
-				router = router,
-				manga = manga,
-				finish = finish,
-			) || onCustomAction(item.itemId, ids, manga, finish)
-		}
-
-		override fun onDestroyActionMode(mode: ActionMode) {
-			selectedIds = emptySet()
-			actionMode = null
 		}
 	}
 }
@@ -142,13 +173,15 @@ fun rememberMangaListSelection(
 		{ _, _, _, _ -> false },
 ): MangaListSelectionState {
 	val context = LocalContext.current
-	val activity = remember(context) { context.findActivity() as? AppCompatActivity }
+	val activity = remember(context) { context.findActivity() as? FragmentActivity }
+	val chrome = remember(activity) { (activity as? BaseComposeActivity)?.selectionChrome }
 	val contentState = rememberUpdatedState(content)
 	val actionState = rememberUpdatedState(onCustomAction)
 
-	val state = remember(activity, menuRes) {
+	val state = remember(activity, chrome, menuRes) {
 		MangaListSelectionState(
 			activity = activity,
+			chrome = chrome,
 			contentProvider = { contentState.value },
 			menuRes = menuRes,
 			onCustomAction = { itemId, ids, manga, finish ->
@@ -198,6 +231,38 @@ fun handleCommonMangaQuickAction(
 			true
 		}
 		else -> false
+	}
+}
+
+fun Menu.toChromeActions(): List<SelectionChromeAction> = buildList {
+	for (i in 0 until size()) {
+		val item = getItem(i)
+		add(
+			SelectionChromeAction(
+				id = item.itemId,
+				title = item.title?.toString().orEmpty(),
+				iconRes = item.iconResId(),
+				visible = item.isVisible,
+				enabled = item.isEnabled,
+				showInline = item.wantsInlineAction(),
+			),
+		)
+	}
+}
+
+private fun MenuItem.iconResId(): Int = try {
+	javaClass.getMethod("getIconResId").invoke(this) as Int
+} catch (_: ReflectiveOperationException) {
+	0
+}
+
+private fun MenuItem.wantsInlineAction(): Boolean {
+	if (icon == null && iconResId() == 0) return false
+	return try {
+		val flags = javaClass.getMethod("getShowAsAction").invoke(this) as Int
+		flags and (MenuItem.SHOW_AS_ACTION_IF_ROOM or MenuItem.SHOW_AS_ACTION_ALWAYS) != 0
+	} catch (_: ReflectiveOperationException) {
+		true
 	}
 }
 

@@ -22,7 +22,11 @@ fun InkstackScaffold(
 ) {
 	Scaffold(
 		modifier = modifier,
-		topBar = topBar,
+		topBar = {
+			SelectionAwareTopBar(applyStatusBars = true) {
+				topBar()
+			}
+		},
 		bottomBar = bottomBar,
 		floatingActionButton = floatingActionButton,
 		snackbarHost = { SnackbarHost(snackbarHostState) },
