@@ -2,17 +2,37 @@
 
 ## 1.0.1
 
-Patch release after `v1.0.0` CI failed on unit tests (`VersionIdTest` still expected `0.1.0`).
+Patch after `v1.0.0` never shipped: CI failed on `VersionIdTest` (still expected `0.1.0`). Version `1.0.1` / `versionCode` 3.
+
+### Distribution & docs
+
+- Drop Play Store / F-Droid packaging surfaces: remove `fastlane/`, `store/`, and F-Droid `metadata/` (screenshots and store copy).
+- Keep the app icon at `artwork/icon.png` for Discord RPC; point `app_icon_url` at that path on `main`.
+- Document GitHub-only signed releases in README (link to `CHANGELOG.md` and latest release).
+- Keystore docs: rotate via a new GitHub Release, not Play App Signing.
+
+### Weblate / i18n
+
+- Remove Weblate config (`.weblate`) and unused `about_app_translation*` preference strings from all locales.
+- Fix corrupted Portuguese `reader_navigation_inverted*` strings that had Weblate URLs as values.
+- Translations stay in-repo under `app/src/main/res/values-*/` only.
+
+### Code consolidation (selection / lists / CI)
+
+- Shared `SelectionChromeController` for manga lists and bookmarks multi-select.
+- Shared `CoverWithTitle`, `EmptyStatePane` / `ErrorStatePane`, and `confirmMarkAsCompleted` (History / Favourites).
+- Shared menu includes (`include_action_share` / `save` / `select_all`) used by `mode_*.xml`.
+- Move menu→chrome action mapping to `MenuChromeActions`.
+- CI: composite action `.github/actions/setup-android` for JDK / Android SDK / Gradle bootstrap on build and release jobs.
+- Ignore local Cursor skills under `.cursor/skills/` in `.gitignore`.
 
 ### Fixes
 
-- Align `VersionIdTest` with the shipped version name so `:app:testDebugUnitTest` passes in CI.
-- Selection chrome DRY: shared `SelectionChromeController`, menu includes, `CoverWithTitle`, shared empty/error panes, and `confirmMarkAsCompleted`.
-- CI: composite action `.github/actions/setup-android` for JDK/SDK/Gradle bootstrap on build and release jobs.
+- Align `VersionIdTest` with the shipped version so `:app:testDebugUnitTest` passes and tagged releases can publish.
 
 ### Notes
 
-- `v1.0.0` never published a GitHub Release (build job failed before the signed release job). Use this tag for the first signed APK.
+- `v1.0.0` produced no GitHub Release (unit tests failed before the signed release job). Prefer this tag for the first signed APK.
 
 ## 1.0.0
 
