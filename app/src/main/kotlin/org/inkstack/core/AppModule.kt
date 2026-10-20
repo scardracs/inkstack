@@ -47,7 +47,6 @@ import org.inkstack.core.prefs.AppSettings
 import org.inkstack.core.ui.image.CoilImageGetter
 import org.inkstack.core.ui.util.ActivityRecreationHandle
 import org.inkstack.core.ui.util.ForegroundActivityHolder
-import org.inkstack.core.util.AcraScreenLogger
 import org.inkstack.core.util.FileSize
 import org.inkstack.core.util.ext.connectivityManager
 import org.inkstack.core.util.ext.isLowRamDevice
@@ -169,14 +168,12 @@ interface AppModule {
 		fun provideActivityLifecycleCallbacks(
 			appProtectHelper: AppProtectHelper,
 			activityRecreationHandle: ActivityRecreationHandle,
-			acraScreenLogger: AcraScreenLogger,
 			screenshotPolicyHelper: ScreenshotPolicyHelper,
 			foregroundActivityHolder: ForegroundActivityHolder,
 			captchaAutoResolveCoordinator: CaptchaAutoResolveCoordinator,
 		): Set<@JvmSuppressWildcards Application.ActivityLifecycleCallbacks> = arraySetOf(
 			appProtectHelper,
 			activityRecreationHandle,
-			acraScreenLogger,
 			screenshotPolicyHelper,
 			foregroundActivityHolder,
 			captchaAutoResolveCoordinator,

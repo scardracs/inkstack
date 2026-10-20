@@ -287,6 +287,7 @@
     <string name="disable_battery_optimization">Disable battery optimization</string>
     <string name="disable_battery_optimization_summary">Helps with background updates checks</string>
     <string name="crash_text">Something went wrong. Please submit a bug report to the developers to help us fix it.</string>
+    <string name="crash_reporting_unavailable">Crash reporting is not configured in this build.</string>
     <string name="send">Send</string>
     <string name="status_planned">Planned</string>
     <string name="status_reading">Reading</string>
@@ -850,6 +851,7 @@ Optional — skip it and you appear as anon.</string>
     <string name="plugin_incompatible_with_cause">Plugin error: %s\n Make sure you are using the latest version of the plugin and Inkstack</string>
     <string name="connection_ok">Connection is OK</string>
     <string name="invalid_proxy_configuration">Invalid proxy configuration</string>
+    <string name="error_proxy_webview_not_supported">Proxy for WebView is not supported on this device</string>
     <string name="show_quick_filters">Show quick filters</string>
     <string name="show_quick_filters_summary">Provides the ability to filter manga lists by certain parameters</string>
     <string name="sfw">SFW</string>

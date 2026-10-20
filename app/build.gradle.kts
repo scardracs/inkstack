@@ -13,7 +13,6 @@ plugins {
 	alias(libs.plugins.room)
 	alias(libs.plugins.kotlinx.serialization)
 	alias(libs.plugins.compose.compiler)
-	alias(libs.plugins.sentry)
 	// enable if needed
 	// alias(libs.plugins.decoroutinator)
 }
@@ -79,18 +78,21 @@ android {
 			"tg_backup_bot_token",
 			localProperties.getProperty("tg_backup_bot_token", ""),
 		)
-		// Crash reporting endpoint. Empty unless a `sentry_dsn` is set in local.properties (or the
-		// SENTRY_DSN environment variable, for CI); an empty DSN disables reporting entirely, so a
-		// plain clone still builds and simply never asks the user to send anything.
-		val sentryDsn = readSecret("sentry_dsn", "SENTRY_DSN")
-		buildConfigField("String", "SENTRY_DSN", "\"$sentryDsn\"")
-
 		// Host that serves the shareable https manga links and the assetlinks.json that lets Android
 		// verify them. Must match the deployed worker's hostname in web/wrangler.toml exactly, or the
 		// links stop opening the app directly. Used by the manifest and by Manga.appUrl.
 		val appLinkHost = "inkstack.app"
 		manifestPlaceholders["appLinkHost"] = appLinkHost
 		buildConfigField("String", "APP_LINK_HOST", "\"$appLinkHost\"")
+
+		// Fine-grained GitHub PAT with Issues: Write on scardracs/inkstack only.
+		// Empty disables crash reporting (app still builds). Set via local.properties
+		// `github_issues_token` or env `GITHUB_ISSUES_TOKEN`.
+		val githubIssuesToken = readSecret("github_issues_token", "GITHUB_ISSUES_TOKEN")
+		val githubIssuesRepo = readSecret("github_issues_repo", "GITHUB_ISSUES_REPO")
+			.ifEmpty { "scardracs/inkstack" }
+		buildConfigField("String", "GITHUB_ISSUES_TOKEN", "\"$githubIssuesToken\"")
+		buildConfigField("String", "GITHUB_ISSUES_REPO", "\"$githubIssuesRepo\"")
 	}
 
 	signingConfigs {
@@ -220,48 +222,6 @@ extensions.configure<ApplicationAndroidComponentsExtension>("androidComponents")
 	}
 }
 
-// Uploads the R8 mapping file so release and nightly crash reports arrive deobfuscated. Without it
-// every production stack trace in Sentry is unreadable, since both build types are minified.
-//
-// Needs sentry_org / sentry_project in local.properties (or SENTRY_ORG / SENTRY_PROJECT env vars) and
-// a SENTRY_AUTH_TOKEN. With no token the build still works - the mapping is bundled and tagged with a
-// uuid, just not uploaded, so it can be uploaded later with sentry-cli.
-sentry {
-	val sentryOrg = readSecret("sentry_org", "SENTRY_ORG")
-	val sentryProject = readSecret("sentry_project", "SENTRY_PROJECT")
-	val sentryToken = readSecret("sentry_auth_token", "SENTRY_AUTH_TOKEN")
-
-	org.set(sentryOrg)
-	projectName.set(sentryProject)
-	authToken.set(sentryToken)
-
-	// This org lives in Sentry's EU region. sentry-cli defaults to sentry.io (US), where the org does
-	// not exist, so the mapping upload fails there rather than anywhere useful. The DSN says the same
-	// thing - it points at ingest.de.sentry.io. Override via local.properties / SENTRY_URL if the org
-	// is ever migrated to another region.
-	val sentryUrl = readSecret("sentry_url", "SENTRY_URL")
-	url.set(sentryUrl.ifEmpty { "https://de.sentry.io" })
-
-	includeProguardMapping.set(true)
-	autoUploadProguardMapping.set(
-		sentryToken.isNotEmpty() && sentryOrg.isNotEmpty() && sentryProject.isNotEmpty(),
-	)
-	// Debug builds are not minified, so there is nothing to map.
-	ignoredBuildTypes.set(listOf("debug"))
-
-	// The SDK dependency is pinned by hand in the version catalog; let the plugin leave it alone.
-	autoInstallation {
-		enabled.set(false)
-	}
-	// Performance tracing is not used, and its bytecode instrumentation would add overhead for data
-	// nothing consumes.
-	tracingInstrumentation {
-		enabled.set(false)
-	}
-	uploadNativeSymbols.set(false)
-	includeSourceContext.set(false)
-}
-
 dependencies {
 	implementation(project(":parsers")) {
 		exclude(group = "org.json", module = "json")
@@ -344,9 +304,6 @@ dependencies {
 	implementation(libs.disk.lru.cache)
 	implementation(libs.markwon)
 	implementation(libs.kizzyrpc)
-
-	implementation(libs.acra.dialog)
-	implementation(libs.sentry.android)
 
 	"debugImplementation"(libs.leakcanary.android)
 	"nightlyImplementation"(libs.leakcanary.android)

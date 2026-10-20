@@ -12,24 +12,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import okhttp3.internal.platform.PlatformRegistry
-import org.acra.ACRA
-import org.acra.ReportField
-import org.acra.config.dialog
-import org.acra.data.StringFormat
-import org.acra.ktx.initAcra
-import org.inkstack.BuildConfig
-import org.inkstack.R
+import org.inkstack.core.crash.CrashReporter
 import org.inkstack.core.db.MangaDatabase
-import org.inkstack.core.os.AppValidator
-import org.inkstack.core.os.RomCompat
 import org.inkstack.core.prefs.AppSettings
-import org.inkstack.core.ui.CrashReportActivity
-import org.inkstack.core.util.SentryInitializer
 import org.inkstack.core.util.ext.processLifecycleScope
 import org.inkstack.local.data.LocalStorageChanges
 import org.inkstack.local.data.index.LocalMangaIndex
 import org.inkstack.local.domain.model.LocalManga
-import org.inkstack.parsers.util.suspendlazy.getOrNull
 import org.inkstack.settings.work.WorkScheduleManager
 import javax.inject.Inject
 import javax.inject.Provider
@@ -53,9 +42,6 @@ open class BaseApp : Application(), Configuration.Provider {
 	lateinit var workerFactory: HiltWorkerFactory
 
 	@Inject
-	lateinit var appValidator: AppValidator
-
-	@Inject
 	lateinit var workScheduleManager: WorkScheduleManager
 
 	@Inject
@@ -73,18 +59,9 @@ open class BaseApp : Application(), Configuration.Provider {
 	override fun onCreate() {
 		super.onCreate()
 		PlatformRegistry.applicationContext = this // TODO replace with OkHttp.initialize
-		if (ACRA.isACRASenderServiceProcess()) {
-			return
-		}
-		// The app process is the one that can hang, so ANR reporting is armed here. Everything else
-		// Sentry could do stays off; see SentryInitializer.
-		SentryInitializer.ensureInitialized(this, enableAnr = true)
+		CrashReporter.init(this)
 		AppCompatDelegate.setDefaultNightMode(settings.theme)
 		setupActivityLifecycleCallbacks()
-		processLifecycleScope.launch {
-			ACRA.errorReporter.putCustomData("isOriginalApp", appValidator.isOriginalApp.getOrNull().toString())
-			ACRA.errorReporter.putCustomData("isMiui", RomCompat.isMiui.getOrNull().toString())
-		}
 		processLifecycleScope.launch(Dispatchers.Default) {
 			setupDatabaseObservers()
 			localStorageChanges.collect(localMangaIndexProvider.get())
@@ -94,44 +71,6 @@ open class BaseApp : Application(), Configuration.Provider {
 
 	override fun attachBaseContext(base: Context) {
 		super.attachBaseContext(base)
-		if (ACRA.isACRASenderServiceProcess()) {
-			return
-		}
-		if (BuildConfig.SENTRY_DSN.isEmpty()) {
-			// No reporting endpoint configured for this build, so don't ask the user to send anything.
-			return
-		}
-		initAcra {
-			buildConfigClass = BuildConfig::class.java
-			reportFormat = StringFormat.JSON
-			// Reports are delivered by SentryReportSender, registered through
-			// META-INF/services/org.acra.sender.ReportSenderFactory.
-			reportContent = listOf(
-				ReportField.PACKAGE_NAME,
-				ReportField.INSTALLATION_ID,
-				ReportField.APP_VERSION_CODE,
-				ReportField.APP_VERSION_NAME,
-				ReportField.ANDROID_VERSION,
-				ReportField.PHONE_MODEL,
-				ReportField.STACK_TRACE,
-				ReportField.CRASH_CONFIGURATION,
-				ReportField.CUSTOM_DATA,
-				// Tells the sender whether this was a real crash or a Throwable.report() call, so the
-				// two don't land in Sentry at the same severity.
-				ReportField.IS_SILENT,
-			)
-
-			dialog {
-				// CrashReportActivity draws the prompt; these are the fallback copy ACRA would use if it
-				// ever fell back to its own dialog, and are kept in step with the layout's strings.
-				reportDialogClass = CrashReportActivity::class.java
-				text = getString(R.string.crash_text)
-				title = getString(R.string.error_occurred)
-				positiveButtonText = getString(R.string.send)
-				negativeButtonText = getString(R.string.no_thanks)
-				resIcon = R.drawable.ic_alert_outline
-			}
-		}
 	}
 
 	@WorkerThread

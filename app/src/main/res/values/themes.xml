@@ -126,20 +126,6 @@
 		<item name="android:backgroundDimEnabled">false</item>
 	</style>
 
-	<!--
-		Host for the ACRA crash dialog. The activity itself is invisible; the AlertDialog inside draws
-		everything and provides its own scrim. Inherits Theme.Inkstack so the dialog picks up the app's
-		colours and follows dark mode, instead of ACRA's default light @android:style/Theme.Dialog.
-	-->
-	<style name="Theme.Inkstack.CrashDialog" parent="Theme.Inkstack">
-		<item name="android:windowBackground">@android:color/transparent</item>
-		<item name="android:windowIsTranslucent">true</item>
-		<item name="android:windowNoTitle">true</item>
-		<item name="android:windowContentOverlay">@null</item>
-		<item name="android:windowAnimationStyle">@null</item>
-		<item name="android:backgroundDimEnabled">false</item>
-	</style>
-
 	<!-- Base ThemeOverlay -->
 	<style name="ThemeOverlay.Inkstack" parent="ThemeOverlay.Material3.Light" />
 

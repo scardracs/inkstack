@@ -55,28 +55,13 @@
 		android:theme="@style/Theme.Inkstack"
 		tools:ignore="UnusedAttribute">
 
-		<!--
-			Sentry is initialised by hand in SentryReportSender, inside ACRA's sender process, so that
-			nothing is captured or sent without the user agreeing to it in ACRA's dialog. Its
-			ContentProvider would otherwise auto-init at startup from a manifest DSN that is not there
-			and throw "DSN is required", taking the whole app down before it draws a frame.
-		-->
-		<meta-data
-			android:name="io.sentry.auto-init"
-			android:value="false" />
-
-		<!--
-			Must run in ACRA's :acra process like ACRA's own dialog does: the app process has just crashed,
-			so it is not around to host this.
-		-->
 		<activity
-			android:name="org.inkstack.core.ui.CrashReportActivity"
+			android:name="org.inkstack.core.crash.CrashReportActivity"
 			android:excludeFromRecents="true"
 			android:exported="false"
 			android:finishOnTaskLaunch="true"
-			android:launchMode="singleInstance"
-			android:process=":acra"
-			android:theme="@style/Theme.Inkstack.CrashDialog" />
+			android:launchMode="singleTop"
+			android:theme="@style/Theme.Inkstack" />
 
 		<activity
 			android:name="org.inkstack.main.ui.MainActivity"

@@ -12,10 +12,7 @@ import okhttp3.internal.http2.StreamResetException
 import okio.FileNotFoundException
 import okio.IOException
 import okio.ProtocolException
-import org.acra.ktx.sendSilentlyWithAcra
-import org.acra.ktx.sendWithAcra
 import org.jsoup.HttpStatusException
-import org.inkstack.BuildConfig
 import org.inkstack.R
 import org.inkstack.core.exceptions.BadBackupFormatException
 import org.inkstack.core.exceptions.CaughtException
@@ -259,12 +256,7 @@ fun Throwable.isNetworkError(): Boolean {
 }
 
 fun Throwable.report(silent: Boolean = false) {
-    val exception = CaughtException(this)
-    if (!silent) {
-        exception.sendWithAcra()
-    } else if (!BuildConfig.DEBUG) {
-        exception.sendSilentlyWithAcra()
-    }
+    org.inkstack.core.crash.CrashReporter.report(this, silent = silent)
 }
 
 fun Throwable.isWebViewUnavailable(): Boolean {
