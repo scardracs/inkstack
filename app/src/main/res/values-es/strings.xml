@@ -167,8 +167,6 @@
     <string name="text_history_holder_primary">Lo que leas se mostrará aquí</string>
     <string name="text_empty_holder_primary">Está un poco vacío aquí…</string>
     <string name="chapter_is_missing">Falta un capítulo</string>
-    <string name="about_app_translation_summary">Traducir esta aplicación</string>
-    <string name="about_app_translation">Traducción</string>
     <string name="queued">En la cola</string>
     <string name="read_more">Leer más</string>
     <string name="backup_saved">Copia de seguridad guardada correctamente</string>

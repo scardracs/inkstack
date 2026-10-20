@@ -234,7 +234,6 @@
     <string name="read_more">Tudj meg többet</string>
     <string name="queued">Sorba állítva</string>
     <string name="chapter_is_missing">A fejezet hiányzik</string>
-    <string name="about_app_translation_summary">Fordítsd le ezt az alkalmazást</string>
     <string name="notifications_enable">Értesítések engedélyezése</string>
     <string name="name">Név</string>
     <string name="edit">Szerkesztés</string>
@@ -335,7 +334,6 @@
     <string name="single_cbz_file">Egyetlen CBZ fájl</string>
     <string name="multiple_cbz_files">Több CBZ fájl</string>
     <string name="zoom_mode_keep_start">Kezdetben rendezni</string>
-    <string name="about_app_translation">Fordítás</string>
     <string name="auth_complete">Hitelesítve</string>
     <string name="auth_not_supported_by">Bejelentkezés nem támogatott a(z) %s-en</string>
     <string name="text_clear_cookies_prompt">Ki leszel jelentkezve az összes forrásból</string>

@@ -6,7 +6,6 @@
     <string name="error_occurred">خطایی رخ داده است</string>
     <string name="network_error">خطای اتصال به شبکه</string>
     <string name="text_delete_local_manga">آیا \"%s\" بطور دائم از دستگاه حذف شود؟</string>
-    <string name="about_app_translation_summary">این برنامه را ترجمه کنید</string>
     <string name="history_is_empty">هنوز تاریخچه ای وجود ندارد</string>
     <string name="list_mode">نوع لیستی</string>
     <string name="internal_storage">حافظه ی درونی</string>
@@ -132,7 +131,6 @@
     <string name="nothing_found">هیچ نتیجه ای پیدا نشد</string>
     <string name="notifications">اعلان ها</string>
 <string name="chapter_is_missing">این چپتر پیدا نشد</string>
-    <string name="about_app_translation">ترجمه</string>
     <string name="suggestions_info">همه ی داده ها صرفا برروی دستگاه شما آنالیز می شود و جای دیگری فرستاده نخواهد شد.</string>
     <string name="backup_information">شما می توانید از تاریخچه و علاقه مندی های خود پشتیبان گیری کرده و آن ها را بعدا بازیابی کنید</string>
     <string name="just_now">همین الان</string>

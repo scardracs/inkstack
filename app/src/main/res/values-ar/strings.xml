@@ -83,7 +83,6 @@
     <string name="suggestions_enable">تفعيل الاقتراحات</string>
     <string name="clear_feed">مسح الموجز</string>
     <string name="welcome">مرحبا</string>
-    <string name="about_app_translation_summary">ترجمة هذا التطبيق</string>
     <string name="vibration">اهتزاز</string>
     <string name="no_update_available">لا يوجد تحديثات</string>
     <string name="remove_category">حذف</string>
@@ -121,7 +120,6 @@
     <string name="_s_deleted_from_local_storage">تم حذف \"%s\" من التخزين المحلي</string>
     <string name="saved_manga">المانجا المحفوظة</string>
     <string name="open_in_browser">الفتح في المتصفح</string>
-    <string name="about_app_translation">ترجمة</string>
     <string name="notifications">الإشعارات</string>
     <string name="reverse">العكس</string>
     <string name="track_sources">البحث عن تحديثات</string>

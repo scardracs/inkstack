@@ -22,7 +22,11 @@ Manga reader for Android 9+ (`minSdk` 28). Built against API 37 (`compileSdk` / 
 ./gradlew :parsers:compileKotlin
 ```
 
-Releases are GitHub-only (signed APK on `v*` tags). Not published to Google Play or other stores.
+## Releases
+
+GitHub-only signed APKs on `v*` tags. Not published to Google Play or other stores.
+
+Changelog: [`CHANGELOG.md`](CHANGELOG.md) · [latest release](https://github.com/scardracs/inkstack/releases/latest)
 
 ## Release signing
 
@@ -37,7 +41,7 @@ Public cert: [`keystore/inkstack-release.cer`](keystore/inkstack-release.cer).
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+See [CONTRIBUTING.md](CONTRIBUTING.md). Translations live in-repo under `app/src/main/res/values-*/` (no Weblate).
 
 ## License
 

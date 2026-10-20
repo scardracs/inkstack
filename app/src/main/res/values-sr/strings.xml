@@ -89,8 +89,6 @@
     <string name="new_chapters">Нова поглавља</string>
     <string name="notifications_settings">Подешавања обавештења</string>
     <string name="new_version_s">Нова верзија: %s</string>
-    <string name="about_app_translation_summary">Преведи ову апликацију</string>
-    <string name="about_app_translation">Превод</string>
     <string name="screenshots_policy">Политика снимања екрана</string>
     <string name="clear_network_cache">Избриши мрежну кеш меморију</string>
     <string name="password">Лозинка</string>

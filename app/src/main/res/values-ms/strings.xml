@@ -233,8 +233,6 @@
     <string name="queued">Dibariskan</string>
     <string name="chapter_is_missing">Bab ini hilang</string>
     <string name="backup_saved">Sandaran disimpan</string>
-    <string name="about_app_translation">Terjemahan</string>
-    <string name="about_app_translation_summary">Terjemahkan apl ini</string>
     <string name="error_occurred">Sebuah ralat telah berlaku</string>
     <string name="share_s">Kongsi %s</string>
     <string name="nothing_found">Tiada dijumpai</string>

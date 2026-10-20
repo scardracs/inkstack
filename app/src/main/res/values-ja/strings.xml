@@ -161,7 +161,6 @@
     <string name="captcha_required">CAPTCHAが必要です</string>
     <string name="default_s">デフォルト:%s</string>
     <string name="yesterday">昨日</string>
-    <string name="about_app_translation">このアプリを翻訳</string>
     <string name="data_restored_success">全てのデータが復元されました</string>
     <string name="data_restored">復元</string>
     <string name="preparing_">準備中…</string>
@@ -179,7 +178,6 @@
     <string name="genres">ジャンル</string>
     <string name="scale_mode">スケールモード</string>
     <string name="today">今日</string>
-    <string name="about_app_translation_summary">Inkstackを翻訳する(Weblateのサイトに移動します)</string>
     <string name="next">次のページ</string>
     <string name="silent">サイレント</string>
     <string name="sign_in">サインイン</string>

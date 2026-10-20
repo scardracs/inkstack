@@ -214,8 +214,6 @@
     <string name="scale_mode">Tryb skalowania</string>
     <string name="clear_cookies">Wyczyść ciasteczka</string>
     <string name="cookies_cleared">Wszystkie ciasteczka wyczyszczone</string>
-    <string name="about_app_translation_summary">Przetłumacz tą aplikację</string>
-    <string name="about_app_translation">Tłumaczenie</string>
     <string name="cannot_find_available_storage">Brak dostępnej pamięci</string>
     <string name="other_storage">Inny</string>
     <string name="search_results">Wyniki wyszukiwania</string>

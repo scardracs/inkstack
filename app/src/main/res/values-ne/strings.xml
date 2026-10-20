@@ -167,8 +167,6 @@
     <string name="backup_saved">ब्याकअप सुरक्षित गरियो छ</string>
     <string name="tracker_warning">केही यन्त्रहरूमा फरक प्रणाली व्यवहार हुन्छ, जसले पृष्ठभूमि कार्यहरू तोड्न सक्छ।</string>
     <string name="queued">लामबद्ध</string>
-    <string name="about_app_translation_summary">यो एप अनुवाद गर्नुहोस्</string>
-    <string name="about_app_translation">अनुवादन</string>
     <string name="auth_complete">अधिकृत</string>
     <string name="auth_not_supported_by">%s मा लग इन गर्न समर्थित छैन</string>
     <string name="text_clear_cookies_prompt">मा लग इन गर्न समर्थित छैन</string>

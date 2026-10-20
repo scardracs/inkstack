@@ -145,12 +145,10 @@
     <string name="read_more">Leia mais</string>
     <string name="welcome">Bem vindo</string>
     <string name="queued">Enfileirado</string>
-    <string name="about_app_translation_summary">Traduzir esta aplicação</string>
     <string name="chapter_is_missing">O capítulo está em falta</string>
     <string name="auth_complete">Autorizado</string>
     <string name="auth_not_supported_by">O login em %s não é suportado</string>
     <string name="genres">Gêneros</string>
-    <string name="about_app_translation">Tradução</string>
     <string name="text_clear_cookies_prompt">Será desconectado de todas as fontes</string>
     <string name="vibration">Vibração</string>
     <string name="cannot_find_available_storage">Sem armazenamento disponível</string>
@@ -821,8 +819,8 @@
     <string name="reader_multitask">Abra o leitor em uma tarefa separada</string>
     <string name="reader_multitask_summary">Permite que você mantenha vários leitores com diferentes mangás abertos ao mesmo tempo</string>
     <string name="theme_name_itsuka">Itsuka</string>
-    <string name="reader_navigation_inverted">https://hosted.weblate.org/translate/inkstack/strings/pt/?checksum=b84ea9f18b9b4dde</string>
-    <string name="reader_navigation_inverted_summary">https://hosted.weblate.org/translate/inkstack/strings/pt/?checksum=b84ea9f18b9b4dde</string>
+    <string name="reader_navigation_inverted">Inverter controlos de navegação</string>
+    <string name="reader_navigation_inverted_summary">Inverter a direção da navegação com o volume e as teclas direcionais (esquerda/cima/baixo/direita)</string>
     <string name="book_effect">Fundo amarelaso (filtro de luz azul)</string>
     <string name="local_storage_cleanup">Limpeza do armazenamento local</string>
     <string name="packup_creation_failed">Falha ao criar backup</string>

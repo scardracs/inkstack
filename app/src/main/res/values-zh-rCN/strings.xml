@@ -184,8 +184,6 @@
     <string name="read_more">了解详情</string>
     <string name="queued">等待</string>
     <string name="chapter_is_missing">该章缺失</string>
-    <string name="about_app_translation_summary">协助翻译</string>
-    <string name="about_app_translation">协助翻译</string>
     <string name="auth_complete">授权</string>
     <string name="auth_not_supported_by">不支持在%s上登录</string>
     <string name="text_clear_cookies_prompt">会导致退出所有已登录图源</string>

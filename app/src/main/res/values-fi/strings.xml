@@ -4,8 +4,6 @@
     <string name="genres">Tyylilajit</string>
     <string name="auth_not_supported_by">%s -valtuutusta ei tueta</string>
     <string name="auth_complete">Valtuutus valmis</string>
-    <string name="about_app_translation">Käännös</string>
-    <string name="about_app_translation_summary">Käännä tämä sovellus</string>
     <string name="chapter_is_missing">Luku puuttuu</string>
     <string name="queued">Jonossa</string>
     <string name="read_more">Lue lisää</string>

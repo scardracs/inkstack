@@ -137,7 +137,6 @@
     <string name="tracker_warning">Beberapa perangkat mempunyai perilaku sistem yang berbeda, yang mungkin akan merusak tugas latar belakang.</string>
     <string name="read_more">Baca lebih lanjut</string>
     <string name="chapter_is_missing">Bab ini tidak ada</string>
-    <string name="about_app_translation">Terjemahan</string>
     <string name="auth_not_supported_by">Masuk pada %s tidak didukung</string>
     <string name="text_clear_cookies_prompt">Anda akan keluar dari semua sumber</string>
     <string name="genres">Genre</string>
@@ -229,7 +228,6 @@
     <string name="text_clear_updates_feed_prompt">Bersihkan semua riwayat pembaruan secara permanen\?</string>
     <string name="sign_in">Masuk</string>
     <string name="default_s">Standar: %s</string>
-    <string name="about_app_translation_summary">Terjemahkan aplikasi ini</string>
     <string name="zoom_mode_fit_center">Pas tengah</string>
     <string name="zoom_mode_fit_height">Pas tinggi</string>
     <string name="zoom_mode_fit_width">Pas lebar</string>

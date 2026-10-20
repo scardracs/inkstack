@@ -90,10 +90,8 @@
     <string name="text_search_holder_secondary">வினவலை மறுசீரமைக்க முயற்சிக்கவும்.</string>
     <string name="backup_saved">காப்புப்பிரதி சேமிக்கப்பட்டது</string>
     <string name="chapter_is_missing">அத்தியாயம் இல்லை</string>
-    <string name="about_app_translation_summary">இந்த பயன்பாட்டை மொழிபெயர்க்கவும்</string>
     <string name="auth_complete">அங்கீகரிக்கப்பட்ட</string>
     <string name="auth_not_supported_by">%s இல் உள்நுழைவது ஆதரிக்கப்படவில்லை</string>
-    <string name="about_app_translation">மொழிபெயர்ப்பு</string>
     <string name="text_clear_cookies_prompt">நீங்கள் அனைத்து மூலங்களிலிருந்தும் வெளியேறுவீர்கள்</string>
     <string name="genres">வகைகள்</string>
     <string name="state_finished">முடிந்தது</string>

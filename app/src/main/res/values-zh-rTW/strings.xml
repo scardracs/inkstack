@@ -150,7 +150,6 @@
     <string name="default_s">預設: %s</string>
     <string name="next">下一頁</string>
     <string name="confirm">確認</string>
-    <string name="about_app_translation_summary">翻譯此應用程式</string>
     <string name="screenshots_policy">螢幕擷圖</string>
     <string name="screenshots_allow">允許</string>
     <string name="screenshots_block_nsfw">禁止 NSFW</string>
@@ -255,7 +254,6 @@
     <string name="captcha_solve">解決</string>
     <string name="clear_cookies">清除 cookies</string>
     <string name="chapter_is_missing">此章節已遺失</string>
-    <string name="about_app_translation">翻譯</string>
     <string name="auth_complete">授權</string>
     <string name="system_default">預設</string>
     <string name="disabled">禁用</string>

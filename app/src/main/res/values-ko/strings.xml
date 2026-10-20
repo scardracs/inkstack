@@ -100,8 +100,6 @@
     <string name="preparing_">준비중…</string>
     <string name="welcome">환영합니다</string>
     <string name="auth_complete">인증됨</string>
-    <string name="about_app_translation">번역</string>
-    <string name="about_app_translation_summary">이 앱을 번역하기</string>
     <string name="screenshots_block_nsfw">성인 컨텐츠에서만 차단</string>
     <string name="screenshots_allow">항상 허용</string>
     <string name="exclude_nsfw_from_suggestions">성인 만화(NSFW)는 추천하지 않기</string>

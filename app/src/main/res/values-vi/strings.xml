@@ -112,7 +112,6 @@
     <string name="read_more">Đọc thêm</string>
     <string name="queued">Trong hàng chờ</string>
     <string name="chapter_is_missing">Chương bị mất</string>
-    <string name="about_app_translation_summary">Dịch ứng dụng này</string>
     <string name="genres">Thể loại</string>
     <string name="state_finished">Đã hoàn thành</string>
     <string name="screenshots_policy">Chính sách chụp ảnh màn hình</string>
@@ -225,7 +224,6 @@
     <string name="reverse">Đảo ngược</string>
     <string name="backup_saved">Đã lưu bản sao lưu</string>
     <string name="welcome">Chào mừng</string>
-    <string name="about_app_translation">Dịch thuật</string>
     <string name="tracker_warning">Một số thiết bị có hành vi hệ thống khác nhau, có thể phá hỏng các tác vụ chạy ngầm.</string>
     <string name="state_ongoing">Đang tiến hành</string>
     <string name="system_default">Mặc định</string>

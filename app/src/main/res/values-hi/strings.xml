@@ -165,7 +165,6 @@
     <string name="tracker_warning">कुछ डिवाइसों में अलग-अलग सिस्टम व्यवहार होता है, जो पृष्ठभूमि कार्यों को बाधित कर सकता है।</string>
     <string name="read_more">अधिक पढ़ें</string>
     <string name="chapter_is_missing">अध्याय गायब है</string>
-    <string name="about_app_translation_summary">इस ऐप का अनुवाद करें</string>
     <string name="auth_complete">अधिकृत</string>
     <string name="auth_not_supported_by">%s पर लॉगिन करना समर्थित नहीं है</string>
     <string name="text_clear_cookies_prompt">आप सभी स्रोतों से लॉग आउट हो जायेंगे</string>
@@ -487,7 +486,6 @@
     <string name="reading_time_estimation_summary">समय अनुमान मान गलत हो सकता है</string>
     <string name="location">स्थान</string>
     <string name="queued">कतारबद्ध</string>
-    <string name="about_app_translation">अनुवाद</string>
     <string name="enabled">सक्षम</string>
     <string name="auth_required">इस सामग्री को देखने के लिए साइन इन करें</string>
     <string name="default_s">तयशुदा: %s</string>

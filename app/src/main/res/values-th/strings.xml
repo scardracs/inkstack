@@ -215,8 +215,6 @@
     <string name="reverse">ย้อนกลับ</string>
     <string name="tracker_warning">บางอุปกรณ์มีการทำงานของระบบที่แตกต่างกัน ซึ่งอาจทำให้งานในเบื้องหลังเสียหายได้</string>
     <string name="read_more">อ่านเพิ่มเติม</string>
-    <string name="about_app_translation_summary">แปลแอปพลิเคชันนี้</string>
-    <string name="about_app_translation">การแปล</string>
     <string name="auth_complete">ได้รับอนุญาต</string>
     <string name="default_mode">โหมดเริ่มต้น</string>
     <string name="new_sources_text">มีแหล่งมังงะใหม่ให้เลือก</string>

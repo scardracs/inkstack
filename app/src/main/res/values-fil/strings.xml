@@ -166,7 +166,6 @@
     <string name="data_restored_success">Na-restore ang lahat ng data</string>
     <string name="data_restored_with_errors">Ang data ay na-restore, ngunit may mga error</string>
     <string name="reader_mode_hint">Ang napiling konpigurasyon ay maaalala para sa manga na ito</string>
-    <string name="about_app_translation_summary">Isalin ang app na ito</string>
     <string name="auth_complete">Awtorisado na</string>
     <string name="captcha_required">Kinakailangan ang CAPTCHA</string>
     <string name="text_clear_updates_feed_prompt">Linisin nang permanente ang lahat ng update history?</string>
@@ -176,7 +175,6 @@
     <string name="text_clear_cookies_prompt">Mala-log out ka mula sa lahat ng source</string>
     <string name="state_finished">Tapos na</string>
     <string name="text_clear_search_history_prompt">Alisin ang lahat ng kamakailang query sa paghahanap nang permanente\?</string>
-    <string name="about_app_translation">Pagsasalin</string>
     <string name="screenshots_block_nsfw">I-block sa NSFW</string>
     <string name="suggestions_summary">Magmungkahi ng manga batay sa iyong mga kagustuhan</string>
     <string name="suggestions_info">Ang lahat ng data ay lokal lamang na sinusuri sa device na ito at hindi kailanman ipinadala kahit saan.</string>

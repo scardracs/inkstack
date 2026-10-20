@@ -115,8 +115,6 @@
     <string name="read_more">Läs mer</string>
     <string name="queued">Köad</string>
     <string name="chapter_is_missing">Kapitlet saknas</string>
-    <string name="about_app_translation_summary">Översätt denna app</string>
-    <string name="about_app_translation">Översättning</string>
     <string name="auth_complete">Auktoriserad</string>
     <string name="auth_not_supported_by">Inloggning på %s stöds inte</string>
     <string name="state_finished">Färdig</string>

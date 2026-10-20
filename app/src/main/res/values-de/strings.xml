@@ -174,8 +174,6 @@
     <string name="domain">Domäne</string>
     <string name="chapter_is_missing">Das Kapitel fehlt</string>
     <string name="queued">In Warteschlange</string>
-    <string name="about_app_translation">Übersetzung</string>
-    <string name="about_app_translation_summary">Übersetze die App</string>
     <string name="text_clear_cookies_prompt">Du wirst von allen Quellen abgemeldet</string>
     <string name="genres">Genres</string>
     <string name="auth_not_supported_by">Anmeldung bei %s wird nicht unterstützt</string>

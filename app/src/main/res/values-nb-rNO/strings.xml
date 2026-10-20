@@ -176,8 +176,6 @@
     <string name="queued">I kø</string>
     <string name="state_finished">Fullført</string>
     <string name="state_ongoing">Pågående</string>
-    <string name="about_app_translation_summary">Oversett dette programmet</string>
-    <string name="about_app_translation">Oversettelse</string>
     <string name="auth_complete">Identitetsbekreftet</string>
     <string name="auth_not_supported_by">Innlogging på %s støttes ikke</string>
     <string name="text_clear_cookies_prompt">Du vil bli utlogget fra alle kilder</string>
