@@ -31,7 +31,7 @@ fun ReaderPager(
 	networkState: NetworkState,
 	exceptionResolver: ExceptionResolver,
 	imageLoader: ImageLoader,
-	onPageRangeChanged: (lower: Int, upper: Int) -> Unit,
+	onPageRangeChanged: (lower: Int, upper: Int, scrollOffset: Int) -> Unit,
 	onTap: () -> Unit,
 	onTapAt: ((xFraction: Float, yFraction: Float) -> Unit)? = null,
 	zoomEnabled: Boolean = false,
@@ -43,10 +43,17 @@ fun ReaderPager(
 		snapshotFlow {
 			val info = listState.layoutInfo
 			val visible = info.visibleItemsInfo
-			if (visible.isEmpty()) 0 to 0
-			else visible.first().index to visible.last().index
-		}.distinctUntilChanged().collect { (lo, hi) ->
-			onPageRangeChanged(lo, hi)
+			if (visible.isEmpty()) {
+				Triple(0, 0, 0)
+			} else {
+				Triple(
+					visible.first().index,
+					visible.last().index,
+					listState.firstVisibleItemScrollOffset,
+				)
+			}
+		}.distinctUntilChanged().collect { (lo, hi, scroll) ->
+			onPageRangeChanged(lo, hi, scroll)
 		}
 	}
 

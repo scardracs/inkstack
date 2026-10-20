@@ -70,6 +70,17 @@ class ReaderScrollController(
 		return true
 	}
 
+	/** Live position for history: first visible page + in-page scroll offset. */
+	fun currentState(): ReaderState? {
+		val list = pages()
+		val page = list.getOrNull(listState.firstVisibleItemIndex) ?: return null
+		return ReaderState(
+			chapterId = page.chapterId,
+			page = page.index,
+			scroll = listState.firstVisibleItemScrollOffset.coerceAtLeast(0),
+		)
+	}
+
 	private fun scrollToGlobal(index: Int) {
 		val last = (pages().size - 1).coerceAtLeast(0)
 		val target = index.coerceIn(0, last)
@@ -106,10 +117,13 @@ fun ReaderScreen(
 
 	val pages = content.pages
 	val initialIndex = indexOfState(pages, content.state).coerceIn(0, (pages.size - 1).coerceAtLeast(0))
-	val listState = rememberLazyListState(initialFirstVisibleItemIndex = initialIndex)
+	val listState = rememberLazyListState(
+		initialFirstVisibleItemIndex = initialIndex,
+		initialFirstVisibleItemScrollOffset = content.state?.scroll?.coerceAtLeast(0) ?: 0,
+	)
 
 	val pagesRef = rememberUpdatedState(pages)
-	val chapterIdRef = rememberUpdatedState(content.state?.chapterId)
+	val chapterIdRef = rememberUpdatedState(uiState?.chapter?.id ?: content.state?.chapterId)
 	val scrollController = remember(listState, scope) {
 		ReaderScrollController(
 			listState = listState,
@@ -119,23 +133,29 @@ fun ReaderScreen(
 			scope = scope,
 		)
 	}
-
 	DisposableEffect(scrollController) {
 		onScrollController?.invoke(scrollController)
-		onDispose { onScrollController?.invoke(null) }
+		onDispose {
+			scrollController.currentState()?.let(viewModel::saveCurrentState)
+				?: viewModel.saveCurrentState()
+			onScrollController?.invoke(null)
+		}
 	}
 
 	var trackedChapterId by remember { mutableStateOf<Long?>(null) }
-	LaunchedEffect(content.state?.chapterId, pages.isNotEmpty()) {
-		val chapterId = content.state?.chapterId ?: return@LaunchedEffect
+	LaunchedEffect(content.state?.chapterId, content.state?.page, content.state?.scroll, pages.isNotEmpty()) {
+		val state = content.state ?: return@LaunchedEffect
 		if (pages.isEmpty()) return@LaunchedEffect
 		val visibleChapter = pages.getOrNull(listState.firstVisibleItemIndex)?.chapterId
-		val jumped = trackedChapterId != null && trackedChapterId != chapterId && visibleChapter != chapterId
+		val jumped = trackedChapterId != null && trackedChapterId != state.chapterId && visibleChapter != state.chapterId
 		val firstOpen = trackedChapterId == null
 		if (firstOpen || jumped) {
-			listState.scrollToItem(indexOfState(pages, content.state))
+			listState.scrollToItem(
+				index = indexOfState(pages, state),
+				scrollOffset = state.scroll.coerceAtLeast(0),
+			)
 		}
-		trackedChapterId = chapterId
+		trackedChapterId = state.chapterId
 	}
 
 	Box(modifier = Modifier.fillMaxSize()) {
@@ -153,7 +173,9 @@ fun ReaderScreen(
 				networkState = networkState,
 				exceptionResolver = exceptionResolver,
 				imageLoader = imageLoader,
-				onPageRangeChanged = { lo, hi -> viewModel.onCurrentPageChanged(lo, hi) },
+				onPageRangeChanged = { lo, hi, scroll ->
+					viewModel.onCurrentPageChanged(lo, hi, scroll)
+				},
 				onTap = onToggleUi,
 				onTapAt = onTapAt,
 				zoomEnabled = zoomEnabled,

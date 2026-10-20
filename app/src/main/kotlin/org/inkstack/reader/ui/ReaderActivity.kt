@@ -115,6 +115,8 @@ class ReaderActivity :
 
 	override fun onPause() {
 		super.onPause()
+		scrollController?.currentState()?.let(viewModel::saveCurrentState)
+			?: viewModel.saveCurrentState()
 		viewModel.onPause()
 	}
 
@@ -140,7 +142,7 @@ class ReaderActivity :
 			val idx = pages.indexOfFirst { it.chapterId == state.chapterId && it.index == state.page }
 			val next = idx + delta
 			when {
-				next in pages.indices -> viewModel.onCurrentPageChanged(next, next)
+				next in pages.indices -> viewModel.onCurrentPageChanged(next, next, 0)
 				delta > 0 -> viewModel.switchChapterBy(1)
 				delta < 0 -> viewModel.switchChapterBy(-1)
 			}

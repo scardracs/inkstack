@@ -320,7 +320,7 @@ class ReaderViewModel @Inject constructor(
     }
 
     @MainThread
-    fun onCurrentPageChanged(lowerPos: Int, upperPos: Int) {
+    fun onCurrentPageChanged(lowerPos: Int, upperPos: Int, scrollOffset: Int = 0) {
         val prevJob = stateChangeJob
         val pages = content.value.pages // capture immediately
         stateChangeJob = launchJob(Dispatchers.Default) {
@@ -329,10 +329,14 @@ class ReaderViewModel @Inject constructor(
             if (pages.size != content.value.pages.size) {
                 return@launchJob // TODO
             }
-            val centerPos = (lowerPos + upperPos) / 2
-            pages.getOrNull(centerPos)?.let { page ->
+            // Prefer first visible page + in-page scroll so restore matches LazyListState.
+            pages.getOrNull(lowerPos)?.let { page ->
                 readingState.update { cs ->
-                    cs?.copy(chapterId = page.chapterId, page = page.index)
+                    cs?.copy(
+                        chapterId = page.chapterId,
+                        page = page.index,
+                        scroll = scrollOffset.coerceAtLeast(0),
+                    )
                 }
             }
             notifyStateChanged()
