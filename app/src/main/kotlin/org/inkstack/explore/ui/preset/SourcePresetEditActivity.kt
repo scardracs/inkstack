@@ -3,124 +3,21 @@ package org.inkstack.explore.ui.preset
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.view.View
-import androidx.activity.viewModels
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isVisible
-import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
-import org.inkstack.R
 import org.inkstack.core.nav.AppRouter
-import org.inkstack.core.ui.BaseActivity
-import org.inkstack.core.ui.util.DefaultTextWatcher
-import org.inkstack.core.util.ext.getDisplayMessage
-import org.inkstack.core.util.ext.getDisplayName
-import org.inkstack.core.util.ext.observe
-import org.inkstack.core.util.ext.observeEvent
-import org.inkstack.core.util.ext.toLocale
-import org.inkstack.databinding.ActivityPresetEditBinding
-import org.inkstack.explore.data.SourcePreset
-import org.inkstack.core.util.ext.consumeAll
+import org.inkstack.core.ui.BaseComposeActivity
+import org.inkstack.explore.ui.preset.compose.SourcePresetEditScreen
 
 @AndroidEntryPoint
-class SourcePresetEditActivity :
-	BaseActivity<ActivityPresetEditBinding>(),
-	View.OnClickListener,
-	DefaultTextWatcher {
-
-	private val viewModel by viewModels<SourcePresetEditViewModel>()
+class SourcePresetEditActivity : BaseComposeActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(ActivityPresetEditBinding.inflate(layoutInflater))
-		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = true)
-		viewBinding.buttonDone.setOnClickListener(this)
-		viewBinding.editName.addTextChangedListener(this)
-		afterTextChanged(viewBinding.editName.text)
-
-		initLanguageChips()
-
-		viewModel.onSaved.observeEvent(this) { finishAfterTransition() }
-		viewModel.preset.observe(this, ::onPresetChanged)
-		viewModel.isLoading.observe(this, ::onLoadingStateChanged)
-		viewModel.onError.observeEvent(this, ::onError)
-	}
-
-	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-		viewBinding.root.setPadding(
-			barsInsets.left,
-			barsInsets.top,
-			barsInsets.right,
-			barsInsets.bottom,
-		)
-		return insets.consumeAll(WindowInsetsCompat.Type.systemBars())
-	}
-
-	override fun onClick(v: View) {
-		when (v.id) {
-			R.id.button_done -> {
-				val selectedLanguages = getSelectedLanguages()
-				viewModel.save(
-					title = viewBinding.editName.text?.toString()?.trim().orEmpty(),
-					selectedLanguages = selectedLanguages,
-				)
-			}
-		}
-	}
-
-	override fun afterTextChanged(s: Editable?) {
-		viewBinding.buttonDone.isEnabled = !s.isNullOrBlank() && !viewModel.isLoading.value
-	}
-
-	private fun initLanguageChips() {
-		val chipGroup = viewBinding.chipGroupLanguages
-		chipGroup.removeAllViews()
-		val sortedLocales = viewModel.allLocales.sortedBy { it.toLocale().getDisplayName(this) }
-		for (locale in sortedLocales) {
-			val chip = Chip(this).apply {
-				text = locale.toLocale().getDisplayName(this@SourcePresetEditActivity)
-				isCheckable = true
-				tag = locale
-			}
-			chipGroup.addView(chip)
-		}
-	}
-
-	private fun onPresetChanged(preset: SourcePreset?) {
-		setTitle(if (preset == null) R.string.create_preset else R.string.edit_preset)
-		if (preset == null) return
-		viewBinding.editName.setText(preset.title)
-		val chipGroup = viewBinding.chipGroupLanguages
-		for (i in 0 until chipGroup.childCount) {
-			val chip = chipGroup.getChildAt(i) as? Chip ?: continue
-			chip.isChecked = chip.tag as? String in preset.languages
-		}
-	}
-
-	private fun getSelectedLanguages(): Set<String> {
-		val chipGroup = viewBinding.chipGroupLanguages
-		val result = LinkedHashSet<String>()
-		for (i in 0 until chipGroup.childCount) {
-			val chip = chipGroup.getChildAt(i) as? Chip ?: continue
-			if (chip.isChecked) {
-				(chip.tag as? String)?.let { result.add(it) }
-			}
-		}
-		return result
-	}
-
-	private fun onError(e: Throwable) {
-		viewBinding.textViewError.text = e.getDisplayMessage(resources)
-		viewBinding.textViewError.isVisible = true
-	}
-
-	private fun onLoadingStateChanged(isLoading: Boolean) {
-		viewBinding.buttonDone.isEnabled = !isLoading && !viewBinding.editName.text.isNullOrBlank()
-		viewBinding.editName.isEnabled = !isLoading
-		if (isLoading) {
-			viewBinding.textViewError.isVisible = false
+		setComposeContent {
+			SourcePresetEditScreen(
+				onBack = { dispatchNavigateUp() },
+				onSaved = { finishAfterTransition() },
+			)
 		}
 	}
 

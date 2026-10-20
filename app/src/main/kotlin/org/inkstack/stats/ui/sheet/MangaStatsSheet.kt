@@ -1,75 +1,128 @@
 package org.inkstack.stats.ui.sheet
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.collection.IntList
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import org.inkstack.R
 import org.inkstack.core.nav.router
-import org.inkstack.core.ui.sheet.BaseAdaptiveSheet
-import org.inkstack.core.util.InkstackColors
-import org.inkstack.core.util.ext.consume
-import org.inkstack.core.util.ext.observe
-import org.inkstack.core.util.ext.textAndVisible
-import org.inkstack.databinding.SheetStatsMangaBinding
+import org.inkstack.core.ui.compose.sheet.ComposeAdaptiveSheet
 import org.inkstack.parsers.util.format
-import org.inkstack.stats.ui.views.BarChartView
 
 @AndroidEntryPoint
-class MangaStatsSheet : BaseAdaptiveSheet<SheetStatsMangaBinding>(), View.OnClickListener {
+class MangaStatsSheet : ComposeAdaptiveSheet() {
 
 	private val viewModel: MangaStatsViewModel by viewModels()
 
-	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): SheetStatsMangaBinding {
-		return SheetStatsMangaBinding.inflate(inflater, container, false)
-	}
+	@Composable
+	override fun sheetTitle(): String = stringResource(R.string.reading_stats)
 
-	override fun onViewBindingCreated(binding: SheetStatsMangaBinding, savedInstanceState: Bundle?) {
-		super.onViewBindingCreated(binding, savedInstanceState)
-		binding.textViewTitle.text = viewModel.manga.title
-		binding.chartView.barColor = InkstackColors.ofManga(binding.root.context, viewModel.manga)
-		viewModel.stats.observe(viewLifecycleOwner, ::onStatsChanged)
-		viewModel.startDate.observe(viewLifecycleOwner) {
-			binding.textViewStart.textAndVisible = it?.format(binding.root.context)
-		}
-		viewModel.totalPagesRead.observe(viewLifecycleOwner) {
-			binding.textViewPages.text = getString(R.string.pages_read_s, it.format())
-		}
-		binding.buttonOpen.setOnClickListener(this)
-	}
+	@Composable
+	override fun SheetContent(onDismissRequest: () -> Unit) {
+		val context = LocalContext.current
+		val stats by viewModel.stats.collectAsState()
+		val startDate by viewModel.startDate.collectAsState()
+		val totalPages by viewModel.totalPagesRead.collectAsState()
+		val barColor = MaterialTheme.colorScheme.primary
 
-	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val typeMask = WindowInsetsCompat.Type.systemBars()
-		viewBinding?.scrollView?.updatePadding(
-			bottom = insets.getInsets(typeMask).bottom,
-		)
-		return insets.consume(v, typeMask, bottom = true)
-	}
-
-	override fun onClick(v: View) {
-		router.openDetails(viewModel.manga)
-	}
-
-	private fun onStatsChanged(stats: IntList) {
-		val chartView = viewBinding?.chartView ?: return
-		if (stats.isEmpty()) {
-			chartView.setData(emptyList())
-			return
-		}
-		val bars = ArrayList<BarChartView.Bar>(stats.size)
-		stats.forEach { pages ->
-			bars.add(
-				BarChartView.Bar(
-					value = pages,
-					label = pages.toString(),
-				),
+		Column(
+			modifier = Modifier
+				.fillMaxWidth()
+				.verticalScroll(rememberScrollState())
+				.padding(horizontal = 16.dp, vertical = 8.dp),
+		) {
+			Row(
+				modifier = Modifier.fillMaxWidth(),
+				verticalAlignment = Alignment.CenterVertically,
+				horizontalArrangement = Arrangement.SpaceBetween,
+			) {
+				Text(
+					text = viewModel.manga.title,
+					style = MaterialTheme.typography.titleMedium,
+					modifier = Modifier.weight(1f),
+				)
+				IconButton(onClick = { router.openDetails(viewModel.manga) }) {
+					Icon(
+						painter = painterResource(R.drawable.ic_open_external),
+						contentDescription = stringResource(R.string.details),
+					)
+				}
+			}
+			SimpleBarChart(
+				stats = stats,
+				barColor = barColor,
+				modifier = Modifier
+					.fillMaxWidth()
+					.height(240.dp)
+					.padding(top = 12.dp),
+			)
+			startDate?.let {
+				Text(
+					text = it.format(context),
+					style = MaterialTheme.typography.labelSmall,
+					modifier = Modifier.padding(top = 2.dp),
+				)
+			}
+			Text(
+				text = stringResource(R.string.pages_read_s, totalPages.format()),
+				style = MaterialTheme.typography.bodyMedium,
+				modifier = Modifier.padding(top = 12.dp),
 			)
 		}
-		chartView.setData(bars)
+	}
+}
+
+@Composable
+private fun SimpleBarChart(
+	stats: IntList,
+	barColor: Color,
+	modifier: Modifier = Modifier,
+) {
+	val values = remember(stats) {
+		buildList(stats.size) {
+			stats.forEach { add(it) }
+		}
+	}
+	val max = values.maxOrNull()?.coerceAtLeast(1) ?: 1
+	Canvas(modifier = modifier) {
+		if (values.isEmpty()) return@Canvas
+		val gap = 2.dp.toPx()
+		val barWidth = ((size.width - gap * (values.size - 1)) / values.size).coerceAtLeast(1f)
+		values.forEachIndexed { index, value ->
+			val h = (value.toFloat() / max) * size.height
+			val x = index * (barWidth + gap)
+			drawRoundRect(
+				color = barColor,
+				topLeft = Offset(x, size.height - h),
+				size = Size(barWidth, h),
+				cornerRadius = CornerRadius(2.dp.toPx()),
+			)
+		}
 	}
 }

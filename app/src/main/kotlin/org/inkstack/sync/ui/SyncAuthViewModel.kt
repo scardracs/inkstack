@@ -10,7 +10,9 @@ import org.inkstack.R
 import org.inkstack.core.ui.BaseViewModel
 import org.inkstack.core.util.ext.MutableEventFlow
 import org.inkstack.core.util.ext.call
+import org.inkstack.core.util.ext.isHttpUrl
 import org.inkstack.sync.data.SyncAuthApi
+import org.inkstack.sync.data.SyncSettings
 import org.inkstack.sync.domain.SyncAuthResult
 import javax.inject.Inject
 
@@ -18,6 +20,7 @@ import javax.inject.Inject
 class SyncAuthViewModel @Inject constructor(
 	@ApplicationContext context: Context,
 	private val api: SyncAuthApi,
+	private val syncSettings: SyncSettings,
 ) : BaseViewModel() {
 
 	val onAccountAlreadyExists = MutableEventFlow<Unit>()
@@ -33,6 +36,16 @@ class SyncAuthViewModel @Inject constructor(
 				onAccountAlreadyExists.call(Unit)
 			}
 		}
+	}
+
+	fun setSyncHost(raw: String) {
+		var scheme = ""
+		if (!raw.isHttpUrl()) {
+			scheme = "http://"
+		}
+		val url = "$scheme$raw"
+		syncSettings.syncUrl = url
+		syncURL.value = url
 	}
 
 	fun obtainToken(email: String, password: String) {

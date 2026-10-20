@@ -1,135 +1,40 @@
 package org.inkstack.sync.ui
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.view.View
-import android.view.ViewGroup.MarginLayoutParams
 import android.widget.Toast
-import androidx.activity.viewModels
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isInvisible
-import androidx.core.view.updateLayoutParams
-import androidx.core.view.updatePadding
-import androidx.fragment.app.FragmentResultListener
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.inkstack.R
-import org.inkstack.core.ui.BaseActivity
-import org.inkstack.core.ui.util.DefaultTextWatcher
-import org.inkstack.core.util.ext.getDisplayMessage
-import org.inkstack.core.util.ext.observe
-import org.inkstack.core.util.ext.observeEvent
-import org.inkstack.databinding.ActivitySyncAuthResetBinding
-import org.inkstack.core.util.ext.consumeAll
-
-private const val PASSWORD_MIN_LENGTH = 4
+import org.inkstack.core.ui.BaseComposeActivity
+import org.inkstack.sync.ui.compose.SyncAuthResetScreen
 
 @AndroidEntryPoint
-class SyncAuthResetActivity : BaseActivity<ActivitySyncAuthResetBinding>(), View.OnClickListener, FragmentResultListener,
-	DefaultTextWatcher {
-
-	private val viewModel by viewModels<SyncAuthResetViewModel>()
+class SyncAuthResetActivity : BaseComposeActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(ActivitySyncAuthResetBinding.inflate(layoutInflater))
-		viewBinding.buttonDone.setOnClickListener(this)
-		viewBinding.buttonCancel.setOnClickListener(this)
-		viewBinding.editPassword.addTextChangedListener(this)
-		viewBinding.editPasswordConfirm.addTextChangedListener(this)
-
-		viewModel.onPasswordResetSucceeded.observeEvent(this, ::onPasswordResetSucceeded)
-		viewModel.onError.observeEvent(this, ::onError)
-		viewModel.isLoading.observe(this, ::onLoadingStateChanged)
-
-		supportFragmentManager.setFragmentResultListener(SyncHostDialogFragment.REQUEST_KEY, this, this)
-
-		if(intent.action != Intent.ACTION_VIEW || intent.data?.host != HOST_RESET_PASSWORD) {
-			onNoTokenProvided()
-			return
-		}
-
+		val valid = intent.action == Intent.ACTION_VIEW && intent.data?.host == HOST_RESET_PASSWORD
 		val baseUrl = intent.data?.getQueryParameter("base_url")?.trim()
 		val token = intent.data?.getQueryParameter("token")?.trim()
-		if(token == null || token.isEmpty() || baseUrl == null || baseUrl.isEmpty()) {
-			onNoTokenProvided()
-			return
+		setComposeContent {
+			SyncAuthResetScreen(
+				baseUrl = baseUrl.takeIf { valid },
+				token = token.takeIf { valid },
+				onCancel = {
+					setResult(Activity.RESULT_CANCELED)
+					finish()
+				},
+				onSuccess = {
+					setResult(Activity.RESULT_OK)
+					finishAfterTransition()
+				},
+				onInvalid = {
+					Toast.makeText(this, R.string.no_reset_token, Toast.LENGTH_SHORT).show()
+					finishAfterTransition()
+				},
+			)
 		}
-
-		viewModel.syncURL.value = baseUrl
-		viewModel.resetToken.value = token
-	}
-
-	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-		viewBinding.root.updatePadding(top = barsInsets.top)
-		viewBinding.dockedToolbarChild.updateLayoutParams<MarginLayoutParams> {
-			leftMargin = barsInsets.left
-			rightMargin = barsInsets.right
-			bottomMargin = barsInsets.bottom
-		}
-		val basePadding = viewBinding.layoutContent.paddingBottom
-		viewBinding.layoutContent.updatePadding(
-			left = barsInsets.left + basePadding,
-			right = barsInsets.right + basePadding,
-		)
-		return insets.consumeAll(WindowInsetsCompat.Type.systemBars())
-	}
-
-	override fun onClick(v: View) {
-		when (v.id) {
-			R.id.button_cancel -> {
-				setResult(RESULT_CANCELED)
-				finish()
-			}
-
-			R.id.button_done -> {
-				viewModel.resetPassword(viewBinding.editPassword.text.toString())
-			}
-		}
-	}
-
-	override fun onFragmentResult(requestKey: String, result: Bundle) {
-		val syncURL = result.getString(SyncHostDialogFragment.KEY_SYNC_URL) ?: return
-		viewModel.syncURL.value = syncURL
-	}
-
-	override fun afterTextChanged(s: Editable?) {
-		val isLoading = viewModel.isLoading.value
-		val password = viewBinding.editPassword.text?.toString()
-		val passwordConfirm = viewBinding.editPasswordConfirm.text?.toString()
-		viewBinding.buttonDone.isEnabled = !isLoading && password != null && password.length >= PASSWORD_MIN_LENGTH && password == passwordConfirm
-	}
-
-	private fun onLoadingStateChanged(isLoading: Boolean) {
-		with(viewBinding) {
-			progressBar.isInvisible = !isLoading
-			editPassword.isEnabled = !isLoading
-			editPasswordConfirm.isEnabled = !isLoading
-		}
-		afterTextChanged(null)
-	}
-
-	private fun onError(error: Throwable) {
-		MaterialAlertDialogBuilder(this)
-			.setTitle(R.string.error)
-			.setMessage(error.getDisplayMessage(resources))
-			.setNegativeButton(R.string.close, null)
-			.show()
-	}
-
-	private fun onPasswordResetSucceeded(unit: Unit) {
-		Toast.makeText(this, getString(R.string.password_reset), Toast.LENGTH_SHORT)
-			.show()
-		setResult(RESULT_OK)
-		super.finishAfterTransition()
-	}
-
-	private fun onNoTokenProvided() {
-		Toast.makeText(this, getString(R.string.no_reset_token), Toast.LENGTH_SHORT)
-			.show()
-		super.finishAfterTransition()
 	}
 
 	companion object {

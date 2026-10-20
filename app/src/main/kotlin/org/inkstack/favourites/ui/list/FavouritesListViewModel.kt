@@ -26,7 +26,6 @@ import org.inkstack.core.util.ext.call
 import org.inkstack.core.util.ext.flattenLatest
 import org.inkstack.favourites.domain.FavoritesListQuickFilter
 import org.inkstack.favourites.domain.FavouritesRepository
-import org.inkstack.favourites.ui.list.FavouritesListFragment.Companion.NO_ID
 import org.inkstack.history.domain.MarkAsReadUseCase
 import org.inkstack.list.domain.ListFilterOption
 import org.inkstack.list.domain.ListSortOrder
@@ -209,5 +208,9 @@ class FavouritesListViewModel @Inject constructor(
 			},
 			actionStringRes = 0,
 		)
+	}
+
+	companion object {
+		const val NO_ID = 0L
 	}
 }
