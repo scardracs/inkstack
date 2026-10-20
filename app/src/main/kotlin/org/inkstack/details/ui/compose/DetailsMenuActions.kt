@@ -15,9 +15,3 @@ data class DetailsMenuVisibility(
 	val findSimilar: Boolean = true,
 	val chaptersSheet: Boolean = true,
 )
-
-data class DetailsReadMenuVisibility(
-	val incognito: Boolean = false,
-	val forget: Boolean = false,
-	val download: Boolean = false,
-)

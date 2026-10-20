@@ -32,7 +32,6 @@ import org.inkstack.core.util.ext.observeEvent
 import org.inkstack.core.util.ext.toUriOrNull
 import org.inkstack.details.ui.compose.DetailsHost
 import org.inkstack.details.ui.compose.DetailsMenuVisibility
-import org.inkstack.details.ui.compose.DetailsReadMenuVisibility
 import org.inkstack.download.ui.worker.DownloadStartedObserver
 import org.inkstack.main.ui.owners.BottomSheetOwner
 import org.inkstack.parsers.model.Manga
@@ -77,7 +76,6 @@ class DetailsActivity : BaseComposeActivity(), BottomSheetOwner {
 
 		setComposeContent {
 			val manga by viewModel.manga.collectAsState()
-			val historyInfo by viewModel.historyInfo.collectAsState()
 			val remoteManga by viewModel.remoteManga.collectAsState()
 			val isStatsAvailable by viewModel.isStatsAvailable.collectAsState()
 			val current = manga
@@ -96,20 +94,11 @@ class DetailsActivity : BaseComposeActivity(), BottomSheetOwner {
 					chaptersSheet = false,
 				)
 			}
-			val readMenuVisibility = remember(historyInfo, current) {
-				DetailsReadMenuVisibility(
-					incognito = !historyInfo.isIncognitoMode,
-					forget = historyInfo.history != null,
-					download = current != null && !current.isLocal,
-				)
-			}
 			DetailsHost(
 				imageLoader = coil,
 				settings = settings,
 				viewModel = viewModel,
-				historyInfo = historyInfo,
 				menuVisibility = menuVisibility,
-				readMenuVisibility = readMenuVisibility,
 				onBack = { dispatchNavigateUp() },
 				onRead = { m, chapter, incognito -> openReader(m, chapter, incognito) },
 				onFavorite = { m -> appRouter.showFavoriteDialog(m) },
@@ -165,7 +154,6 @@ class DetailsActivity : BaseComposeActivity(), BottomSheetOwner {
 						}
 					}
 				},
-				onForgetHistory = { viewModel.removeFromHistory() },
 			)
 		}
 	}

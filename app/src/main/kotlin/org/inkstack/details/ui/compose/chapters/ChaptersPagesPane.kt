@@ -132,6 +132,8 @@ fun ChaptersPagesPane(
 	val mangaDetails by viewModel.mangaDetails.collectAsState()
 	val readingState by viewModel.readingState.collectAsState()
 	val selectedBranch by viewModel.selectedBranch.collectAsState()
+	val historyInfo by viewModel.historyInfo.collectAsState()
+	val isLoading by viewModel.isLoading.collectAsState()
 	val manga = mangaDetails?.toManga()
 
 	LaunchedEffect(mangaDetails, readingState, selectedBranch) {
@@ -150,6 +152,18 @@ fun ChaptersPagesPane(
 	}
 
 	Column(modifier = modifier.fillMaxSize()) {
+		manga?.let { m ->
+			ReadSplitButton(
+				manga = m,
+				historyInfo = historyInfo,
+				isLoading = isLoading,
+				viewModel = viewModel,
+				onRead = onRead,
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(horizontal = 12.dp, vertical = 4.dp),
+			)
+		}
 		InkstackGlassSurface(
 			modifier = Modifier
 				.fillMaxWidth()

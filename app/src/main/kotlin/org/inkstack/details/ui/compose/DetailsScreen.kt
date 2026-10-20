@@ -18,13 +18,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.CircularProgressIndicator
@@ -32,7 +28,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -68,14 +63,13 @@ import org.inkstack.core.ui.compose.MangaCover
 import org.inkstack.core.util.ext.mangaExtra
 import org.inkstack.details.ui.DetailsViewModel
 import org.inkstack.details.ui.compose.chapters.ChaptersPagesPane
-import org.inkstack.details.ui.model.HistoryInfo
 import org.inkstack.details.ui.model.MangaBranch
 import org.inkstack.parsers.model.ContentRating
 import org.inkstack.parsers.model.Manga
 import org.inkstack.parsers.model.MangaChapter
 import org.inkstack.parsers.util.ifNullOrEmpty
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailsScreen(
 	imageLoader: ImageLoader,
@@ -85,10 +79,7 @@ fun DetailsScreen(
 	onTagClick: (org.inkstack.parsers.model.MangaTag) -> Unit = {},
 	onSourceClick: (Manga) -> Unit = {},
 	menuVisibility: DetailsMenuVisibility = DetailsMenuVisibility(),
-	readMenuVisibility: DetailsReadMenuVisibility = DetailsReadMenuVisibility(),
-	historyInfo: HistoryInfo? = null,
 	pullRefreshEnabled: Boolean = true,
-	showReadFab: Boolean = true,
 	onShare: () -> Unit = {},
 	onDownload: () -> Unit = {},
 	onDelete: () -> Unit = {},
@@ -102,7 +93,6 @@ fun DetailsScreen(
 	onBrowser: () -> Unit = {},
 	onShortcut: () -> Unit = {},
 	onChaptersSheet: () -> Unit = {},
-	onForgetHistory: () -> Unit = {},
 	viewModel: DetailsViewModel = hiltViewModel(),
 	settings: AppSettings? = null,
 	modifier: Modifier = Modifier,
@@ -116,11 +106,6 @@ fun DetailsScreen(
 	val manga = details?.toManga()
 	val description = details?.description?.toString().ifNullOrEmpty { manga?.description }
 	var overflowExpanded by remember { mutableStateOf(false) }
-	var readMenuExpanded by remember { mutableStateOf(false) }
-	val fabLabel = when {
-		historyInfo?.canContinue == true -> stringResource(R.string._continue)
-		else -> stringResource(R.string.read)
-	}
 
 	Scaffold(
 		modifier = modifier.fillMaxSize(),
@@ -228,55 +213,6 @@ fun DetailsScreen(
 				},
 				colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
 			)
-		},
-		floatingActionButton = {
-			if (showReadFab && manga != null) {
-				Box {
-					FloatingActionButton(
-						onClick = {},
-						modifier = Modifier.combinedClickable(
-							interactionSource = remember { MutableInteractionSource() },
-							indication = null,
-							onClick = { onRead(manga, null, false) },
-							onLongClick = { readMenuExpanded = true },
-						),
-					) {
-						Icon(Icons.Default.PlayArrow, contentDescription = fabLabel)
-					}
-					DropdownMenu(
-						expanded = readMenuExpanded,
-						onDismissRequest = { readMenuExpanded = false },
-					) {
-						if (readMenuVisibility.incognito) {
-							DropdownMenuItem(
-								text = { Text(stringResource(R.string.incognito_mode)) },
-								onClick = {
-									readMenuExpanded = false
-									onRead(manga, null, true)
-								},
-							)
-						}
-						if (readMenuVisibility.forget) {
-							DropdownMenuItem(
-								text = { Text(stringResource(R.string.remove_from_history)) },
-								onClick = {
-									readMenuExpanded = false
-									onForgetHistory()
-								},
-							)
-						}
-						if (readMenuVisibility.download) {
-							DropdownMenuItem(
-								text = { Text(stringResource(R.string.download)) },
-								onClick = {
-									readMenuExpanded = false
-									onDownload()
-								},
-							)
-						}
-					}
-				}
-			}
 		},
 	) { padding ->
 		PullToRefreshBox(

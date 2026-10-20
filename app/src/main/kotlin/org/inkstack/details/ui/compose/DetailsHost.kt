@@ -6,7 +6,6 @@ import androidx.compose.ui.Modifier
 import coil3.ImageLoader
 import org.inkstack.core.prefs.AppSettings
 import org.inkstack.details.ui.DetailsViewModel
-import org.inkstack.details.ui.model.HistoryInfo
 import org.inkstack.parsers.model.Manga
 import org.inkstack.parsers.model.MangaChapter
 
@@ -19,9 +18,7 @@ fun DetailsHost(
 	imageLoader: ImageLoader,
 	settings: AppSettings,
 	viewModel: DetailsViewModel,
-	historyInfo: HistoryInfo,
 	menuVisibility: DetailsMenuVisibility,
-	readMenuVisibility: DetailsReadMenuVisibility,
 	onBack: () -> Unit,
 	onRead: (Manga, MangaChapter?, incognito: Boolean) -> Unit,
 	onFavorite: (Manga) -> Unit,
@@ -39,7 +36,6 @@ fun DetailsHost(
 	onOnline: () -> Unit,
 	onBrowser: () -> Unit,
 	onShortcut: () -> Unit,
-	onForgetHistory: () -> Unit,
 ) {
 	DetailsScreen(
 		imageLoader = imageLoader,
@@ -51,10 +47,7 @@ fun DetailsHost(
 		onTagClick = onTagClick,
 		onSourceClick = onSourceClick,
 		menuVisibility = menuVisibility.copy(chaptersSheet = false),
-		readMenuVisibility = readMenuVisibility,
-		historyInfo = historyInfo,
 		pullRefreshEnabled = true,
-		showReadFab = true,
 		onShare = onShare,
 		onDownload = onDownload,
 		onDelete = onDelete,
@@ -68,7 +61,6 @@ fun DetailsHost(
 		onBrowser = onBrowser,
 		onShortcut = onShortcut,
 		onChaptersSheet = {},
-		onForgetHistory = onForgetHistory,
 		modifier = Modifier.fillMaxSize(),
 	)
 }
