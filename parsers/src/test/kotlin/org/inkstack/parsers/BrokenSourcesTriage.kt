@@ -11,8 +11,8 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Request
 import org.junit.jupiter.api.Assumptions.assumeTrue
 import org.junit.jupiter.api.Test
+import org.inkstack.parsers.model.MangaListFilter
 import org.inkstack.parsers.model.MangaParserSource
-import org.inkstack.parsers.model.search.MangaSearchQuery
 import org.inkstack.parsers.util.await
 import java.io.File
 import java.net.UnknownHostException
@@ -149,7 +149,11 @@ internal class BrokenSourcesTriage {
 		var smokeErr = probe.error
 		if (doSmoke && probe.label == "ALIVE") {
 			val smokeResult = runCatching {
-				val list = parser.getList(MangaSearchQuery.EMPTY)
+				val list = parser.getList(
+					0,
+					parser.availableSortOrders.first(),
+					MangaListFilter.EMPTY,
+				)
 				check(list.isNotEmpty()) { "empty list" }
 				"PASS"
 			}.getOrElse { e ->

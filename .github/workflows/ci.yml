@@ -21,10 +21,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up JDK 27
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: "27"
@@ -54,7 +54,10 @@ jobs:
               build-tools/36.0.0
 
       - name: Gradle cache
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          # Open-source cache; avoid default enhanced (proprietary Terms of Use)
+          cache-provider: basic
 
       - name: Assemble debug
         run: ./gradlew :app:assembleDebug --stacktrace
@@ -80,9 +83,9 @@ jobs:
       RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
       RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: "27"
@@ -109,7 +112,9 @@ jobs:
               platforms/android-36 \
               build-tools/36.0.0
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-provider: basic
 
       - name: Decode release keystore
         if: env.RELEASE_STORE_FILE_BASE64 != ''
@@ -124,7 +129,7 @@ jobs:
 
       - name: Upload release APK
         if: success()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: app-release
           path: app/build/outputs/apk/release/*.apk
