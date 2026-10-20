@@ -1,71 +1,121 @@
 package org.inkstack.backups.ui.backup
 
 import android.net.Uri
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.view.isVisible
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import org.inkstack.R
-import org.inkstack.core.ui.AlertDialogFragment
+import org.inkstack.core.ui.compose.ComposeAlertDialogFragment
 import org.inkstack.core.util.ext.getDisplayMessage
-import org.inkstack.core.util.ext.observe
-import org.inkstack.core.util.ext.observeEvent
 import org.inkstack.core.util.progress.Progress
-import org.inkstack.databinding.DialogProgressBinding
 
 @AndroidEntryPoint
-class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
+class BackupDialogFragment : ComposeAlertDialogFragment() {
 
 	private val viewModel by viewModels<BackupViewModel>()
 
-	override fun onCreateViewBinding(
-		inflater: LayoutInflater,
-		container: ViewGroup?,
-	) = DialogProgressBinding.inflate(inflater, container, false)
-
-	override fun onViewBindingCreated(binding: DialogProgressBinding, savedInstanceState: Bundle?) {
-		super.onViewBindingCreated(binding, savedInstanceState)
-		binding.textViewTitle.setText(R.string.create_backup)
-		binding.textViewSubtitle.setText(R.string.processing_)
-
-		viewModel.progress.observe(viewLifecycleOwner, this::onProgressChanged)
-		viewModel.onBackupDone.observeEvent(viewLifecycleOwner, this::onBackupDone)
-		viewModel.onError.observeEvent(viewLifecycleOwner, this::onError)
+	@Composable
+	override fun DialogContent(onDismissRequest: () -> Unit) {
+		BackupDialogContent(viewModel = viewModel, onDismissRequest = onDismissRequest)
 	}
+}
 
-	override fun onBuildDialog(builder: MaterialAlertDialogBuilder): MaterialAlertDialogBuilder {
-		return super.onBuildDialog(builder)
-			.setCancelable(false)
-			.setNegativeButton(android.R.string.cancel, null)
+@Composable
+private fun BackupDialogContent(
+	viewModel: BackupViewModel,
+	onDismissRequest: () -> Unit,
+) {
+	val context = LocalContext.current
+	val progress by viewModel.progress.collectAsState()
+	var errorMessage by remember { mutableStateOf<String?>(null) }
+
+	LaunchedEffect(viewModel) {
+		viewModel.onBackupDone.collectLatest { event ->
+			event?.consume { _: Uri ->
+				Toast.makeText(context, R.string.backup_saved, Toast.LENGTH_SHORT).show()
+				onDismissRequest()
+			}
+		}
 	}
-
-	private fun onError(e: Throwable) {
-		MaterialAlertDialogBuilder(context ?: return)
-			.setNegativeButton(R.string.close, null)
-			.setTitle(R.string.error)
-			.setMessage(e.getDisplayMessage(resources))
-			.show()
-		dismiss()
-	}
-
-	private fun onProgressChanged(value: Progress) {
-		with(requireViewBinding().progressBar) {
-			isVisible = true
-			val wasIndeterminate = isIndeterminate
-			isIndeterminate = value.isIndeterminate
-			if (!value.isIndeterminate) {
-				max = value.total
-				setProgressCompat(value.progress, !wasIndeterminate)
+	LaunchedEffect(viewModel) {
+		viewModel.onError.collectLatest { event ->
+			event?.consume { error ->
+				errorMessage = error.getDisplayMessage(context.resources)
 			}
 		}
 	}
 
-	private fun onBackupDone(uri: Uri) {
-		Toast.makeText(requireContext(), R.string.backup_saved, Toast.LENGTH_SHORT).show()
-		dismiss()
+	AlertDialog(
+		onDismissRequest = {},
+		title = { Text(stringResource(R.string.create_backup)) },
+		text = {
+			Column(modifier = Modifier.fillMaxWidth()) {
+				Text(
+					text = stringResource(R.string.processing_),
+					style = MaterialTheme.typography.bodyMedium,
+					modifier = Modifier.padding(bottom = 8.dp),
+				)
+				ProgressBar(progress)
+			}
+		},
+		confirmButton = {},
+		dismissButton = {
+			TextButton(onClick = onDismissRequest) {
+				Text(stringResource(android.R.string.cancel))
+			}
+		},
+	)
+
+	errorMessage?.let { msg ->
+		AlertDialog(
+			onDismissRequest = {
+				errorMessage = null
+				onDismissRequest()
+			},
+			title = { Text(stringResource(R.string.error)) },
+			text = { Text(msg) },
+			confirmButton = {
+				TextButton(
+					onClick = {
+						errorMessage = null
+						onDismissRequest()
+					},
+				) {
+					Text(stringResource(R.string.close))
+				}
+			},
+		)
+	}
+}
+
+@Composable
+private fun ProgressBar(progress: Progress) {
+	if (progress.isIndeterminate) {
+		LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+	} else {
+		LinearProgressIndicator(
+			progress = { progress.percent },
+			modifier = Modifier.fillMaxWidth(),
+		)
 	}
 }

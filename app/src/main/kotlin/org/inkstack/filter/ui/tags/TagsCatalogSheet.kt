@@ -1,36 +1,36 @@
 package org.inkstack.filter.ui.tags
 
-import android.os.Bundle
-import android.text.Editable
-import android.view.KeyEvent
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.widget.TextView
-import androidx.core.view.WindowInsetsCompat
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.withCreationCallback
+import org.inkstack.R
 import org.inkstack.core.nav.AppRouter
-import org.inkstack.core.ui.list.OnListItemClickListener
-import org.inkstack.core.ui.sheet.AdaptiveSheetBehavior
-import org.inkstack.core.ui.sheet.AdaptiveSheetCallback
-import org.inkstack.core.ui.sheet.BaseAdaptiveSheet
-import org.inkstack.core.ui.util.DefaultTextWatcher
-import org.inkstack.core.util.ext.consumeAll
-import org.inkstack.core.util.ext.observe
-import org.inkstack.databinding.SheetTagsBinding
+import org.inkstack.core.ui.compose.sheet.ComposeAdaptiveSheet
 import org.inkstack.filter.ui.FilterCoordinator
 import org.inkstack.filter.ui.model.TagCatalogItem
+import org.inkstack.list.ui.model.LoadingState
 
 @AndroidEntryPoint
-class TagsCatalogSheet : BaseAdaptiveSheet<SheetTagsBinding>(),
-	OnListItemClickListener<TagCatalogItem>,
-	DefaultTextWatcher,
-	AdaptiveSheetCallback,
-	View.OnFocusChangeListener,
-	TextView.OnEditorActionListener {
+class TagsCatalogSheet : ComposeAdaptiveSheet() {
 
 	private val viewModel by viewModels<TagsCatalogViewModel>(
 		extrasProducer = {
@@ -43,62 +43,66 @@ class TagsCatalogSheet : BaseAdaptiveSheet<SheetTagsBinding>(),
 		},
 	)
 
-	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): SheetTagsBinding {
-		return SheetTagsBinding.inflate(inflater, container, false)
-	}
+	@Composable
+	override fun sheetTitle(): String = stringResource(R.string.filter)
 
-	override fun onViewBindingCreated(binding: SheetTagsBinding, savedInstanceState: Bundle?) {
-		super.onViewBindingCreated(binding, savedInstanceState)
-		val adapter = TagsCatalogAdapter(this)
-		binding.recyclerView.adapter = adapter
-		binding.recyclerView.setHasFixedSize(true)
-		binding.editSearch.setText(viewModel.searchQuery.value)
-		binding.editSearch.addTextChangedListener(this)
-		binding.editSearch.onFocusChangeListener = this
-		binding.editSearch.setOnEditorActionListener(this)
-		viewModel.content.observe(viewLifecycleOwner, adapter)
-		addSheetCallback(this, viewLifecycleOwner)
+	override fun onSheetViewCreated(savedInstanceState: android.os.Bundle?) {
 		disableFitToContents()
 	}
 
-	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val typeBask = WindowInsetsCompat.Type.systemBars()
-		val barsInsets = insets.getInsets(typeBask)
-		viewBinding?.recyclerView?.setPadding(
-			barsInsets.left,
-			barsInsets.top,
-			barsInsets.right,
-			barsInsets.bottom,
-		)
-		return insets.consumeAll(typeBask)
-	}
+	@Composable
+	override fun SheetContent(onDismissRequest: () -> Unit) {
+		val content by viewModel.content.collectAsState()
+		val query by viewModel.searchQuery.collectAsState()
 
-	override fun onItemClick(item: TagCatalogItem, view: View) {
-		viewModel.handleTagClick(item.tag, item.isChecked)
-	}
-
-	override fun onFocusChange(v: View?, hasFocus: Boolean) {
-		setExpanded(
-			isExpanded = hasFocus || isExpanded,
-			isLocked = hasFocus,
-		)
-	}
-
-	override fun onEditorAction(v: TextView, actionId: Int, event: KeyEvent?): Boolean {
-		return if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-			v.clearFocus()
-			true
-		} else {
-			false
+		Column(modifier = Modifier.fillMaxSize()) {
+			OutlinedTextField(
+				value = query,
+				onValueChange = { viewModel.searchQuery.value = it },
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(horizontal = 16.dp, vertical = 8.dp),
+				singleLine = true,
+				label = { Text(stringResource(R.string.genres_search_hint)) },
+			)
+			when {
+				content.any { it is LoadingState } -> {
+					CircularProgressIndicator(
+						modifier = Modifier
+							.align(Alignment.CenterHorizontally)
+							.padding(24.dp),
+					)
+				}
+				else -> {
+					LazyColumn(modifier = Modifier.fillMaxSize()) {
+						items(
+							items = content.filterIsInstance<TagCatalogItem>(),
+							key = { it.tag.key },
+						) { item ->
+							Row(
+								modifier = Modifier
+									.fillMaxWidth()
+									.clickable {
+										viewModel.handleTagClick(item.tag, item.isChecked)
+									}
+									.padding(horizontal = 16.dp, vertical = 8.dp),
+								verticalAlignment = Alignment.CenterVertically,
+							) {
+								Checkbox(
+									checked = item.isChecked,
+									onCheckedChange = {
+										viewModel.handleTagClick(item.tag, item.isChecked)
+									},
+								)
+								Text(
+									text = item.tag.title,
+									modifier = Modifier.padding(start = 8.dp),
+								)
+							}
+						}
+					}
+				}
+			}
 		}
-	}
-
-	override fun afterTextChanged(s: Editable?) {
-		val q = s?.toString().orEmpty()
-		viewModel.searchQuery.value = q
-	}
-
-	override fun onStateChanged(sheet: View, newState: Int) {
-		viewBinding?.recyclerView?.isFastScrollerEnabled = newState == AdaptiveSheetBehavior.STATE_EXPANDED
 	}
 }

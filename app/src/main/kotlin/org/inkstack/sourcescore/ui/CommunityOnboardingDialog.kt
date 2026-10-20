@@ -1,43 +1,67 @@
 package org.inkstack.sourcescore.ui
 
-import android.app.Dialog
 import android.content.Context
-import android.content.res.ColorStateList
 import android.os.Bundle
-import android.text.style.ClickableSpan
-import android.text.method.LinkMovementMethod
-import android.text.Spanned
-import android.text.SpannableString
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.ViewFlipper
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.ButtonBarLayout
-import android.view.animation.OvershootInterpolator
-import androidx.core.view.isVisible
-import androidx.core.view.updateLayoutParams
-import androidx.core.widget.doAfterTextChanged
-import androidx.core.widget.TextViewCompat
-import androidx.fragment.app.DialogFragment
+import android.widget.Toast
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import androidx.fragment.app.FragmentManager
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.inkstack.R
 import org.inkstack.core.nav.router
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
+import org.inkstack.core.ui.compose.ComposeAlertDialogFragment
 import org.inkstack.parsers.util.runCatchingCancellable
-import android.widget.Toast
-import org.inkstack.sourcescore.data.IdentityResponse
-import org.inkstack.sourcescore.data.nicknameRejection
 import org.inkstack.sourcescore.data.CommunityApi
 import org.inkstack.sourcescore.data.CommunitySettings
-import org.inkstack.stats.ui.views.PieChartView
+import org.inkstack.sourcescore.data.IdentityResponse
+import org.inkstack.sourcescore.data.nicknameRejection
 import javax.inject.Inject
 
 /**
@@ -46,12 +70,9 @@ import javax.inject.Inject
  * Consent is asked for once, in order, and nothing is created before it is given: the identity is
  * generated lazily on first use, so declining at step one means the app never contacts the server and
  * no row exists anywhere (PLAN.md §1).
- *
- * The steps are deliberately separate questions. Bundling "do you want comments" with "may we collect
- * reliability data" into one button would make the second one unanswerable.
  */
 @AndroidEntryPoint
-class CommunityOnboardingDialog : DialogFragment() {
+class CommunityOnboardingDialog : ComposeAlertDialogFragment() {
 
 	@Inject
 	lateinit var settings: CommunitySettings
@@ -62,480 +83,21 @@ class CommunityOnboardingDialog : DialogFragment() {
 	@Inject
 	lateinit var api: CommunityApi
 
-	private var step = STEP_INTRO
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		isCancelable = false
+	}
 
-	/**
-	 * Who the server says we already are, when a key survived on this device.
-	 *
-	 * The identity is the secret and nothing else - the server will not hand an account over on the
-	 * strength of a device id, which is the right call and also means a restore can only happen here,
-	 * from a key Android's backup brought back or a previous install left behind. When there is one,
-	 * asking for a nickname would be asking somebody to name an account they already have.
-	 */
-	private var restored: IdentityResponse? = null
-	private lateinit var flipper: ViewFlipper
-	private lateinit var titleView: TextView
-	private lateinit var heroIcon: ImageView
-	private lateinit var hero: ViewGroup
-	private lateinit var dots: List<View>
-	private lateinit var nicknameLayout: TextInputLayout
-	private lateinit var nicknameInput: TextInputEditText
-	private lateinit var nicknamePreview: TextView
-
-	/** Opened straight on the nickname step, for someone already opted in who never picked a name. */
-	private val isNameOnly: Boolean
-		get() = arguments?.getBoolean(ARG_NAME_ONLY) == true
-
-	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-		if (isNameOnly) step = STEP_NICKNAME
-		val view = LayoutInflater.from(context).inflate(R.layout.dialog_community_onboarding, null)
-		flipper = view.findViewById(R.id.flipper)
-		titleView = view.findViewById(R.id.textView_title)
-		heroIcon = view.findViewById(R.id.imageView_hero)
-		hero = view.findViewById(R.id.layout_hero)
-		dots = listOf(
-			view.findViewById(R.id.dot_1),
-			view.findViewById(R.id.dot_2),
-			view.findViewById(R.id.dot_3),
-			view.findViewById(R.id.dot_4),
+	@Composable
+	override fun DialogContent(onDismissRequest: () -> Unit) {
+		CommunityOnboardingContent(
+			settings = settings,
+			api = api,
+			syncScheduler = syncScheduler,
+			openBrowser = { url, title -> router.openExternalBrowser(url, title) },
+			nameOnly = arguments?.getBoolean(ARG_NAME_ONLY) == true,
+			onFinished = onDismissRequest,
 		)
-		nicknameLayout = view.findViewById(R.id.layout_nickname)
-		nicknameInput = view.findViewById(R.id.edit_nickname)
-		nicknamePreview = view.findViewById(R.id.textView_nickname_preview)
-		nicknameInput.doAfterTextChanged { updateNicknamePreview() }
-		updateNicknamePreview()
-
-		bindPolicyLinks(view)
-		bindDonationSplit(view)
-
-		val dialog = MaterialAlertDialogBuilder(requireContext())
-			.setView(view)
-			// Non-dismissable: this is a consent decision, and a dialog that can be swiped away
-			// leaves the app in a state where the answer is neither yes nor no.
-			.setCancelable(false)
-			.setPositiveButton(R.string.community_intro_optin, null)
-			.setNegativeButton(R.string.community_intro_skip, null)
-			// Shown on the first screen only: somebody arriving on a new phone needs the way back to
-			// their account before they are offered a new one, not after.
-			.setNeutralButton(R.string.community_recover, null)
-			.create()
-
-		// Buttons are wired after show() so a step can advance without the dialog dismissing itself.
-		dialog.setCanceledOnTouchOutside(false)
-		isCancelable = false // also blocks the back gesture, which setCancelable alone does not
-
-		dialog.setOnShowListener {
-			dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener { onPositive(dialog) }
-			dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener { onNegative(dialog) }
-			dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener { askForKey(dialog) }
-			// Three buttons, one row. ButtonBarLayout stacks them the moment they do not fit, and a
-			// stacked bar reads as three unrelated choices rather than one question with an aside.
-			(dialog.getButton(AlertDialog.BUTTON_POSITIVE).parent as? ButtonBarLayout)
-				?.setAllowStacking(false)
-			render(dialog)
-			// The key may already belong to a named account the device forgot; if so there is
-			// nothing to ask, and tryRestore closes the dialog once the server has said so.
-			if (isNameOnly) tryRestore()
-		}
-		return dialog
-	}
-
-	/**
-	 * The terms and privacy notice, pointed at whichever instance this device is configured for.
-	 *
-	 * Hardcoding the official instance's URLs would send a self-hoster's users to somebody else's
-	 * policies, which is worse than not linking at all - the documents describe the server that holds
-	 * the data, and that is whichever one this app is talking to.
-	 */
-	private fun bindPolicyLinks(view: View) {
-		val textView = view.findViewById<TextView>(R.id.textView_policies) ?: return
-		val base = settings.serverUrl
-		val terms = getString(R.string.community_terms)
-		val privacy = getString(R.string.community_privacy)
-
-		val text = getString(R.string.community_policy_links, terms, privacy)
-		val spannable = SpannableString(text)
-		linkify(spannable, terms, "$base/terms", terms)
-		linkify(spannable, privacy, "$base/privacy", privacy)
-
-		textView.text = spannable
-		textView.movementMethod = LinkMovementMethod.getInstance()
-	}
-
-	private fun linkify(spannable: SpannableString, label: String, url: String, title: String) {
-		val start = spannable.indexOf(label)
-		if (start < 0) return
-		spannable.setSpan(
-			object : ClickableSpan() {
-				// Inkstack registers its own VIEW filter, so a bare implicit intent can resolve back
-				// into this app. The router picks a browser explicitly.
-				override fun onClick(widget: View) {
-					router.openExternalBrowser(url, title)
-				}
-			},
-			start,
-			start + label.length,
-			Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
-		)
-	}
-
-	private fun render(dialog: AlertDialog) {
-		flipper.displayedChild = step
-		updateSteps()
-		val positive = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-		val negative = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-		dialog.getButton(AlertDialog.BUTTON_NEUTRAL).isVisible = step == STEP_INTRO
-
-		when (step) {
-			STEP_INTRO -> {
-				titleView.setText(R.string.community_intro_title)
-				heroIcon.setImageResource(R.drawable.ic_info_outline)
-				positive.setText(R.string.community_intro_optin)
-				negative.setText(R.string.community_intro_skip)
-			}
-
-			STEP_TELEMETRY -> {
-				titleView.setText(R.string.community_telemetry_title)
-				heroIcon.setImageResource(R.drawable.ic_chart)
-				positive.setText(R.string.community_telemetry_yes)
-				negative.setText(R.string.community_telemetry_no)
-			}
-
-			STEP_NICKNAME -> {
-				titleView.setText(R.string.community_nickname_title)
-				heroIcon.setImageResource(R.drawable.ic_user)
-				positive.setText(R.string.community_nickname_continue)
-				negative.setText(R.string.community_nickname_back)
-			}
-
-			STEP_SPONSOR -> {
-				titleView.setText(R.string.community_sponsor_title)
-				heroIcon.setImageResource(R.drawable.ic_heart)
-				positive.setText(R.string.community_sponsor_open)
-				negative.setText(R.string.community_sponsor_dismiss)
-			}
-		}
-	}
-
-	/**
-	 * The hero shape reacts to each step rather than swapping silently - expressive motion is how a
-	 * step change reads as progress instead of as the same dialog with different words.
-	 */
-	private fun animateHero() {
-		hero.animate().cancel()
-		hero.scaleX = 0.86f
-		hero.scaleY = 0.86f
-		hero.animate()
-			.scaleX(1f)
-			.scaleY(1f)
-			.setDuration(320)
-			.setInterpolator(OvershootInterpolator(1.6f))
-			.start()
-	}
-
-	/** Active step is a stadium, the others are dots: shape carries the state, not colour alone. */
-	private fun updateSteps() {
-		dots.forEachIndexed { index, dot ->
-			val active = index == step
-			dot.setBackgroundResource(
-				if (active) R.drawable.bg_onboarding_dot_active else R.drawable.bg_onboarding_dot,
-			)
-			dot.updateLayoutParams { width = if (active) activeDotWidth else inactiveDotWidth }
-		}
-	}
-
-	private fun onPositive(dialog: AlertDialog) {
-		when (step) {
-			STEP_INTRO -> {
-				settings.isEnabled = true
-				tryRestore()
-				// Answered here, not at the last step. The consent question is this one; the rest are
-				// follow-ups. Marking it only on the sponsor screen meant anyone who opted in and did
-				// not walk all four steps got asked again on every single launch.
-				settings.hasSeenOnboarding = true
-				advance(dialog, STEP_TELEMETRY)
-			}
-
-			STEP_TELEMETRY -> {
-				settings.isTelemetryEnabled = true
-				advance(dialog, nextAfterTelemetry())
-			}
-
-			STEP_NICKNAME -> submitNickname(dialog)
-
-			STEP_SPONSOR -> {
-				openSponsorPage()
-				finish(dialog)
-			}
-		}
-	}
-
-	private fun onNegative(dialog: AlertDialog) {
-		when (step) {
-			// Declining the feature declines everything that needs an identity: no key, no telemetry,
-			// nothing about this user stored. Public score downloads still run for everyone.
-			STEP_INTRO -> {
-				settings.isEnabled = false
-				settings.isTelemetryEnabled = false
-				finish(dialog)
-			}
-
-			STEP_TELEMETRY -> {
-				settings.isTelemetryEnabled = false
-				advance(dialog, nextAfterTelemetry())
-			}
-
-			// There is no anonymous participation: a name is part of joining, so the only way out
-			// of this step is back to the opt-in, where declining is still a real choice.
-			STEP_NICKNAME -> advance(dialog, STEP_INTRO)
-
-			STEP_SPONSOR -> finish(dialog)
-		}
-	}
-
-	/**
-	 * Takes a recovery key and proves it belongs to somebody before keeping it.
-	 *
-	 * The proof is the whole point. A key with one character wrong is still 43 valid characters, so
-	 * it does not fail - it names an account that has never existed, and the user is shown a
-	 * successful restore and an empty history. `created` in the server's answer is the only thing
-	 * that tells the two apart, so a key the server had to invent an account for is rejected and the
-	 * previous key put back.
-	 */
-	private fun askForKey(parent: AlertDialog) {
-		val view = LayoutInflater.from(requireContext())
-			.inflate(R.layout.dialog_community_recover, null)
-		val layout = view.findViewById<TextInputLayout>(R.id.layout_key)
-		val input = view.findViewById<TextInputEditText>(R.id.edit_key)
-		input.doAfterTextChanged { layout.error = null }
-
-		val sheet = MaterialAlertDialogBuilder(requireContext())
-			.setTitle(R.string.community_recover_title)
-			.setView(view)
-			.setPositiveButton(R.string.community_recover_action, null)
-			.setNegativeButton(android.R.string.cancel, null)
-			.create()
-
-		sheet.setOnShowListener {
-			sheet.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-				val key = input.text?.toString()?.trim().orEmpty()
-				if (!settings.isPlausibleSecret(key)) {
-					layout.error = getString(R.string.community_recover_malformed)
-					return@setOnClickListener
-				}
-				val button = sheet.getButton(AlertDialog.BUTTON_POSITIVE)
-				button.isEnabled = false
-				lifecycleScope.launch {
-					when (val outcome = adopt(key)) {
-						is Recovery.Restored -> {
-							sheet.dismiss()
-							restored = outcome.identity
-							settings.isEnabled = true
-							settings.hasSeenOnboarding = true
-							Toast.makeText(
-								requireContext(),
-								getString(R.string.community_recover_done, outcome.identity.displayName),
-								Toast.LENGTH_LONG,
-							).show()
-							syncScheduler.schedule()
-							advance(parent, STEP_TELEMETRY)
-						}
-
-						Recovery.Unknown -> layout.error = getString(R.string.community_recover_unknown)
-						Recovery.Unreachable -> layout.error = getString(R.string.community_recover_failed)
-					}
-					button.isEnabled = true
-				}
-			}
-		}
-		sheet.show()
-	}
-
-	private sealed interface Recovery {
-		data class Restored(val identity: IdentityResponse) : Recovery
-		data object Unknown : Recovery
-		data object Unreachable : Recovery
-	}
-
-	private suspend fun adopt(key: String): Recovery {
-		val previous = settings.peekSecret()
-		if (!settings.adoptSecret(key)) return Recovery.Unknown
-		val result = runCatchingCancellable { api.helloWithStatus() }.getOrNull()
-		if (result == null) {
-			settings.revertSecret(previous)
-			return Recovery.Unreachable
-		}
-		if (result.created) {
-			// The server had never seen this key, so it just made an empty account for it. Undo both
-			// halves: the key here, and nothing to do about the stray account beyond leaving it idle.
-			settings.revertSecret(previous)
-			return Recovery.Unknown
-		}
-		settings.isRegistered = true
-		settings.nickname = result.identity.nickname
-		settings.syncedNickname = result.identity.nickname
-		settings.replyCursor = null
-		settings.lastProbeUploadDay = Long.MIN_VALUE
-		return Recovery.Restored(result.identity)
-	}
-
-	/**
-	 * Asks the server whether this key is already somebody, in the background, while the telemetry
-	 * question is on screen - so by the time the nickname step would appear the answer is usually in.
-	 *
-	 * Failure is silent and costs only the skip: an unreachable server means the nickname step is
-	 * shown as normal, which is the same place the user would have been anyway.
-	 */
-	private fun tryRestore() {
-		// Device identifiers are abuse-control signals, never account credentials. With no surviving
-		// key there is therefore nothing to recover and saying hello would only create a new account.
-		if (settings.peekSecret() == null) return
-		android.util.Log.i(TAG_LOG, "restore: asking the server whether it knows the saved key")
-		lifecycleScope.launch {
-			val result = runCatchingCancellable { api.helloWithStatus() }.getOrNull() ?: run {
-				android.util.Log.w(TAG_LOG, "restore: could not reach the server")
-				return@launch
-			}
-			settings.isRegistered = true
-			val identity = result.identity
-			if (result.created || identity.nickname.isNullOrEmpty()) {
-				android.util.Log.i(TAG_LOG, "restore: nothing to come back to, so we will ask as usual")
-				return@launch
-			}
-			android.util.Log.i(
-				TAG_LOG,
-				"restore: recovered " + identity.displayName + " by key",
-			)
-			restored = identity
-			settings.nickname = identity.nickname
-			settings.syncedNickname = identity.nickname
-			if (isNameOnly && step == STEP_NICKNAME) {
-				(dialog as? AlertDialog)?.let(::finish)
-			}
-			// Said out loud rather than silently skipping a step: coming back to an account you had
-			// forgotten about is exactly the moment to be told whose it is.
-			Toast.makeText(
-				requireContext(),
-				getString(R.string.community_recover_done, identity.displayName),
-				Toast.LENGTH_LONG,
-			).show()
-		}
-	}
-
-	/** Skips the nickname question for somebody who already has one. */
-	private fun nextAfterTelemetry(): Int =
-		if (restored?.nickname.isNullOrEmpty()) STEP_NICKNAME else STEP_SPONSOR
-
-	/**
-	 * Sends the nickname now, and advances only once the server has it or cannot be reached.
-	 *
-	 * It used to be stored locally and left for the daily sync job, which runs only on unmetered Wi-Fi.
-	 * The account was then created by the first comment or rating without a name, so everything the
-	 * user wrote appeared as `anon#xxxx` while the app kept showing the name they had picked.
-	 *
-	 * The call registers the identity if needed (see CommunityApi's authenticator); consent was given at
-	 * the first step. A rejection - a reserved name, the word filter - is shown here, where the user can
-	 * still fix it. An unreachable server does not block onboarding: the name stays pending and is sent
-	 * with the next community call.
-	 */
-	private fun submitNickname(dialog: AlertDialog) {
-		val value = validNicknameOrNull() ?: return
-		val positive = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-		positive.isEnabled = false
-		lifecycleScope.launch {
-			val result = runCatchingCancellable { api.setNickname(value) }
-			positive.isEnabled = true
-			result.exceptionOrNull()?.let(::nicknameRejection)?.let { rejection ->
-				nicknameLayout.error = nicknameRejectionMessage(requireContext(), rejection)
-				return@launch
-			}
-			settings.nickname = value
-			if (result.isSuccess) settings.syncedNickname = value
-			// Someone brought back just for their name has already seen the rest.
-			if (isNameOnly) finish(dialog) else advance(dialog, STEP_SPONSOR)
-		}
-	}
-
-	/** Local checks first, so a typo is caught without a round trip. */
-	private fun validNicknameOrNull(): String? {
-		val value = nicknameInput.text?.toString()?.trim().orEmpty()
-		nicknameLayout.error = when {
-			value.isEmpty() -> getString(R.string.community_nickname_required)
-			value.length < NICKNAME_MIN -> getString(R.string.community_nickname_too_short)
-			value.any { !it.isLetterOrDigit() && !it.isWhitespace() && it != '_' && it != '-' } ->
-				getString(R.string.community_nickname_invalid)
-
-			else -> null
-		}
-		return value.takeIf { nicknameLayout.error == null }
-	}
-
-	/** Shows the discriminator as it will actually appear, so it is not a surprise later. */
-	private fun updateNicknamePreview() {
-		nicknameLayout.error = null
-		val typed = nicknameInput.text?.toString()?.trim().orEmpty()
-		nicknamePreview.isVisible = typed.isNotEmpty()
-		nicknamePreview.text = getString(R.string.community_nickname_preview, "$typed#••••")
-	}
-
-	private fun advance(dialog: AlertDialog, next: Int) {
-		step = next
-		render(dialog)
-		animateHero()
-	}
-
-	private fun finish(dialog: AlertDialog) {
-		settings.hasSeenOnboarding = true
-		// Scheduling reads the toggles, so it both starts and cancels the job correctly.
-		syncScheduler.schedule()
-		dialog.dismiss()
-	}
-
-	/**
-	 * Routed through [AppRouter] rather than a bare ACTION_VIEW intent: Inkstack registers its own VIEW
-	 * filter for manga urls, so an implicit intent can be caught by the app itself.
-	 */
-	private fun openSponsorPage() {
-		router.openExternalBrowser(SPONSOR_URL, getString(R.string.community_sponsor))
-	}
-
-	private val activeDotWidth by lazy { resources.getDimensionPixelSize(R.dimen.onboarding_dot_active) }
-	private val inactiveDotWidth by lazy { resources.getDimensionPixelSize(R.dimen.onboarding_dot) }
-
-	/**
-	 * The split shown at step three. Server costs come out first, and what remains is divided evenly
-	 * between translation work and the V Foundation for Cancer Research - so the chart shows the
-	 * halves as equal and the server slice as the deduction it is.
-	 */
-	private fun bindDonationSplit(view: View) {
-		val chart = view.findViewById<PieChartView>(R.id.chart_split)
-		val entries = listOf(
-			Triple(R.id.legend_translation, R.string.community_sponsor_split_translation, COLOR_TRANSLATION),
-			Triple(R.id.legend_charity, R.string.community_sponsor_split_charity, COLOR_CHARITY),
-			Triple(R.id.legend_server, R.string.community_sponsor_split_server, COLOR_SERVER),
-		)
-		val percents = listOf(SHARE_TRANSLATION, SHARE_CHARITY, SHARE_SERVER)
-
-		chart.setData(
-			entries.mapIndexed { index, (_, labelRes, color) ->
-				PieChartView.Segment(
-					value = (percents[index] * 100).toInt(),
-					label = getString(labelRes),
-					percent = percents[index],
-					color = color,
-					tag = null,
-				)
-			},
-		)
-
-		entries.forEachIndexed { index, (viewId, labelRes, color) ->
-			view.findViewById<TextView>(viewId).apply {
-				val percent = getString(R.string.percent_format, (percents[index] * 100).toInt())
-				text = "$percent  ${getString(labelRes)}"
-				setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_dot_small, 0, 0, 0)
-				TextViewCompat.setCompoundDrawableTintList(this, ColorStateList.valueOf(color))
-			}
-		}
 	}
 
 	companion object {
@@ -543,43 +105,18 @@ class CommunityOnboardingDialog : DialogFragment() {
 		private const val TAG = "community_onboarding"
 		private const val ARG_NAME_ONLY = "name_only"
 
-		/** Shared with CommunityApi so one logcat filter shows the whole identity story. */
-		private const val TAG_LOG = "CommunityIdentity"
-		private const val STEP_INTRO = 0
-		private const val STEP_TELEMETRY = 1
-		private const val STEP_NICKNAME = 2
-		private const val STEP_SPONSOR = 3
-
-		private const val NICKNAME_MIN = 2
-
 		const val SPONSOR_URL = "https://github.com/sponsors/scardracs"
-
-		/** Server first, then an even split of what is left - which is what the wording promises. */
-		private const val SHARE_SERVER = 0.20f
-		private const val SHARE_TRANSLATION = 0.40f
-		private const val SHARE_CHARITY = 0.40f
-
-		private const val COLOR_TRANSLATION = 0xFF4E9F5B.toInt()
-		private const val COLOR_CHARITY = 0xFFC0504D.toInt()
-		private const val COLOR_SERVER = 0xFF7A7A7A.toInt()
 
 		fun showIfNeeded(context: Context, settings: CommunitySettings, fm: FragmentManager) {
 			if (fm.findFragmentByTag(TAG) != null) return
-			// Opted in but never named: the app was closed between the opt-in and the nickname step,
-			// which used to leave the dialog gone for good and the account anonymous. Pick up there.
-			// Going back from that step still leads to the opt-in, where declining is a real choice.
 			if (settings.isEnabled && settings.nickname.isNullOrEmpty()) {
 				showNicknameStep(fm)
 				return
 			}
-			// Either flag is proof the question has been put. `isEnabled` is set the moment somebody
-			// opts in, so it covers anyone who answered on a build that only recorded the answer at
-			// the last step - they would otherwise be asked again on every single launch, forever.
 			if (settings.hasSeenOnboarding || settings.isEnabled) return
 			CommunityOnboardingDialog().show(fm, TAG)
 		}
 
-		/** The nickname step on its own - see [isNameOnly]. */
 		fun showNicknameStep(fm: FragmentManager) {
 			if (fm.findFragmentByTag(TAG) != null) return
 			CommunityOnboardingDialog().apply {
@@ -592,3 +129,533 @@ class CommunityOnboardingDialog : DialogFragment() {
 		}
 	}
 }
+
+private const val TAG_LOG = "CommunityIdentity"
+private const val STEP_INTRO = 0
+private const val STEP_TELEMETRY = 1
+private const val STEP_NICKNAME = 2
+private const val STEP_SPONSOR = 3
+private const val NICKNAME_MIN = 2
+private const val SHARE_SERVER = 0.20f
+private const val SHARE_TRANSLATION = 0.40f
+private const val SHARE_CHARITY = 0.40f
+private val COLOR_TRANSLATION = Color(0xFF4E9F5B)
+private val COLOR_CHARITY = Color(0xFFC0504D)
+private val COLOR_SERVER = Color(0xFF7A7A7A)
+
+@Composable
+private fun CommunityOnboardingContent(
+	settings: CommunitySettings,
+	api: CommunityApi,
+	syncScheduler: SourceScoreSyncWorker.Scheduler,
+	openBrowser: (url: String, title: String) -> Unit,
+	nameOnly: Boolean,
+	onFinished: () -> Unit,
+) {
+	val context = LocalContext.current
+	val scope = rememberCoroutineScope()
+
+	var step by remember { mutableIntStateOf(if (nameOnly) STEP_NICKNAME else STEP_INTRO) }
+	var restored by remember { mutableStateOf<IdentityResponse?>(null) }
+	var nickname by remember { mutableStateOf("") }
+	var nicknameError by remember { mutableStateOf<String?>(null) }
+	var busy by remember { mutableStateOf(false) }
+	var showRecover by remember { mutableStateOf(false) }
+
+	fun advance(next: Int) {
+		step = next
+	}
+
+	fun finish() {
+		settings.hasSeenOnboarding = true
+		syncScheduler.schedule()
+		onFinished()
+	}
+
+	fun tryRestore() {
+		if (settings.peekSecret() == null) return
+		android.util.Log.i(TAG_LOG, "restore: asking the server whether it knows the saved key")
+		scope.launch {
+			val result = runCatchingCancellable { api.helloWithStatus() }.getOrNull() ?: run {
+				android.util.Log.w(TAG_LOG, "restore: could not reach the server")
+				return@launch
+			}
+			settings.isRegistered = true
+			val identity = result.identity
+			if (result.created || identity.nickname.isNullOrEmpty()) {
+				android.util.Log.i(TAG_LOG, "restore: nothing to come back to, so we will ask as usual")
+				return@launch
+			}
+			android.util.Log.i(TAG_LOG, "restore: recovered " + identity.displayName + " by key")
+			restored = identity
+			settings.nickname = identity.nickname
+			settings.syncedNickname = identity.nickname
+			if (nameOnly && step == STEP_NICKNAME) {
+				finish()
+			}
+			Toast.makeText(
+				context,
+				context.getString(R.string.community_recover_done, identity.displayName),
+				Toast.LENGTH_LONG,
+			).show()
+		}
+	}
+
+	LaunchedEffect(nameOnly) {
+		if (nameOnly) tryRestore()
+	}
+
+	fun nextAfterTelemetry(): Int =
+		if (restored?.nickname.isNullOrEmpty()) STEP_NICKNAME else STEP_SPONSOR
+
+	fun onPositive() {
+		when (step) {
+			STEP_INTRO -> {
+				settings.isEnabled = true
+				tryRestore()
+				settings.hasSeenOnboarding = true
+				advance(STEP_TELEMETRY)
+			}
+			STEP_TELEMETRY -> {
+				settings.isTelemetryEnabled = true
+				advance(nextAfterTelemetry())
+			}
+			STEP_NICKNAME -> {
+				val value = nickname.trim()
+				nicknameError = when {
+					value.isEmpty() -> context.getString(R.string.community_nickname_required)
+					value.length < NICKNAME_MIN -> context.getString(R.string.community_nickname_too_short)
+					value.any { !it.isLetterOrDigit() && !it.isWhitespace() && it != '_' && it != '-' } ->
+						context.getString(R.string.community_nickname_invalid)
+					else -> null
+				}
+				if (nicknameError != null) return
+				busy = true
+				scope.launch {
+					val result = runCatchingCancellable { api.setNickname(value) }
+					busy = false
+					result.exceptionOrNull()?.let(::nicknameRejection)?.let { rejection ->
+						nicknameError = nicknameRejectionMessage(context, rejection)
+						return@launch
+					}
+					settings.nickname = value
+					if (result.isSuccess) settings.syncedNickname = value
+					if (nameOnly) finish() else advance(STEP_SPONSOR)
+				}
+			}
+			STEP_SPONSOR -> {
+				openBrowser(
+					CommunityOnboardingDialog.SPONSOR_URL,
+					context.getString(R.string.community_sponsor),
+				)
+				finish()
+			}
+		}
+	}
+
+	fun onNegative() {
+		when (step) {
+			STEP_INTRO -> {
+				settings.isEnabled = false
+				settings.isTelemetryEnabled = false
+				finish()
+			}
+			STEP_TELEMETRY -> {
+				settings.isTelemetryEnabled = false
+				advance(nextAfterTelemetry())
+			}
+			STEP_NICKNAME -> advance(STEP_INTRO)
+			STEP_SPONSOR -> finish()
+		}
+	}
+
+	val (titleRes, iconRes, positiveRes, negativeRes) = when (step) {
+		STEP_INTRO -> Quad(
+			R.string.community_intro_title,
+			R.drawable.ic_info_outline,
+			R.string.community_intro_optin,
+			R.string.community_intro_skip,
+		)
+		STEP_TELEMETRY -> Quad(
+			R.string.community_telemetry_title,
+			R.drawable.ic_chart,
+			R.string.community_telemetry_yes,
+			R.string.community_telemetry_no,
+		)
+		STEP_NICKNAME -> Quad(
+			R.string.community_nickname_title,
+			R.drawable.ic_user,
+			R.string.community_nickname_continue,
+			R.string.community_nickname_back,
+		)
+		else -> Quad(
+			R.string.community_sponsor_title,
+			R.drawable.ic_heart,
+			R.string.community_sponsor_open,
+			R.string.community_sponsor_dismiss,
+		)
+	}
+
+	AlertDialog(
+		onDismissRequest = {},
+		properties = DialogProperties(
+			dismissOnBackPress = false,
+			dismissOnClickOutside = false,
+		),
+		title = null,
+		text = {
+			Column(
+				modifier = Modifier
+					.fillMaxWidth()
+					.verticalScroll(rememberScrollState()),
+				horizontalAlignment = Alignment.CenterHorizontally,
+			) {
+				Box(
+					modifier = Modifier
+						.size(72.dp)
+						.clip(CircleShape)
+						.background(MaterialTheme.colorScheme.secondaryContainer),
+					contentAlignment = Alignment.Center,
+				) {
+					Icon(
+						painter = painterResource(iconRes),
+						contentDescription = null,
+						tint = MaterialTheme.colorScheme.onSecondaryContainer,
+						modifier = Modifier.size(34.dp),
+					)
+				}
+				Spacer(Modifier.height(20.dp))
+				Text(
+					text = stringResource(titleRes),
+					style = MaterialTheme.typography.headlineSmall,
+					textAlign = TextAlign.Center,
+				)
+				Spacer(Modifier.height(14.dp))
+				StepDots(active = step, count = 4)
+				Spacer(Modifier.height(20.dp))
+				when (step) {
+					STEP_INTRO -> IntroStep(serverUrl = settings.serverUrl, onOpenLink = openBrowser)
+					STEP_TELEMETRY -> Text(
+						stringResource(R.string.community_telemetry_body),
+						style = MaterialTheme.typography.bodyMedium,
+					)
+					STEP_NICKNAME -> NicknameStep(
+						nickname = nickname,
+						error = nicknameError,
+						onNicknameChange = {
+							nickname = it
+							nicknameError = null
+						},
+					)
+					STEP_SPONSOR -> SponsorStep()
+				}
+			}
+		},
+		confirmButton = {
+			TextButton(onClick = { onPositive() }, enabled = !busy) {
+				Text(stringResource(positiveRes))
+			}
+		},
+		dismissButton = {
+			Row {
+				if (step == STEP_INTRO) {
+					TextButton(onClick = { showRecover = true }) {
+						Text(stringResource(R.string.community_recover))
+					}
+				}
+				TextButton(onClick = { onNegative() }, enabled = !busy) {
+					Text(stringResource(negativeRes))
+				}
+			}
+		},
+	)
+
+	if (showRecover) {
+		RecoverDialog(
+			settings = settings,
+			api = api,
+			onDismiss = { showRecover = false },
+			onRestored = { identity ->
+				showRecover = false
+				restored = identity
+				settings.isEnabled = true
+				settings.hasSeenOnboarding = true
+				Toast.makeText(
+					context,
+					context.getString(R.string.community_recover_done, identity.displayName),
+					Toast.LENGTH_LONG,
+				).show()
+				syncScheduler.schedule()
+				advance(STEP_TELEMETRY)
+			},
+		)
+	}
+}
+
+@Composable
+private fun IntroStep(serverUrl: String, onOpenLink: (String, String) -> Unit) {
+	val terms = stringResource(R.string.community_terms)
+	val privacy = stringResource(R.string.community_privacy)
+	val policyText = stringResource(R.string.community_policy_links, terms, privacy)
+	val linkColor = MaterialTheme.colorScheme.primary
+	val annotated = remember(policyText, terms, privacy, linkColor) {
+		buildAnnotatedString {
+			val termsStart = policyText.indexOf(terms)
+			val privacyStart = policyText.indexOf(privacy)
+			var i = 0
+			while (i < policyText.length) {
+				when (i) {
+					termsStart -> {
+						pushStringAnnotation("terms", "$serverUrl/terms")
+						withStyle(SpanStyle(color = linkColor, textDecoration = TextDecoration.Underline)) {
+							append(terms)
+						}
+						pop()
+						i += terms.length
+					}
+					privacyStart -> {
+						pushStringAnnotation("privacy", "$serverUrl/privacy")
+						withStyle(SpanStyle(color = linkColor, textDecoration = TextDecoration.Underline)) {
+							append(privacy)
+						}
+						pop()
+						i += privacy.length
+					}
+					else -> {
+						append(policyText[i])
+						i++
+					}
+				}
+			}
+		}
+	}
+	Column(Modifier.fillMaxWidth()) {
+		Text(stringResource(R.string.community_intro_body), style = MaterialTheme.typography.bodyMedium)
+		Spacer(Modifier.height(12.dp))
+		Text(
+			stringResource(R.string.community_age_notice),
+			style = MaterialTheme.typography.bodySmall,
+			color = MaterialTheme.colorScheme.primary,
+		)
+		Spacer(Modifier.height(8.dp))
+		ClickableText(
+			text = annotated,
+			style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
+			onClick = { offset ->
+				annotated.getStringAnnotations(offset, offset).firstOrNull()?.let { ann ->
+					val title = if (ann.tag == "terms") terms else privacy
+					onOpenLink(ann.item, title)
+				}
+			},
+		)
+	}
+}
+
+@Composable
+private fun NicknameStep(
+	nickname: String,
+	error: String?,
+	onNicknameChange: (String) -> Unit,
+) {
+	Column(Modifier.fillMaxWidth()) {
+		Text(stringResource(R.string.community_nickname_body), style = MaterialTheme.typography.bodyMedium)
+		Spacer(Modifier.height(16.dp))
+		OutlinedTextField(
+			value = nickname,
+			onValueChange = { if (it.length <= 24) onNicknameChange(it) },
+			modifier = Modifier.fillMaxWidth(),
+			label = { Text(stringResource(R.string.community_nickname)) },
+			supportingText = {
+				Text("${nickname.length}/24")
+			},
+			isError = error != null,
+			singleLine = true,
+		)
+		error?.let {
+			Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+		}
+		val typed = nickname.trim()
+		if (typed.isNotEmpty()) {
+			Spacer(Modifier.height(4.dp))
+			Text(
+				stringResource(R.string.community_nickname_preview, "$typed#••••"),
+				style = MaterialTheme.typography.bodySmall,
+				color = MaterialTheme.colorScheme.onSurfaceVariant,
+			)
+		}
+	}
+}
+
+@Composable
+private fun SponsorStep() {
+	Column(Modifier.fillMaxWidth()) {
+		Text(stringResource(R.string.community_sponsor_body), style = MaterialTheme.typography.bodyMedium)
+		Spacer(Modifier.height(16.dp))
+		Surface(
+			shape = MaterialTheme.shapes.extraLarge,
+			color = MaterialTheme.colorScheme.surfaceContainerHigh,
+		) {
+			Row(
+				modifier = Modifier.padding(16.dp),
+				verticalAlignment = Alignment.CenterVertically,
+			) {
+				DonationPieChart(Modifier.size(96.dp))
+				Spacer(Modifier.width(16.dp))
+				Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+					LegendRow(COLOR_TRANSLATION, SHARE_TRANSLATION, R.string.community_sponsor_split_translation)
+					LegendRow(COLOR_CHARITY, SHARE_CHARITY, R.string.community_sponsor_split_charity)
+					LegendRow(COLOR_SERVER, SHARE_SERVER, R.string.community_sponsor_split_server)
+				}
+			}
+		}
+		Spacer(Modifier.height(12.dp))
+		Text(
+			stringResource(R.string.community_sponsor_reports),
+			style = MaterialTheme.typography.bodySmall,
+			color = MaterialTheme.colorScheme.onSurfaceVariant,
+		)
+	}
+}
+
+@Composable
+private fun LegendRow(color: Color, share: Float, labelRes: Int) {
+	Row(verticalAlignment = Alignment.CenterVertically) {
+		Box(
+			Modifier
+				.size(8.dp)
+				.clip(CircleShape)
+				.background(color),
+		)
+		Spacer(Modifier.width(10.dp))
+		Text(
+			"${stringResource(R.string.percent_format, (share * 100).toInt())}  ${stringResource(labelRes)}",
+			style = MaterialTheme.typography.bodySmall,
+		)
+	}
+}
+
+@Composable
+private fun DonationPieChart(modifier: Modifier = Modifier) {
+	val segments = listOf(
+		COLOR_TRANSLATION to SHARE_TRANSLATION,
+		COLOR_CHARITY to SHARE_CHARITY,
+		COLOR_SERVER to SHARE_SERVER,
+	)
+	val hole = MaterialTheme.colorScheme.surfaceContainerHigh
+	Canvas(modifier) {
+		var start = -90f
+		val diameter = size.minDimension
+		val topLeft = Offset((size.width - diameter) / 2f, (size.height - diameter) / 2f)
+		val arcSize = Size(diameter, diameter)
+		segments.forEach { (color, share) ->
+			val sweep = share * 360f
+			drawArc(color, start, sweep, useCenter = true, topLeft = topLeft, size = arcSize)
+			start += sweep
+		}
+		drawCircle(hole, radius = diameter / 4f)
+	}
+}
+
+@Composable
+private fun StepDots(active: Int, count: Int) {
+	val activeW = 22.dp
+	val inactive = 8.dp
+	Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+		repeat(count) { index ->
+			val isActive = index == active
+			Box(
+				Modifier
+					.height(8.dp)
+					.width(if (isActive) activeW else inactive)
+					.clip(RoundedCornerShape(50))
+					.background(
+						if (isActive) MaterialTheme.colorScheme.primary
+						else MaterialTheme.colorScheme.outlineVariant,
+					),
+			)
+		}
+	}
+}
+
+@Composable
+private fun RecoverDialog(
+	settings: CommunitySettings,
+	api: CommunityApi,
+	onDismiss: () -> Unit,
+	onRestored: (IdentityResponse) -> Unit,
+) {
+	val context = LocalContext.current
+	val scope = rememberCoroutineScope()
+	var key by remember { mutableStateOf("") }
+	var error by remember { mutableStateOf<String?>(null) }
+	var busy by remember { mutableStateOf(false) }
+
+	AlertDialog(
+		onDismissRequest = onDismiss,
+		title = { Text(stringResource(R.string.community_recover_title)) },
+		text = {
+			Column {
+				Text(stringResource(R.string.community_recover_body), style = MaterialTheme.typography.bodyMedium)
+				Spacer(Modifier.height(16.dp))
+				OutlinedTextField(
+					value = key,
+					onValueChange = {
+						key = it
+						error = null
+					},
+					modifier = Modifier.fillMaxWidth(),
+					label = { Text(stringResource(R.string.community_recover_hint)) },
+					isError = error != null,
+					supportingText = error?.let { { Text(it) } },
+					singleLine = false,
+				)
+			}
+		},
+		confirmButton = {
+			TextButton(
+				enabled = !busy,
+				onClick = {
+					val trimmed = key.trim()
+					if (!settings.isPlausibleSecret(trimmed)) {
+						error = context.getString(R.string.community_recover_malformed)
+						return@TextButton
+					}
+					busy = true
+					scope.launch {
+						val previous = settings.peekSecret()
+						if (!settings.adoptSecret(trimmed)) {
+							error = context.getString(R.string.community_recover_unknown)
+							busy = false
+							return@launch
+						}
+						val result = runCatchingCancellable { api.helloWithStatus() }.getOrNull()
+						if (result == null) {
+							settings.revertSecret(previous)
+							error = context.getString(R.string.community_recover_failed)
+							busy = false
+							return@launch
+						}
+						if (result.created) {
+							settings.revertSecret(previous)
+							error = context.getString(R.string.community_recover_unknown)
+							busy = false
+							return@launch
+						}
+						settings.isRegistered = true
+						settings.nickname = result.identity.nickname
+						settings.syncedNickname = result.identity.nickname
+						settings.replyCursor = null
+						settings.lastProbeUploadDay = Long.MIN_VALUE
+						busy = false
+						onRestored(result.identity)
+					}
+				},
+			) { Text(stringResource(R.string.community_recover_action)) }
+		},
+		dismissButton = {
+			TextButton(onClick = onDismiss) { Text(stringResource(android.R.string.cancel)) }
+		},
+	)
+}
+
+private data class Quad(val a: Int, val b: Int, val c: Int, val d: Int)

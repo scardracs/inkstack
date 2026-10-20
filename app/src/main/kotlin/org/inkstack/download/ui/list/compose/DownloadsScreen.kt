@@ -1,5 +1,7 @@
 package org.inkstack.download.ui.list.compose
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,6 +14,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -33,6 +36,8 @@ fun DownloadsScreen(
 						Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
 					}
 				},
+				windowInsets = WindowInsets.statusBars,
+				colors = TopAppBarDefaults.topAppBarColors(),
 			)
 		},
 	) { padding ->

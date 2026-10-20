@@ -1,118 +1,179 @@
 package org.inkstack.backups.ui.restore
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.view.isGone
-import androidx.core.view.isVisible
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.collectLatest
 import org.inkstack.R
 import org.inkstack.core.nav.router
-import org.inkstack.core.ui.AlertDialogFragment
-import org.inkstack.core.ui.list.OnListItemClickListener
+import org.inkstack.core.ui.compose.ComposeAlertDialogFragment
 import org.inkstack.core.util.ext.getDisplayMessage
-import org.inkstack.core.util.ext.observe
-import org.inkstack.core.util.ext.observeEvent
-import org.inkstack.core.util.ext.textAndVisible
-import org.inkstack.databinding.DialogRestoreBinding
 import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.util.Date
 
 @AndroidEntryPoint
-class RestoreDialogFragment : AlertDialogFragment<DialogRestoreBinding>(), OnListItemClickListener<BackupSectionModel>,
-	View.OnClickListener {
+class RestoreDialogFragment : ComposeAlertDialogFragment() {
 
 	private val viewModel: RestoreViewModel by viewModels()
 
-	override fun onCreateViewBinding(
-		inflater: LayoutInflater,
-		container: ViewGroup?,
-	) = DialogRestoreBinding.inflate(inflater, container, false)
-
-	override fun onViewBindingCreated(binding: DialogRestoreBinding, savedInstanceState: Bundle?) {
-		super.onViewBindingCreated(binding, savedInstanceState)
-		val adapter = BackupSectionsAdapter(this)
-		binding.recyclerView.adapter = adapter
-		binding.buttonCancel.setOnClickListener(this)
-		binding.buttonRestore.setOnClickListener(this)
-		viewModel.availableEntries.observe(viewLifecycleOwner, adapter)
-		viewModel.onError.observeEvent(viewLifecycleOwner, this::onError)
-		combine(
-			viewModel.isLoading,
-			viewModel.availableEntries,
-			viewModel.backupDate,
-			::Triple,
-		).observe(viewLifecycleOwner, this::onLoadingChanged)
-	}
-
-	override fun onBuildDialog(builder: MaterialAlertDialogBuilder): MaterialAlertDialogBuilder {
-		return super.onBuildDialog(builder)
-			.setTitle(R.string.restore_backup)
-			.setCancelable(false)
-	}
-
-	override fun onClick(v: View) {
-		when (v.id) {
-			R.id.button_cancel -> dismiss()
-			R.id.button_restore -> {
-				if (startRestoreService()) {
-					Toast.makeText(v.context, R.string.backup_restored_background, Toast.LENGTH_SHORT).show()
+	@Composable
+	override fun DialogContent(onDismissRequest: () -> Unit) {
+		RestoreDialogContent(
+			viewModel = viewModel,
+			onDismissRequest = onDismissRequest,
+			onRestore = {
+				val started = RestoreService.start(
+					requireContext(),
+					viewModel.uri ?: return@RestoreDialogContent false,
+					viewModel.getCheckedSections(),
+				)
+				if (started) {
+					Toast.makeText(requireContext(), R.string.backup_restored_background, Toast.LENGTH_SHORT).show()
 					router.closeWelcomeSheet()
-					dismiss()
+					onDismissRequest()
 				} else {
-					Toast.makeText(v.context, R.string.operation_not_supported, Toast.LENGTH_SHORT).show()
+					Toast.makeText(requireContext(), R.string.operation_not_supported, Toast.LENGTH_SHORT).show()
 				}
+				started
+			},
+		)
+	}
+}
+
+@Composable
+private fun RestoreDialogContent(
+	viewModel: RestoreViewModel,
+	onDismissRequest: () -> Unit,
+	onRestore: () -> Boolean,
+) {
+	val context = LocalContext.current
+	val isLoading by viewModel.isLoading.collectAsState()
+	val entries by viewModel.availableEntries.collectAsState()
+	val backupDate by viewModel.backupDate.collectAsState()
+	var errorMessage by remember { mutableStateOf<String?>(null) }
+
+	LaunchedEffect(viewModel) {
+		viewModel.onError.collectLatest { event ->
+			event?.consume { error ->
+				errorMessage = error.getDisplayMessage(context.resources)
 			}
 		}
 	}
 
-	override fun onItemClick(item: BackupSectionModel, view: View) {
-		viewModel.onItemClick(item)
-	}
-
-	private fun onLoadingChanged(value: Triple<Boolean, List<BackupSectionModel>, Date?>) {
-		val (isLoading, entries, backupDate) = value
-		val hasEntries = entries.isNotEmpty()
-		with(requireViewBinding()) {
-			progressBar.isVisible = isLoading
-			recyclerView.isGone = isLoading
-			textViewSubtitle.textAndVisible =
-				when {
-					!isLoading -> backupDate?.formatBackupDate()
-					hasEntries -> getString(R.string.processing_)
-					else -> getString(R.string.loading_)
-				}
-			buttonRestore.isEnabled = !isLoading && entries.any { it.isChecked }
+	val subtitle = when {
+		!isLoading -> backupDate?.let { date ->
+			stringResource(
+				R.string.backup_date_,
+				SimpleDateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(date),
+			)
 		}
+		entries.isNotEmpty() -> stringResource(R.string.processing_)
+		else -> stringResource(R.string.loading_)
 	}
 
-	private fun startRestoreService(): Boolean {
-		return RestoreService.start(
-			context ?: return false,
-			viewModel.uri ?: return false,
-			viewModel.getCheckedSections(),
+	AlertDialog(
+		onDismissRequest = {},
+		title = { Text(stringResource(R.string.restore_backup)) },
+		text = {
+			Column(modifier = Modifier.fillMaxWidth()) {
+				if (isLoading) {
+					LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+				} else {
+					LazyColumn(
+						modifier = Modifier
+							.fillMaxWidth()
+							.heightIn(max = 360.dp),
+					) {
+						items(entries, key = { it.section }) { item ->
+							Row(
+								modifier = Modifier
+									.fillMaxWidth()
+									.clickable(enabled = item.isEnabled) { viewModel.onItemClick(item) }
+									.padding(vertical = 4.dp),
+								verticalAlignment = Alignment.CenterVertically,
+							) {
+								Checkbox(
+									checked = item.isChecked,
+									onCheckedChange = { viewModel.onItemClick(item) },
+									enabled = item.isEnabled,
+								)
+								Text(
+									text = stringResource(item.titleResId),
+									style = MaterialTheme.typography.bodyLarge,
+								)
+							}
+						}
+					}
+				}
+				if (!subtitle.isNullOrEmpty()) {
+					Text(
+						text = subtitle,
+						style = MaterialTheme.typography.labelMedium,
+						color = MaterialTheme.colorScheme.onSurfaceVariant,
+						modifier = Modifier.padding(top = 8.dp),
+					)
+				}
+			}
+		},
+		confirmButton = {
+			TextButton(
+				onClick = { onRestore() },
+				enabled = !isLoading && entries.any { it.isChecked },
+			) {
+				Text(stringResource(R.string.restore))
+			}
+		},
+		dismissButton = {
+			TextButton(onClick = onDismissRequest) {
+				Text(stringResource(android.R.string.cancel))
+			}
+		},
+	)
+
+	errorMessage?.let { msg ->
+		AlertDialog(
+			onDismissRequest = {
+				errorMessage = null
+				onDismissRequest()
+			},
+			title = { Text(stringResource(R.string.error)) },
+			text = { Text(msg) },
+			confirmButton = {
+				TextButton(
+					onClick = {
+						errorMessage = null
+						onDismissRequest()
+					},
+				) {
+					Text(stringResource(R.string.close))
+				}
+			},
 		)
-	}
-
-	private fun Date.formatBackupDate(): String {
-		return getString(
-			R.string.backup_date_,
-			SimpleDateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(this),
-		)
-	}
-
-	private fun onError(e: Throwable) {
-		MaterialAlertDialogBuilder(context ?: return)
-			.setNegativeButton(R.string.close, null)
-			.setTitle(R.string.error)
-			.setMessage(e.getDisplayMessage(resources))
-			.show()
-		dismiss()
 	}
 }

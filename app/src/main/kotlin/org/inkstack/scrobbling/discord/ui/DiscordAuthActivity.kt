@@ -1,7 +1,6 @@
 package org.inkstack.scrobbling.discord.ui
 
 import android.os.Bundle
-import android.view.MenuItem
 import dagger.hilt.android.AndroidEntryPoint
 import org.inkstack.browser.BaseBrowserActivity
 import org.inkstack.core.parser.ParserMangaRepository
@@ -20,22 +19,12 @@ class DiscordAuthActivity : BaseBrowserActivity(), DiscordTokenWebClient.Callbac
 		source: MangaSource,
 		repository: ParserMangaRepository?
 	) {
-		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = true)
-		viewBinding.webView.settings.userAgentString = USER_AGENT
-		viewBinding.webView.webViewClient = DiscordTokenWebClient(this)
+		showCloseNavigation = true
+		webView.settings.userAgentString = USER_AGENT
+		webView.webViewClient = DiscordTokenWebClient(this)
 		if (savedInstanceState == null) {
-			viewBinding.webView.loadUrl(BASE_URL)
+			webView.loadUrl(BASE_URL)
 		}
-	}
-
-	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-		android.R.id.home -> {
-			viewBinding.webView.stopLoading()
-			finishAfterTransition()
-			true
-		}
-
-		else -> super.onOptionsItemSelected(item)
 	}
 
 	override fun onTokenObtained(token: String) {

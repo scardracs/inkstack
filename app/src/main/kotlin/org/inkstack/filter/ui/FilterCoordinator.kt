@@ -44,7 +44,6 @@ import org.inkstack.parsers.model.YEAR_MIN
 import org.inkstack.parsers.util.ifZero
 import org.inkstack.parsers.util.nullIfEmpty
 import org.inkstack.parsers.util.suspendlazy.suspendLazy
-import org.inkstack.remotelist.ui.RemoteListFragment
 import org.inkstack.search.domain.MangaSearchRepository
 import java.util.Calendar
 import java.util.Locale
@@ -532,10 +531,8 @@ class FilterCoordinator @Inject constructor(
         private const val TAGS_LIMIT = 12
         private val MAX_YEAR = Calendar.getInstance()[Calendar.YEAR] + 1
 
-        /** Fragment args use [RemoteListFragment.ARG_SOURCE]; Compose activity intents use [AppRouter.KEY_SOURCE]. */
         fun requireSourceName(savedStateHandle: SavedStateHandle): String =
-            savedStateHandle[RemoteListFragment.ARG_SOURCE]
-                ?: savedStateHandle[AppRouter.KEY_SOURCE]
+            savedStateHandle[AppRouter.KEY_SOURCE]
                 ?: error("Missing source in SavedStateHandle")
 
         fun find(fragment: Fragment): FilterCoordinator? {

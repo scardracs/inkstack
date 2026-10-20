@@ -1,315 +1,118 @@
 package org.inkstack.download.ui.dialog
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Spinner
-import androidx.appcompat.widget.PopupMenu
-import androidx.core.view.isVisible
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentResultListener
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import org.inkstack.R
 import org.inkstack.core.nav.AppRouter
 import org.inkstack.core.nav.router
 import org.inkstack.core.prefs.DownloadFormat
-import org.inkstack.core.ui.AlertDialogFragment
-import org.inkstack.core.ui.widgets.TwoLinesItemView
+import org.inkstack.core.ui.compose.ComposeAlertDialogFragment
 import org.inkstack.core.util.ext.findActivity
 import org.inkstack.core.util.ext.getDisplayMessage
 import org.inkstack.core.util.ext.getQuantityStringSafe
 import org.inkstack.core.util.ext.joinToStringWithLimit
-import org.inkstack.core.util.ext.observe
-import org.inkstack.core.util.ext.observeEvent
-import org.inkstack.core.util.ext.parentView
-import org.inkstack.core.util.ext.showOrHide
-import org.inkstack.databinding.DialogDownloadBinding
 import org.inkstack.main.ui.owners.BottomNavOwner
 import org.inkstack.parsers.util.format
 import org.inkstack.settings.storage.DirectoryModel
 
+private enum class DownloadOption {
+	WholeManga,
+	WholeBranch,
+	FirstChapters,
+	UnreadChapters,
+}
+
 @AndroidEntryPoint
-class DownloadDialogFragment : AlertDialogFragment<DialogDownloadBinding>(), View.OnClickListener {
+class DownloadDialogFragment : ComposeAlertDialogFragment() {
 
 	private val viewModel by viewModels<DownloadDialogViewModel>()
-	private var optionViews: Array<out TwoLinesItemView>? = null
 
-	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?) =
-		DialogDownloadBinding.inflate(inflater, container, false)
-
-	override fun onBuildDialog(builder: MaterialAlertDialogBuilder): MaterialAlertDialogBuilder {
-		return super.onBuildDialog(builder)
-			.setTitle(R.string.save_manga)
-			.setCancelable(true)
-	}
-
-	override fun onViewBindingCreated(binding: DialogDownloadBinding, savedInstanceState: Bundle?) {
-		super.onViewBindingCreated(binding, savedInstanceState)
-		optionViews = arrayOf(
-			binding.optionWholeManga,
-			binding.optionWholeBranch,
-			binding.optionFirstChapters,
-			binding.optionUnreadChapters,
-		).onEach {
-			it.setOnClickListener(this)
-			it.setOnButtonClickListener(this)
-		}
-		binding.buttonCancel.setOnClickListener(this)
-		binding.buttonConfirm.setOnClickListener(this)
-		binding.textViewMore.setOnClickListener(this)
-
-		binding.textViewTip.isVisible = viewModel.manga.size == 1
-		binding.textViewSummary.text = viewModel.manga.joinToStringWithLimit(binding.root.context, 120) { it.title }
-
-		viewModel.isLoading.observe(viewLifecycleOwner, this::onLoadingStateChanged)
-		viewModel.onScheduled.observeEvent(viewLifecycleOwner, this::onDownloadScheduled)
-		viewModel.onError.observeEvent(viewLifecycleOwner, this::onError)
-		viewModel.defaultFormat.observe(viewLifecycleOwner, this::onDefaultFormatChanged)
-		viewModel.availableDestinations.observe(viewLifecycleOwner, this::onDestinationsChanged)
-		viewModel.chaptersSelectOptions.observe(viewLifecycleOwner, this::onChapterSelectOptionsChanged)
-		viewModel.isOptionsLoading.observe(viewLifecycleOwner, binding.progressBar::showOrHide)
-	}
-
-	override fun onViewStateRestored(savedInstanceState: Bundle?) {
-		super.onViewStateRestored(savedInstanceState)
-		showMoreOptions(requireViewBinding().textViewMore.isChecked)
-		setCheckedOption(
-			savedInstanceState?.getInt(KEY_CHECKED_OPTION, R.id.option_whole_manga) ?: R.id.option_whole_manga,
+	@Composable
+	override fun DialogContent(onDismissRequest: () -> Unit) {
+		DownloadDialogContent(
+			viewModel = viewModel,
+			onDismissRequest = onDismissRequest,
+			onConfirm = { startNow, macro, format, destination ->
+				router.askForDownloadOverMeteredNetwork { allowMetered ->
+					viewModel.confirm(
+						startNow = startNow,
+						chaptersMacro = macro,
+						format = format,
+						destination = destination,
+						allowMetered = allowMetered,
+					)
+				}
+			},
+			onScheduled = { isStarted ->
+				val bundle = Bundle(1)
+				bundle.putBoolean(ARG_STARTED, isStarted)
+				setFragmentResult(RESULT_KEY, bundle)
+				onDismissRequest()
+			},
 		)
 	}
 
-	override fun onSaveInstanceState(outState: Bundle) {
-		super.onSaveInstanceState(outState)
-		optionViews?.find { it.isChecked }?.let {
-			outState.putInt(KEY_CHECKED_OPTION, it.id)
-		}
-	}
+	companion object {
 
-	override fun onDestroyView() {
-		super.onDestroyView()
-		optionViews = null
-	}
+		private const val RESULT_KEY = "DOWNLOAD_STARTED"
+		private const val ARG_STARTED = "started"
 
-	override fun onClick(v: View) {
-		when (v.id) {
-			R.id.button_cancel -> dialog?.cancel()
-			R.id.button_confirm -> router.askForDownloadOverMeteredNetwork(::schedule)
+		fun registerCallback(
+			fm: FragmentManager,
+			lifecycleOwner: LifecycleOwner,
+			snackbarHost: View,
+		) = fm.setFragmentResultListener(RESULT_KEY, lifecycleOwner, SnackbarResultListener(snackbarHost))
 
-			R.id.textView_more -> {
-				val binding = viewBinding ?: return
-				binding.textViewMore.toggle()
-				showMoreOptions(binding.textViewMore.isChecked)
-			}
-
-			R.id.button -> when (v.parentView?.id ?: return) {
-				R.id.option_whole_branch -> showBranchSelection(v)
-				R.id.option_first_chapters -> showFirstChaptersCountSelection(v)
-				R.id.option_unread_chapters -> showUnreadChaptersCountSelection(v)
-			}
-
-			else -> if (v is TwoLinesItemView) {
-				setCheckedOption(v.id)
-			}
-		}
-	}
-
-	private fun schedule(allowMeteredNetwork: Boolean) {
-		viewBinding?.run {
-			val options = viewModel.chaptersSelectOptions.value
-			viewModel.confirm(
-				startNow = switchStart.isChecked,
-				chaptersMacro = when {
-					optionWholeManga.isChecked -> options.wholeManga
-					optionWholeBranch.isChecked -> options.wholeBranch ?: return@run
-					optionFirstChapters.isChecked -> options.firstChapters ?: return@run
-					optionUnreadChapters.isChecked -> options.unreadChapters ?: return@run
-					else -> return@run
-				},
-				format = DownloadFormat.entries.getOrNull(spinnerFormat.selectedItemPosition),
-				destination = viewModel.availableDestinations.value.getOrNull(spinnerDestination.selectedItemPosition),
-				allowMetered = allowMeteredNetwork,
-			)
-		}
-	}
-
-	private fun onError(e: Throwable) {
-		MaterialAlertDialogBuilder(context ?: return)
-			.setNegativeButton(R.string.close, null)
-			.setTitle(R.string.error)
-			.setMessage(e.getDisplayMessage(resources))
-			.show()
-		dismiss()
-	}
-
-	private fun onLoadingStateChanged(value: Boolean) {
-		with(requireViewBinding()) {
-			buttonConfirm.isEnabled = !value
-		}
-	}
-
-	private fun onDefaultFormatChanged(format: DownloadFormat?) {
-		val spinner = viewBinding?.spinnerFormat ?: return
-		spinner.setSelection(format?.ordinal ?: Spinner.INVALID_POSITION)
-	}
-
-	private fun onDestinationsChanged(directories: List<DirectoryModel>) {
-		viewBinding?.spinnerDestination?.run {
-			adapter = DestinationsAdapter(context, directories)
-			setSelection(directories.indexOfFirst { it.isChecked })
-		}
-	}
-
-	private fun onChapterSelectOptionsChanged(options: ChapterSelectOptions) {
-		with(viewBinding ?: return) {
-			// Whole manga
-			optionWholeManga.subtitle = if (options.wholeManga.chaptersCount > 0) {
-				resources.getQuantityStringSafe(
-					R.plurals.chapters,
-					options.wholeManga.chaptersCount,
-					options.wholeManga.chaptersCount,
-				)
-			} else {
-				null
-			}
-			// All chapters for branch
-			optionWholeBranch.isVisible = options.wholeBranch != null
-			options.wholeBranch?.let {
-				optionWholeBranch.title = resources.getString(
-					R.string.download_option_all_chapters,
-					it.selectedBranch,
-				)
-				optionWholeBranch.subtitle = if (it.chaptersCount > 0) {
-					resources.getQuantityStringSafe(
-						R.plurals.chapters,
-						it.chaptersCount,
-						it.chaptersCount,
-					)
-				} else {
-					null
-				}
-			}
-			// First N chapters
-			optionFirstChapters.isVisible = options.firstChapters != null
-			options.firstChapters?.let {
-				optionFirstChapters.title = resources.getString(
-					R.string.download_option_first_n_chapters,
-					resources.getQuantityStringSafe(
-						R.plurals.chapters,
-						it.chaptersCount,
-						it.chaptersCount,
-					),
-				)
-				optionFirstChapters.subtitle = it.branch
-			}
-			// Next N unread chapters
-			optionUnreadChapters.isVisible = options.unreadChapters != null
-			options.unreadChapters?.let {
-				optionUnreadChapters.title = if (it.chaptersCount == Int.MAX_VALUE) {
-					resources.getString(R.string.download_option_all_unread)
-				} else {
-					resources.getString(
-						R.string.download_option_next_unread_n_chapters,
-						resources.getQuantityStringSafe(
-							R.plurals.chapters,
-							it.chaptersCount,
-							it.chaptersCount,
-						),
-					)
-				}
-			}
-		}
-	}
-
-	private fun onDownloadScheduled(isStarted: Boolean) {
-		val bundle = Bundle(1)
-		bundle.putBoolean(ARG_STARTED, isStarted)
-		setFragmentResult(RESULT_KEY, bundle)
-		dismiss()
-	}
-
-	private fun showMoreOptions(isVisible: Boolean) = viewBinding?.apply {
-		cardFormat.isVisible = isVisible
-		textViewFormat.isVisible = isVisible
-		cardDestination.isVisible = isVisible
-		textViewDestination.isVisible = isVisible
-	}
-
-	private fun setCheckedOption(id: Int) {
-		for (optionView in optionViews ?: return) {
-			optionView.isChecked = id == optionView.id
-			optionView.isButtonEnabled = optionView.isChecked
-		}
-	}
-
-	private fun showBranchSelection(v: View) {
-		val option = viewModel.chaptersSelectOptions.value.wholeBranch ?: return
-		val branches = option.branches.keys.toList()
-		if (branches.size <= 1) {
-			return
-		}
-		val menu = PopupMenu(v.context, v)
-		for ((i, branch) in branches.withIndex()) {
-			menu.menu.add(Menu.NONE, Menu.NONE, i, branch ?: getString(R.string.unknown))
-		}
-		menu.setOnMenuItemClickListener {
-			viewModel.setSelectedBranch(branches.getOrNull(it.order))
-			true
-		}
-		menu.show()
-	}
-
-	private fun showFirstChaptersCountSelection(v: View) {
-		val option = viewModel.chaptersSelectOptions.value.firstChapters ?: return
-		val menu = PopupMenu(v.context, v)
-		chaptersCount(option.maxAvailableCount).forEach { i ->
-			menu.menu.add(i.format())
-		}
-		menu.setOnMenuItemClickListener {
-			viewModel.setFirstChaptersCount(
-				it.title?.toString()?.toIntOrNull() ?: return@setOnMenuItemClickListener false,
-			)
-			true
-		}
-		menu.show()
-	}
-
-	private fun showUnreadChaptersCountSelection(v: View) {
-		val option = viewModel.chaptersSelectOptions.value.unreadChapters ?: return
-		val menu = PopupMenu(v.context, v)
-		chaptersCount(option.maxAvailableCount).forEach { i ->
-			menu.menu.add(i.format())
-		}
-		menu.menu.add(getString(R.string.chapters_all))
-		menu.setOnMenuItemClickListener {
-			viewModel.setUnreadChaptersCount(it.title?.toString()?.toIntOrNull() ?: Int.MAX_VALUE)
-			true
-		}
-		menu.show()
-	}
-
-	private fun chaptersCount(max: Int) = sequence {
-		yield(1)
-		var seed = 5
-		var step = 5
-		while (seed + step <= max) {
-			yield(seed)
-			step = when {
-				seed < 20 -> 5
-				seed < 60 -> 10
-				else -> 20
-			}
-			seed += step
-		}
-		if (seed < max) {
-			yield(max)
-		}
+		fun unregisterCallback(fm: FragmentManager) = fm.clearFragmentResultListener(RESULT_KEY)
 	}
 
 	private class SnackbarResultListener(
@@ -333,19 +136,415 @@ class DownloadDialogFragment : AlertDialogFragment<DialogDownloadBinding>(), Vie
 			snackbar.show()
 		}
 	}
+}
 
-	companion object {
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DownloadDialogContent(
+	viewModel: DownloadDialogViewModel,
+	onDismissRequest: () -> Unit,
+	onConfirm: (Boolean, ChaptersSelectMacro, DownloadFormat?, DirectoryModel?) -> Unit,
+	onScheduled: (Boolean) -> Unit,
+) {
+	val context = LocalContext.current
+	val isLoading by viewModel.isLoading.collectAsState()
+	val isOptionsLoading by viewModel.isOptionsLoading.collectAsState()
+	val options by viewModel.chaptersSelectOptions.collectAsState()
+	val destinations by viewModel.availableDestinations.collectAsState()
+	val defaultFormat by viewModel.defaultFormat.collectAsState()
+	val formatLabels = stringArrayResource(R.array.download_formats)
 
-		private const val RESULT_KEY = "DOWNLOAD_STARTED"
-		private const val ARG_STARTED = "started"
-		private const val KEY_CHECKED_OPTION = "checked_opt"
+	var selectedOption by rememberSaveable { mutableStateOf(DownloadOption.WholeManga) }
+	var startNow by rememberSaveable { mutableStateOf(true) }
+	var showMore by rememberSaveable { mutableStateOf(false) }
+	var formatIndex by rememberSaveable { mutableIntStateOf(0) }
+	var destinationIndex by rememberSaveable { mutableIntStateOf(0) }
+	var formatExpanded by remember { mutableStateOf(false) }
+	var destinationExpanded by remember { mutableStateOf(false) }
+	var branchMenuExpanded by remember { mutableStateOf(false) }
+	var firstCountMenuExpanded by remember { mutableStateOf(false) }
+	var unreadCountMenuExpanded by remember { mutableStateOf(false) }
+	var errorMessage by remember { mutableStateOf<String?>(null) }
 
-		fun registerCallback(
-			fm: FragmentManager,
-			lifecycleOwner: LifecycleOwner,
-			snackbarHost: View
-		) = fm.setFragmentResultListener(RESULT_KEY, lifecycleOwner, SnackbarResultListener(snackbarHost))
+	LaunchedEffect(defaultFormat) {
+		defaultFormat?.let { formatIndex = it.ordinal }
+	}
+	LaunchedEffect(destinations) {
+		val checked = destinations.indexOfFirst { it.isChecked }
+		if (checked >= 0) destinationIndex = checked
+	}
+	LaunchedEffect(viewModel) {
+		viewModel.onScheduled.collectLatest { event ->
+			event?.consume { onScheduled(it) }
+		}
+	}
+	LaunchedEffect(viewModel) {
+		viewModel.onError.collectLatest { event ->
+			event?.consume { error ->
+				errorMessage = error.getDisplayMessage(context.resources)
+			}
+		}
+	}
 
-		fun unregisterCallback(fm: FragmentManager) = fm.clearFragmentResultListener(RESULT_KEY)
+	val summary = remember(viewModel.manga) {
+		viewModel.manga.joinToStringWithLimit(context, 120) { it.title }
+	}
+
+	AlertDialog(
+		onDismissRequest = onDismissRequest,
+		title = { Text(stringResource(R.string.save_manga)) },
+		text = {
+			Column(
+				modifier = Modifier
+					.fillMaxWidth()
+					.verticalScroll(rememberScrollState()),
+				verticalArrangement = Arrangement.spacedBy(4.dp),
+			) {
+				Text(
+					text = summary,
+					style = MaterialTheme.typography.bodyMedium,
+				)
+				Column(modifier = Modifier.selectableGroup()) {
+					DownloadOptionRow(
+						selected = selectedOption == DownloadOption.WholeManga,
+						title = stringResource(R.string.download_option_whole_manga),
+						subtitle = chaptersSubtitle(options.wholeManga.chaptersCount),
+						onSelect = { selectedOption = DownloadOption.WholeManga },
+					)
+					options.wholeBranch?.let { branch ->
+						DownloadOptionRow(
+							selected = selectedOption == DownloadOption.WholeBranch,
+							title = stringResource(
+								R.string.download_option_all_chapters,
+								branch.selectedBranch ?: stringResource(R.string.unknown),
+							),
+							subtitle = chaptersSubtitle(branch.chaptersCount),
+							onSelect = { selectedOption = DownloadOption.WholeBranch },
+							trailing = if (branch.branches.size > 1) {
+								{
+									TextButton(onClick = { branchMenuExpanded = true }) {
+										Text(stringResource(R.string.more_options))
+									}
+									DropdownMenu(
+										expanded = branchMenuExpanded,
+										onDismissRequest = { branchMenuExpanded = false },
+									) {
+										branch.branches.keys.forEach { name ->
+											DropdownMenuItem(
+												text = {
+													Text(name ?: stringResource(R.string.unknown))
+												},
+												onClick = {
+													viewModel.setSelectedBranch(name)
+													branchMenuExpanded = false
+												},
+											)
+										}
+									}
+								}
+							} else {
+								null
+							},
+						)
+					}
+					options.firstChapters?.let { first ->
+						DownloadOptionRow(
+							selected = selectedOption == DownloadOption.FirstChapters,
+							title = stringResource(
+								R.string.download_option_first_n_chapters,
+								chaptersSubtitle(first.chaptersCount).orEmpty(),
+							),
+							subtitle = first.branch,
+							onSelect = { selectedOption = DownloadOption.FirstChapters },
+							trailing = {
+								TextButton(onClick = { firstCountMenuExpanded = true }) {
+									Text(first.chaptersCount.format())
+								}
+								DropdownMenu(
+									expanded = firstCountMenuExpanded,
+									onDismissRequest = { firstCountMenuExpanded = false },
+								) {
+									chaptersCountSequence(first.maxAvailableCount).forEach { count ->
+										DropdownMenuItem(
+											text = { Text(count.format()) },
+											onClick = {
+												viewModel.setFirstChaptersCount(count)
+												firstCountMenuExpanded = false
+											},
+										)
+									}
+								}
+							},
+						)
+					}
+					options.unreadChapters?.let { unread ->
+						val title = if (unread.chaptersCount == Int.MAX_VALUE) {
+							stringResource(R.string.download_option_all_unread)
+						} else {
+							stringResource(
+								R.string.download_option_next_unread_n_chapters,
+								chaptersSubtitle(unread.chaptersCount).orEmpty(),
+							)
+						}
+						DownloadOptionRow(
+							selected = selectedOption == DownloadOption.UnreadChapters,
+							title = title,
+							subtitle = null,
+							onSelect = { selectedOption = DownloadOption.UnreadChapters },
+							trailing = {
+								TextButton(onClick = { unreadCountMenuExpanded = true }) {
+									Text(
+										if (unread.chaptersCount == Int.MAX_VALUE) {
+											stringResource(R.string.chapters_all)
+										} else {
+											unread.chaptersCount.format()
+										},
+									)
+								}
+								DropdownMenu(
+									expanded = unreadCountMenuExpanded,
+									onDismissRequest = { unreadCountMenuExpanded = false },
+								) {
+									chaptersCountSequence(unread.maxAvailableCount).forEach { count ->
+										DropdownMenuItem(
+											text = { Text(count.format()) },
+											onClick = {
+												viewModel.setUnreadChaptersCount(count)
+												unreadCountMenuExpanded = false
+											},
+										)
+									}
+									DropdownMenuItem(
+										text = { Text(stringResource(R.string.chapters_all)) },
+										onClick = {
+											viewModel.setUnreadChaptersCount(Int.MAX_VALUE)
+											unreadCountMenuExpanded = false
+										},
+									)
+								}
+							},
+						)
+					}
+				}
+				if (isOptionsLoading) {
+					LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+				}
+				if (viewModel.manga.size == 1) {
+					Text(
+						text = stringResource(R.string.chapter_selection_hint),
+						style = MaterialTheme.typography.bodySmall,
+						modifier = Modifier.padding(vertical = 4.dp),
+					)
+				}
+				Row(
+					modifier = Modifier
+						.fillMaxWidth()
+						.clickable { startNow = !startNow }
+						.padding(vertical = 8.dp),
+					verticalAlignment = Alignment.CenterVertically,
+					horizontalArrangement = Arrangement.SpaceBetween,
+				) {
+					Text(stringResource(R.string.start_download))
+					Switch(checked = startNow, onCheckedChange = { startNow = it })
+				}
+				TextButton(onClick = { showMore = !showMore }) {
+					Text(stringResource(R.string.more_options))
+				}
+				if (showMore) {
+					Text(
+						text = stringResource(R.string.destination_directory),
+						style = MaterialTheme.typography.titleSmall,
+					)
+					ExposedDropdownMenuBox(
+						expanded = destinationExpanded,
+						onExpandedChange = { destinationExpanded = it },
+					) {
+						val dest = destinations.getOrNull(destinationIndex)
+						OutlinedTextField(
+							value = dest?.title
+								?: dest?.titleRes?.takeIf { it != 0 }?.let { stringResource(it) }
+								?: "",
+							onValueChange = {},
+							readOnly = true,
+							modifier = Modifier
+								.fillMaxWidth()
+								.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
+							trailingIcon = {
+								ExposedDropdownMenuDefaults.TrailingIcon(expanded = destinationExpanded)
+							},
+						)
+						ExposedDropdownMenu(
+							expanded = destinationExpanded,
+							onDismissRequest = { destinationExpanded = false },
+						) {
+							destinations.forEachIndexed { index, item ->
+								DropdownMenuItem(
+									text = {
+										Column {
+											Text(
+												item.title
+													?: if (item.titleRes != 0) stringResource(item.titleRes) else "",
+											)
+											item.file?.path?.let {
+												Text(it, style = MaterialTheme.typography.bodySmall)
+											}
+										}
+									},
+									onClick = {
+										destinationIndex = index
+										destinationExpanded = false
+									},
+								)
+							}
+						}
+					}
+					Text(
+						text = stringResource(R.string.preferred_download_format),
+						style = MaterialTheme.typography.titleSmall,
+						modifier = Modifier.padding(top = 8.dp),
+					)
+					ExposedDropdownMenuBox(
+						expanded = formatExpanded,
+						onExpandedChange = { formatExpanded = it },
+					) {
+						OutlinedTextField(
+							value = formatLabels.getOrElse(formatIndex) { "" },
+							onValueChange = {},
+							readOnly = true,
+							modifier = Modifier
+								.fillMaxWidth()
+								.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
+							trailingIcon = {
+								ExposedDropdownMenuDefaults.TrailingIcon(expanded = formatExpanded)
+							},
+						)
+						ExposedDropdownMenu(
+							expanded = formatExpanded,
+							onDismissRequest = { formatExpanded = false },
+						) {
+							formatLabels.forEachIndexed { index, label ->
+								DropdownMenuItem(
+									text = { Text(label) },
+									onClick = {
+										formatIndex = index
+										formatExpanded = false
+									},
+								)
+							}
+						}
+					}
+				}
+			}
+		},
+		confirmButton = {
+			TextButton(
+				onClick = {
+					val macro = when (selectedOption) {
+						DownloadOption.WholeManga -> options.wholeManga
+						DownloadOption.WholeBranch -> options.wholeBranch ?: return@TextButton
+						DownloadOption.FirstChapters -> options.firstChapters ?: return@TextButton
+						DownloadOption.UnreadChapters -> options.unreadChapters ?: return@TextButton
+					}
+					onConfirm(
+						startNow,
+						macro,
+						DownloadFormat.entries.getOrNull(formatIndex),
+						destinations.getOrNull(destinationIndex),
+					)
+				},
+				enabled = !isLoading,
+			) {
+				Text(stringResource(R.string.save))
+			}
+		},
+		dismissButton = {
+			TextButton(onClick = onDismissRequest) {
+				Text(stringResource(android.R.string.cancel))
+			}
+		},
+	)
+
+	errorMessage?.let { msg ->
+		AlertDialog(
+			onDismissRequest = {
+				errorMessage = null
+				onDismissRequest()
+			},
+			title = { Text(stringResource(R.string.error)) },
+			text = { Text(msg) },
+			confirmButton = {
+				TextButton(
+					onClick = {
+						errorMessage = null
+						onDismissRequest()
+					},
+				) {
+					Text(stringResource(R.string.close))
+				}
+			},
+		)
+	}
+}
+
+@Composable
+private fun DownloadOptionRow(
+	selected: Boolean,
+	title: String,
+	subtitle: String?,
+	onSelect: () -> Unit,
+	trailing: (@Composable () -> Unit)? = null,
+) {
+	Row(
+		modifier = Modifier
+			.fillMaxWidth()
+			.selectable(
+				selected = selected,
+				onClick = onSelect,
+				role = Role.RadioButton,
+			)
+			.padding(vertical = 6.dp),
+		verticalAlignment = Alignment.CenterVertically,
+	) {
+		RadioButton(selected = selected, onClick = null)
+		Column(
+			modifier = Modifier
+				.weight(1f)
+				.padding(horizontal = 8.dp),
+		) {
+			Text(title, style = MaterialTheme.typography.bodyLarge)
+			if (!subtitle.isNullOrEmpty()) {
+				Text(subtitle, style = MaterialTheme.typography.bodySmall)
+			}
+		}
+		trailing?.invoke()
+	}
+	HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.35f))
+}
+
+@Composable
+private fun chaptersSubtitle(count: Int): String? {
+	val resources = LocalContext.current.resources
+	return if (count > 0) {
+		resources.getQuantityStringSafe(R.plurals.chapters, count, count)
+	} else {
+		null
+	}
+}
+
+private fun chaptersCountSequence(max: Int) = sequence {
+	yield(1)
+	var seed = 5
+	var step = 5
+	while (seed + step <= max) {
+		yield(seed)
+		step = when {
+			seed < 20 -> 5
+			seed < 60 -> 10
+			else -> 20
+		}
+		seed += step
+	}
+	if (seed < max) {
+		yield(max)
 	}
 }
