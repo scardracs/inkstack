@@ -1,1 +1,0 @@
-Offline manga reader with sources, sync, scrobbling, and Material Expressive UI.

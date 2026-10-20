@@ -1,8 +1,0 @@
-Initial public release (0.1.0).
-
-• Manga library, reader, and explore flows
-• Offline downloads and local reading
-• In-tree source parsers and extension support
-• Backup, restore, and sync-oriented workflows
-• Scrobbling for major list-tracking services
-• Material Expressive theme and Android 16+ target

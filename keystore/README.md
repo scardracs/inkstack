@@ -15,7 +15,7 @@ Public cert file: `inkstack-release.cer` (committed).
 ## Local release builds
 
 1. Place `inkstack-release.jks` in this directory (gitignored).
-2. Put store/key passwords in **`local.properties`** at the repo root (gitignored), e.g.:
+2. Put keystore passwords in **`local.properties`** at the repo root (gitignored), e.g.:
 
 ```properties
 RELEASE_STORE_FILE=keystore/inkstack-release.jks
@@ -40,4 +40,4 @@ The GitHub Actions workflow decodes the keystore before `assembleRelease`.
 ## Rotate
 
 If the key is lost or compromised, generate a new keystore, update `TRUSTED_CERT_SHA256` in
-`AppValidator.kt`, and ship an update signed with the new cert (Play App Signing: upload key only).
+`AppValidator.kt`, and ship a new GitHub Release signed with the new cert.

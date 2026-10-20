@@ -22,11 +22,11 @@ Manga reader for Android 9+ (`minSdk` 28). Built against API 37 (`compileSdk` / 
 ./gradlew :parsers:compileKotlin
 ```
 
-Store metadata / screenshots: [`fastlane/README.md`](fastlane/README.md).
+Releases are GitHub-only (signed APK on `v*` tags). Not published to Google Play or other stores.
 
 ## Release signing
 
-Upload / release certificate fingerprints (public). Private keystore stays local — see [`keystore/README.md`](keystore/README.md).
+Release certificate fingerprints (public). Private keystore stays local — see [`keystore/README.md`](keystore/README.md).
 
 | Algorithm | Fingerprint |
 |-----------|-------------|
