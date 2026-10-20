@@ -67,11 +67,9 @@
 		<!-- Centres the query text inside inline SearchViews; see the style for why it goes through
 		     autoCompleteTextViewStyle. -->
 		<item name="autoCompleteTextViewStyle">@style/Widget.Inkstack.AutoCompleteTextView</item>
-		<item name="switchPreferenceCompatStyle">@style/Preference.SwitchPreferenceCompat.M3</item>
 		<item name="circularProgressIndicatorStyle">@style/Widget.Inkstack.CircularProgressIndicator</item>
 		<item name="linearProgressIndicatorStyle">@style/Widget.Inkstack.LinearProgressIndicator</item>
 		<item name="bottomSheetDragHandleStyle">@style/Widget.Inkstack.BottomSheet.DragHandle</item>
-		<item name="preferenceTheme">@style/PreferenceThemeOverlay.Inkstack</item>
 		<!-- Fix crash in A15 -->
 		<item name="actionButtonStyle">@style/Widget.AppCompat.ActionButton</item>
 
