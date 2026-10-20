@@ -322,15 +322,22 @@ class ReaderViewModel @Inject constructor(
     @MainThread
     fun onCurrentPageChanged(lowerPos: Int, upperPos: Int, scrollOffset: Int = 0) {
         val prevJob = stateChangeJob
-        val pages = content.value.pages // capture immediately
+        val anchor = content.value.pages.getOrNull(lowerPos)
         stateChangeJob = launchJob(Dispatchers.Default) {
             prevJob?.cancelAndJoin()
             loadingJob?.join()
-            if (pages.size != content.value.pages.size) {
-                return@launchJob // TODO
+            // Chapter loads may grow/shrink the page list while we waited; re-resolve by page id.
+            val pages = content.value.pages
+            if (pages.isEmpty()) return@launchJob
+            val resolvedLower = when {
+                anchor == null -> lowerPos.coerceIn(0, pages.lastIndex)
+                else -> pages.indexOfFirst { it.id == anchor.id }
+                    .takeIf { it >= 0 }
+                    ?: lowerPos.coerceIn(0, pages.lastIndex)
             }
+            val resolvedUpper = upperPos.coerceIn(resolvedLower, pages.lastIndex)
             // Prefer first visible page + in-page scroll so restore matches LazyListState.
-            pages.getOrNull(lowerPos)?.let { page ->
+            pages.getOrNull(resolvedLower)?.let { page ->
                 readingState.update { cs ->
                     cs?.copy(
                         chapterId = page.chapterId,
@@ -340,18 +347,18 @@ class ReaderViewModel @Inject constructor(
                 }
             }
             notifyStateChanged()
-            if (pages.isEmpty() || loadingJob?.isActive == true) {
+            if (loadingJob?.isActive == true) {
                 return@launchJob
             }
             ensureActive()
-            if (upperPos >= pages.lastIndex - BOUNDS_PAGE_OFFSET) {
+            if (resolvedUpper >= pages.lastIndex - BOUNDS_PAGE_OFFSET) {
                 loadPrevNextChapter(pages.last().chapterId, isNext = true)
             }
-            if (lowerPos <= BOUNDS_PAGE_OFFSET) {
+            if (resolvedLower <= BOUNDS_PAGE_OFFSET) {
                 loadPrevNextChapter(pages.first().chapterId, isNext = false)
             }
             if (pageLoader.isPrefetchApplicable()) {
-                pageLoader.prefetch(pages.trySublist(upperPos + 1, upperPos + PREFETCH_LIMIT))
+                pageLoader.prefetch(pages.trySublist(resolvedUpper + 1, resolvedUpper + PREFETCH_LIMIT))
             }
         }
     }

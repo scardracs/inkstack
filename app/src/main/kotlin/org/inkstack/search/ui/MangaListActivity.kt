@@ -20,7 +20,6 @@ import org.inkstack.local.ui.LocalListViewModel
 import org.inkstack.parsers.model.Manga
 import org.inkstack.parsers.model.MangaSource
 import org.inkstack.parsers.model.SortOrder
-import org.inkstack.remotelist.ui.RemoteListFragment
 import org.inkstack.remotelist.ui.RemoteListViewModel
 import javax.inject.Inject
 
@@ -51,7 +50,6 @@ class MangaListActivity :
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		val sourceName = intent.getStringExtra(AppRouter.KEY_SOURCE)
-		intent.putExtra(RemoteListFragment.ARG_SOURCE, sourceName)
 		source = MangaSource(sourceName)
 
 		super.onCreate(savedInstanceState)

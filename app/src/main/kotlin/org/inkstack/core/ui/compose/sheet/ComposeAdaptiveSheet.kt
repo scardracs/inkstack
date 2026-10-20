@@ -34,7 +34,6 @@ import com.google.android.material.sidesheet.SideSheetDialog
 import dagger.hilt.android.EntryPointAccessors
 import org.inkstack.R
 import org.inkstack.core.exceptions.resolve.ExceptionResolver
-import org.inkstack.core.ui.BaseActivity
 import org.inkstack.core.ui.BaseActivityEntryPoint
 import org.inkstack.core.ui.BaseComposeActivity
 import org.inkstack.core.ui.compose.InkstackTheme
@@ -127,8 +126,7 @@ abstract class ComposeAdaptiveSheet :
 		super.onViewCreated(view, savedInstanceState)
 		ViewCompat.setOnApplyWindowInsetsListener(view, this)
 		if (actionModeDelegate == null) {
-			actionModeDelegate = (activity as? BaseActivity<*>)?.actionModeDelegate
-				?: (activity as? BaseComposeActivity)?.actionModeDelegate
+			actionModeDelegate = (activity as? BaseComposeActivity)?.actionModeDelegate
 		}
 		onSheetViewCreated(savedInstanceState)
 	}

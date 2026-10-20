@@ -9,7 +9,7 @@ import org.inkstack.core.ui.BaseViewModel
 import org.inkstack.core.util.ext.require
 import org.inkstack.core.util.ext.sortedByOrdinal
 import org.inkstack.favourites.domain.FavouritesRepository
-import org.inkstack.favourites.ui.list.FavouritesListFragment.Companion.NO_ID
+import org.inkstack.favourites.ui.list.FavouritesListViewModel.Companion.NO_ID
 import org.inkstack.list.domain.ListSortOrder
 import org.inkstack.parsers.util.runCatchingCancellable
 import javax.inject.Inject

@@ -48,6 +48,7 @@ import org.inkstack.core.parser.external.ExternalMangaSource
 import org.inkstack.core.prefs.AppSettings
 import org.inkstack.core.prefs.TriStateOption
 import org.inkstack.core.ui.dialog.BigButtonsAlertDialog
+import org.inkstack.core.util.ShareHelper
 import org.inkstack.core.ui.dialog.ErrorDetailsDialog
 import org.inkstack.core.ui.dialog.buildAlertDialog
 import org.inkstack.core.util.ext.connectivityManager
@@ -637,8 +638,14 @@ class AppRouter private constructor(
             .startChooser()
     }
 
-    private fun shareFile(file: File) { // TODO directory sharing support
+    private fun shareFile(file: File) {
         val context = contextOrNull() ?: return
+        if (file.isDirectory) {
+            val children = file.walkTopDown().filter { it.isFile }.toList()
+            if (children.isEmpty()) return
+            ShareHelper.shareCbz(context, children)
+            return
+        }
         val intentBuilder = ShareCompat.IntentBuilder(context)
             .setType(TYPE_CBZ)
         val uri = FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.files", file)

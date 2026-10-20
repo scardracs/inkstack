@@ -1,5 +1,7 @@
 package org.inkstack.search.ui.multi.compose
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -8,6 +10,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -79,6 +82,8 @@ fun SearchScreen(
 						Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
 					}
 				},
+				windowInsets = WindowInsets.statusBars,
+				colors = TopAppBarDefaults.topAppBarColors(),
 			)
 		},
 	) { padding ->

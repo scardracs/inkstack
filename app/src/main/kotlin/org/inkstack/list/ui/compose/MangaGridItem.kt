@@ -1,18 +1,17 @@
 package org.inkstack.list.ui.compose
 
-import android.view.LayoutInflater
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Favorite
@@ -30,13 +29,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import coil3.ImageLoader
 import coil3.request.ImageRequest
 import org.inkstack.R
 import org.inkstack.core.ui.compose.MangaCover
 import org.inkstack.core.util.ext.mangaExtra
-import org.inkstack.history.ui.util.ReadingProgressView
 import org.inkstack.list.domain.ReadingProgress
 import org.inkstack.list.ui.model.MangaDetailedListModel
 import org.inkstack.list.ui.model.MangaGridModel
@@ -144,24 +141,6 @@ fun MangaGridItem(
 					.padding(10.dp),
 			)
 		},
-	)
-}
-
-@Composable
-private fun ReadingProgressBadge(
-	progress: ReadingProgress?,
-	modifier: Modifier = Modifier,
-) {
-	if (progress == null || !progress.isValid()) return
-	AndroidView(
-		factory = { context ->
-			LayoutInflater.from(context)
-				.inflate(R.layout.view_reading_progress, null, false) as ReadingProgressView
-		},
-		update = { view ->
-			view.setProgress(progress, animate = false)
-		},
-		modifier = modifier.size(dimensionResource(R.dimen.card_indicator_size)),
 	)
 }
 

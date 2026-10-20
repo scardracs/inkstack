@@ -1,130 +1,147 @@
 package org.inkstack.main.ui.welcome
 
 import android.net.Uri
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.activity.result.ActivityResultCallback
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isGone
-import androidx.core.view.updatePadding
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.booleanResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
-import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.inkstack.R
 import org.inkstack.core.model.titleResId
 import org.inkstack.core.nav.router
-import org.inkstack.core.ui.sheet.BaseAdaptiveSheet
-import org.inkstack.core.ui.widgets.ChipsView
-import org.inkstack.core.util.ext.consume
+import org.inkstack.core.ui.compose.sheet.ComposeAdaptiveSheet
 import org.inkstack.core.util.ext.getDisplayName
-import org.inkstack.core.util.ext.observe
 import org.inkstack.core.util.ext.tryLaunch
-import org.inkstack.databinding.SheetWelcomeBinding
-import org.inkstack.filter.ui.model.FilterProperty
-import org.inkstack.parsers.model.ContentType
 import org.inkstack.sync.domain.SyncController
-import java.util.Locale
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class WelcomeSheet : BaseAdaptiveSheet<SheetWelcomeBinding>(), ChipsView.OnChipClickListener, View.OnClickListener,
-	ActivityResultCallback<Uri?> {
+class WelcomeSheet : ComposeAdaptiveSheet() {
 
 	private val viewModel by viewModels<WelcomeViewModel>()
 
 	@Inject
 	lateinit var syncController: SyncController
 
-	private val backupSelectCall = registerForActivityResult(
-		ActivityResultContracts.OpenDocument(),
-		this,
-	)
+	@Composable
+	override fun sheetTitle(): String = stringResource(R.string.welcome)
 
-	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): SheetWelcomeBinding {
-		return SheetWelcomeBinding.inflate(inflater, container, false)
-	}
-
-	override fun onViewBindingCreated(binding: SheetWelcomeBinding, savedInstanceState: Bundle?) {
-		super.onViewBindingCreated(binding, savedInstanceState)
-		binding.textViewWelcomeTitle.isGone = resources.getBoolean(R.bool.is_tablet)
-		binding.chipsLocales.onChipClickListener = this
-		binding.chipsType.onChipClickListener = this
-		binding.chipBackup.setOnClickListener(this)
-		binding.chipSync.setOnClickListener(this)
-		binding.chipDirectories.setOnClickListener(this)
-
-		viewModel.locales.observe(viewLifecycleOwner, ::onLocalesChanged)
-		viewModel.types.observe(viewLifecycleOwner, ::onTypesChanged)
-	}
-
-	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val typeMask = WindowInsetsCompat.Type.systemBars()
-		viewBinding?.scrollView?.updatePadding(
-			bottom = insets.getInsets(typeMask).bottom,
-		)
-		return insets.consume(v, typeMask, bottom = true)
-	}
-
-	override fun onChipClick(chip: Chip, data: Any?) {
-		when (data) {
-			is ContentType -> viewModel.setTypeChecked(data, !chip.isChecked)
-			is Locale -> viewModel.setLocaleChecked(data, !chip.isChecked)
+	@OptIn(ExperimentalLayoutApi::class)
+	@Composable
+	override fun SheetContent(onDismissRequest: () -> Unit) {
+		val context = LocalContext.current
+		val isTablet = booleanResource(R.bool.is_tablet)
+		val locales by viewModel.locales.collectAsState()
+		val types by viewModel.types.collectAsState()
+		val backupSelect = rememberLauncherForActivityResult(
+			ActivityResultContracts.OpenDocument(),
+		) { uri: Uri? ->
+			if (uri != null) router.showBackupRestoreDialog(uri)
 		}
-	}
 
-	override fun onClick(v: View) {
-		when (v.id) {
-			R.id.chip_backup -> {
-				if (!backupSelectCall.tryLaunch(arrayOf("*/*"))) {
-					Snackbar.make(
-						v, R.string.operation_not_supported, Snackbar.LENGTH_SHORT,
-					).show()
+		Column(
+			modifier = Modifier
+				.fillMaxWidth()
+				.verticalScroll(rememberScrollState())
+				.padding(horizontal = 16.dp, vertical = 8.dp),
+			verticalArrangement = Arrangement.spacedBy(12.dp),
+		) {
+			if (!isTablet) {
+				Text(
+					text = stringResource(R.string.welcome),
+					style = MaterialTheme.typography.headlineSmall,
+				)
+			}
+			FlowRow(
+				modifier = Modifier.fillMaxWidth(),
+				horizontalArrangement = Arrangement.spacedBy(8.dp),
+				verticalArrangement = Arrangement.spacedBy(8.dp),
+			) {
+				FilterChip(
+					selected = false,
+					onClick = {
+						if (!backupSelect.tryLaunch(arrayOf("*/*"))) {
+							Snackbar.make(
+								requireView(),
+								R.string.operation_not_supported,
+								Snackbar.LENGTH_SHORT,
+							).show()
+						}
+					},
+					label = { Text(stringResource(R.string.restore_backup)) },
+				)
+				FilterChip(
+					selected = false,
+					onClick = { syncController.addAccount(requireActivity()) {} },
+					label = { Text(stringResource(R.string.sync_auth)) },
+				)
+				FilterChip(
+					selected = false,
+					onClick = { router.openDirectoriesSettings() },
+					label = { Text(stringResource(R.string.local_manga_directories)) },
+				)
+			}
+			Text(
+				text = stringResource(R.string.welcome_text),
+				style = MaterialTheme.typography.bodyMedium,
+			)
+			Text(
+				text = stringResource(R.string.languages),
+				style = MaterialTheme.typography.titleSmall,
+			)
+			FlowRow(
+				modifier = Modifier.fillMaxWidth(),
+				horizontalArrangement = Arrangement.spacedBy(8.dp),
+				verticalArrangement = Arrangement.spacedBy(8.dp),
+			) {
+				locales.availableItems.forEach { locale ->
+					FilterChip(
+						selected = locale in locales.selectedItems,
+						onClick = {
+							viewModel.setLocaleChecked(locale, locale !in locales.selectedItems)
+						},
+						label = { Text(locale.getDisplayName(context)) },
+					)
 				}
 			}
-
-			R.id.chip_sync -> {
-				syncController.addAccount(requireActivity()) {}
+			Text(
+				text = stringResource(R.string.type),
+				style = MaterialTheme.typography.titleSmall,
+			)
+			FlowRow(
+				modifier = Modifier.fillMaxWidth(),
+				horizontalArrangement = Arrangement.spacedBy(8.dp),
+				verticalArrangement = Arrangement.spacedBy(8.dp),
+			) {
+				types.availableItems.forEach { type ->
+					FilterChip(
+						selected = type in types.selectedItems,
+						onClick = {
+							viewModel.setTypeChecked(type, type !in types.selectedItems)
+						},
+						label = { Text(stringResource(type.titleResId)) },
+					)
+				}
 			}
-
-            R.id.chip_directories -> {
-                router.openDirectoriesSettings()
-            }
 		}
-	}
-
-	override fun onActivityResult(result: Uri?) {
-		if (result != null) {
-			router.showBackupRestoreDialog(result)
-		}
-	}
-
-	private fun onLocalesChanged(value: FilterProperty<Locale>) {
-		val chips = viewBinding?.chipsLocales ?: return
-		chips.setChips(
-			value.availableItems.map {
-				ChipsView.ChipModel(
-					title = it.getDisplayName(chips.context),
-					isChecked = it in value.selectedItems,
-					data = it,
-				)
-			},
-		)
-	}
-
-	private fun onTypesChanged(value: FilterProperty<ContentType>) {
-		val chips = viewBinding?.chipsType ?: return
-		chips.setChips(
-			value.availableItems.map {
-				ChipsView.ChipModel(
-					title = getString(it.titleResId),
-					isChecked = it in value.selectedItems,
-					data = it,
-				)
-			},
-		)
 	}
 }

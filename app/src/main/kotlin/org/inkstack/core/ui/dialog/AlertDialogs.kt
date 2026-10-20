@@ -1,14 +1,16 @@
 package org.inkstack.core.ui.dialog
 
 import android.content.Context
-import android.view.LayoutInflater
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.CompoundButton.OnCheckedChangeListener
 import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.ImageButton
+import android.widget.LinearLayout
 import androidx.annotation.StringRes
 import androidx.annotation.UiContext
 import androidx.appcompat.app.AlertDialog
@@ -16,13 +18,12 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegate
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegatesManager
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import org.inkstack.R
-import org.inkstack.databinding.DialogCheckboxBinding
-import org.inkstack.databinding.ViewDialogAutocompleteBinding
 import com.google.android.material.R as materialR
 
 inline fun buildAlertDialog(
@@ -39,11 +40,14 @@ fun <B : AlertDialog.Builder> B.setCheckbox(
     isChecked: Boolean,
     onCheckedChangeListener: OnCheckedChangeListener
 ) = apply {
-    val binding = DialogCheckboxBinding.inflate(LayoutInflater.from(context))
-    binding.checkbox.setText(textResId)
-    binding.checkbox.isChecked = isChecked
-    binding.checkbox.setOnCheckedChangeListener(onCheckedChangeListener)
-    setView(binding.root)
+    val pad = context.resources.getDimensionPixelOffset(R.dimen.screen_padding)
+    val checkbox = MaterialCheckBox(context).apply {
+        setText(textResId)
+        this.isChecked = isChecked
+        setOnCheckedChangeListener(onCheckedChangeListener)
+        setPadding(pad, pad / 2, pad, 0)
+    }
+    setView(checkbox)
 }
 
 fun <B : AlertDialog.Builder, T> B.setRecyclerViewList(
@@ -107,18 +111,28 @@ fun <B : AlertDialog.Builder> B.setEditText(
     if (entries.isEmpty()) {
         return setEditText(inputType, singleLine)
     }
-    val binding = ViewDialogAutocompleteBinding.inflate(LayoutInflater.from(context))
-    binding.autoCompleteTextView.setAdapter(
-        ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, entries),
-    )
-    binding.dropdown.setOnClickListener {
-        binding.autoCompleteTextView.showDropDown()
+    val pad = context.resources.getDimensionPixelOffset(R.dimen.screen_padding)
+    val row = LinearLayout(context).apply {
+        orientation = LinearLayout.HORIZONTAL
+        setPadding(pad, pad / 2, pad / 2, 0)
     }
-    binding.autoCompleteTextView.inputType = inputType
-    if (singleLine) {
-        binding.autoCompleteTextView.setSingleLine()
-        binding.autoCompleteTextView.imeOptions = EditorInfo.IME_ACTION_DONE
+    val autoComplete = AutoCompleteTextView(context).apply {
+        layoutParams = LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f)
+        setAdapter(ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, entries))
+        this.inputType = inputType
+        if (singleLine) {
+            setSingleLine()
+            imeOptions = EditorInfo.IME_ACTION_DONE
+        }
     }
-    setView(binding.root)
-    return binding.autoCompleteTextView
+    val dropdown = ImageButton(context).apply {
+        setImageResource(R.drawable.ic_expand_more)
+        contentDescription = context.getString(R.string.more)
+        setBackgroundResource(android.R.color.transparent)
+        setOnClickListener { autoComplete.showDropDown() }
+    }
+    row.addView(autoComplete)
+    row.addView(dropdown)
+    setView(row)
+    return autoComplete
 }
