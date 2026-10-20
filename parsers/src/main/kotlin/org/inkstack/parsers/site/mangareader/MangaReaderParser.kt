@@ -14,6 +14,7 @@ import org.inkstack.parsers.config.ConfigKey
 import org.inkstack.parsers.core.PagedMangaParser
 import org.inkstack.parsers.model.*
 import org.inkstack.parsers.util.*
+import org.jsoup.HttpStatusException
 import java.text.SimpleDateFormat
 import java.util.Base64
 import java.util.EnumSet
@@ -69,12 +70,29 @@ internal abstract class MangaReaderParser(
 	protected val mutex = Mutex()
 
 	override suspend fun getListPage(page: Int, order: SortOrder, filter: MangaListFilter): List<Manga> {
-		val url = buildString {
+		val allowSeriesFallback = listUrl == "/manga" &&
+			filter.query.isNullOrEmpty() &&
+			page == paginator.firstPage
+
+		try {
+			val list = parseMangaList(webClient.httpGet(buildListUrl(listUrl, page, order, filter)).parseHtml())
+			if (list.isNotEmpty() || !allowSeriesFallback) {
+				return list
+			}
+		} catch (e: HttpStatusException) {
+			if (!allowSeriesFallback) throw e
+		}
+
+		// Themesia hosts often rename /manga → /series; retry once on first page.
+		return parseMangaList(webClient.httpGet(buildListUrl("/series", page, order, filter)).parseHtml())
+	}
+
+	protected open fun buildListUrl(path: String, page: Int, order: SortOrder, filter: MangaListFilter): String {
+		return buildString {
 			append("https://")
 			append(domain)
 
 			when {
-
 				!filter.query.isNullOrEmpty() -> {
 					append("/page/")
 					append(page.toString())
@@ -83,7 +101,7 @@ internal abstract class MangaReaderParser(
 				}
 
 				else -> {
-					append(listUrl)
+					append(path)
 
 					append("/?order=")
 					append(
@@ -142,7 +160,6 @@ internal abstract class MangaReaderParser(
 				}
 			}
 		}
-		return parseMangaList(webClient.httpGet(url).parseHtml())
 	}
 
 	protected open val selectMangaList = ".postbody .listupd .bs .bsx"

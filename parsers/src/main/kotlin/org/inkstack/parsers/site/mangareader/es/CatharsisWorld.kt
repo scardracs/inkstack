@@ -8,10 +8,10 @@ import org.inkstack.parsers.site.mangareader.MangaReaderParser
 import java.util.Locale
 import org.inkstack.parsers.Broken
 
-@Broken("Selectors outdated (list 404)")
+@Broken("List path still 404 after domain move (needs selector/path RE)")
 @MangaSourceParser("CATHARSISWORLD", "CatharsisWorld", "es")
 internal class CatharsisWorld(context: MangaLoaderContext) :
-	MangaReaderParser(context, MangaParserSource.CATHARSISWORLD, "catharsisworld.dig-it.info", pageSize = 30, searchPageSize = 10) {
+	MangaReaderParser(context, MangaParserSource.CATHARSISWORLD, "catharsisworld.com", pageSize = 30, searchPageSize = 10) {
 	override val sourceLocale: Locale = Locale.ENGLISH
 	override val filterCapabilities: MangaListFilterCapabilities
 		get() = super.filterCapabilities.copy(

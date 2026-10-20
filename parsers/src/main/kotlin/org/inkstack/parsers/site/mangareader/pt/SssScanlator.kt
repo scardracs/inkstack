@@ -9,10 +9,10 @@ import org.inkstack.parsers.site.mangareader.MangaReaderParser
 import org.inkstack.parsers.model.*
 import org.inkstack.parsers.util.*
 
-@Broken
+@Broken("HTTP 403 after domain move to yomu.com.br (needs CF/auth RE)")
 @MangaSourceParser("SSSSCANLATOR", "YomuComics", "pt")
 internal class SssScanlator(context: MangaLoaderContext) :
-	MangaReaderParser(context, MangaParserSource.SSSSCANLATOR, "yomucomics.com", pageSize = 20, searchPageSize = 10) {
+	MangaReaderParser(context, MangaParserSource.SSSSCANLATOR, "yomu.com.br", pageSize = 20, searchPageSize = 10) {
 
 	override val filterCapabilities: MangaListFilterCapabilities
 		get() = super.filterCapabilities.copy(

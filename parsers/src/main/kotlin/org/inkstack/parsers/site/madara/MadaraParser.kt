@@ -14,6 +14,7 @@ import org.inkstack.parsers.exception.AuthRequiredException
 import org.inkstack.parsers.exception.ParseException
 import org.inkstack.parsers.model.*
 import org.inkstack.parsers.util.*
+import org.jsoup.HttpStatusException
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -229,241 +230,238 @@ internal abstract class MadaraParser(
 
 	override suspend fun getListPage(page: Int, order: SortOrder, filter: MangaListFilter): List<Manga> {
 		if (withoutAjax) {
-			val pages = page + 1
+			return getListPageHtml(page, order, filter)
+		}
 
-			val url = buildString {
-				append("https://")
-				append(domain)
+		val payload = createRequestTemplate()
 
-				if (pages > 1) {
-					append("/page/")
-					append(pages.toString())
-				}
-				append("/?s=")
+		payload["page"] = page.toString()
 
-				filter.query?.let {
-					append(filter.query.urlEncoded())
-				}
+		filter.query?.let {
+			payload["vars[s]"] = filter.query.urlEncoded()
+		}
 
-				append("&post_type=wp-manga")
-
-				// Known bug: in some cases, if there are no manga with the associated tags, the source returns the full list of manga
-				if (filter.tags.isNotEmpty()) {
-					filter.tags.forEach {
-						append("&genre[]=")
-						append(it.key)
-					}
-				}
-
-				filter.states.forEach {
-					append("&status[]=")
-					when (it) {
-						MangaState.ONGOING -> append("on-going")
-						MangaState.FINISHED -> append("end")
-						MangaState.ABANDONED -> append("canceled")
-						MangaState.PAUSED -> append("on-hold")
-						MangaState.UPCOMING -> append("upcoming")
-						else -> throw IllegalArgumentException("$it not supported")
-					}
-				}
-
-				filter.contentRating.oneOrThrowIfMany()?.let {
-					append("&adult=")
-					append(
-						when (it) {
-							ContentRating.SAFE -> "0"
-							ContentRating.ADULT -> "1"
-							else -> ""
-						},
-					)
-				}
-
-				if (filter.year != 0) {
-					append("&release=")
-					append(filter.year.toString())
-				}
-
-				if (!filter.author.isNullOrEmpty()) {
-					filter.author.let {
-						append("&author=")
-						// should be like "minamida-usuke"
-						append(it.lowercase().replace(" ", "-"))
-					}
-				}
-
-				// Support artist
-				//filter.artist?.let {
-				//	append("&artist=")
-				//	append(filter.artist)
-				//}
-
-
-				append("&m_orderby=")
-				when (order) {
-					SortOrder.POPULARITY -> append("views")
-					SortOrder.UPDATED -> append("latest")
-					SortOrder.NEWEST -> append("new-manga")
-					SortOrder.ALPHABETICAL -> append("alphabet")
-					SortOrder.RATING -> append("rating")
-					SortOrder.RELEVANCE -> {}
-					else -> {}
-				}
+		if (filter.tags.isNotEmpty()) {
+			payload["vars[tax_query][0][taxonomy]"] = "wp-manga-genre"
+			payload["vars[tax_query][0][field]"] = "slug"
+			filter.tags.forEachIndexed { i, it ->
+				payload["vars[tax_query][0][terms][$i]"] = it.key
 			}
-			return parseMangaList(webClient.httpGet(url).parseHtml())
-		} else {
+			payload["vars[tax_query][0][operator]"] = "IN"
+		}
 
-			val payload = createRequestTemplate()
+		if (filter.tagsExclude.isNotEmpty()) {
+			payload["vars[tax_query][1][taxonomy]"] = "wp-manga-genre"
+			payload["vars[tax_query][1][field]"] = "slug"
+			filter.tagsExclude.forEachIndexed { i, it ->
+				payload["vars[tax_query][1][terms][$i]"] = it.key
+			}
+			payload["vars[tax_query][1][operator]"] = "NOT IN"
+		}
 
-			payload["page"] = page.toString()
+		if (filter.year != 0) {
+			payload["vars[tax_query][2][taxonomy]"] = "wp-manga-release"
+			payload["vars[tax_query][2][field]"] = "slug"
+			payload["vars[tax_query][2][terms][]"] = filter.year.toString()
+		}
 
-			filter.query?.let {
-				payload["vars[s]"] = filter.query.urlEncoded()
+		if (filter.tags.isNotEmpty() || filter.tagsExclude.isNotEmpty() || filter.year != 0) {
+			payload["vars[tax_query][relation]"] = "AND"
+		}
+
+		when (order) {
+			SortOrder.POPULARITY -> {
+				payload["vars[meta_key]"] = "_wp_manga_views"
+				payload["vars[orderby]"] = "meta_value_num"
+				payload["vars[order]"] = "desc"
 			}
 
-			if (filter.tags.isNotEmpty()) {
-				payload["vars[tax_query][0][taxonomy]"] = "wp-manga-genre"
-				payload["vars[tax_query][0][field]"] = "slug"
-				filter.tags.forEachIndexed { i, it ->
-					payload["vars[tax_query][0][terms][$i]"] = it.key
-				}
-				payload["vars[tax_query][0][operator]"] = "IN"
+			SortOrder.POPULARITY_ASC -> {
+				payload["vars[meta_key]"] = "_wp_manga_views"
+				payload["vars[orderby]"] = "meta_value_num"
+				payload["vars[order]"] = "asc"
 			}
 
-			if (filter.tagsExclude.isNotEmpty()) {
-				payload["vars[tax_query][1][taxonomy]"] = "wp-manga-genre"
-				payload["vars[tax_query][1][field]"] = "slug"
-				filter.tagsExclude.forEachIndexed { i, it ->
-					payload["vars[tax_query][1][terms][$i]"] = it.key
-				}
-				payload["vars[tax_query][1][operator]"] = "NOT IN"
+			SortOrder.UPDATED -> {
+				payload["vars[meta_key]"] = "_latest_update"
+				payload["vars[orderby]"] = "meta_value_num"
+				payload["vars[order]"] = "desc"
 			}
 
-			if (filter.year != 0) {
-				payload["vars[tax_query][2][taxonomy]"] = "wp-manga-release"
-				payload["vars[tax_query][2][field]"] = "slug"
-				payload["vars[tax_query][2][terms][]"] = filter.year.toString()
+			SortOrder.UPDATED_ASC -> {
+				payload["vars[meta_key]"] = "_latest_update"
+				payload["vars[orderby]"] = "meta_value_num"
+				payload["vars[order]"] = "asc"
 			}
 
-			// Support author
-			//  filter.author.let {
-			//	payload["vars[tax_query][3][taxonomy]"] = "wp-manga-author"
-			//	payload["vars[tax_query][3][field]"] = "name"
-			//	payload["vars[tax_query][3][terms][0]"] = filter.author
-			//	payload["vars[tax_query][3][operator]"] = "IN"
-			//}
-
-
-			// Support artist
-			//  filter.artist.let {
-			//	payload["vars[tax_query][4][taxonomy]"] = "wp-manga-artist"
-			//	payload["vars[tax_query][4][field]"] = "name"
-			//	payload["vars[tax_query][4][terms][0]"] = filter.artist
-			//	payload["vars[tax_query][4][operator]"] = "IN"
-			//}
-
-			if (filter.tags.isNotEmpty() || filter.tagsExclude.isNotEmpty() || filter.year != 0) {
-				payload["vars[tax_query][relation]"] = "AND"
+			SortOrder.NEWEST -> {
+				payload["vars[orderby]"] = "date"
+				payload["vars[order]"] = "desc"
 			}
 
-			when (order) {
-				SortOrder.POPULARITY -> {
-					payload["vars[meta_key]"] = "_wp_manga_views"
-					payload["vars[orderby]"] = "meta_value_num"
-					payload["vars[order]"] = "desc"
-				}
-
-				SortOrder.POPULARITY_ASC -> {
-					payload["vars[meta_key]"] = "_wp_manga_views"
-					payload["vars[orderby]"] = "meta_value_num"
-					payload["vars[order]"] = "asc"
-				}
-
-				SortOrder.UPDATED -> {
-					payload["vars[meta_key]"] = "_latest_update"
-					payload["vars[orderby]"] = "meta_value_num"
-					payload["vars[order]"] = "desc"
-				}
-
-				SortOrder.UPDATED_ASC -> {
-					payload["vars[meta_key]"] = "_latest_update"
-					payload["vars[orderby]"] = "meta_value_num"
-					payload["vars[order]"] = "asc"
-				}
-
-				SortOrder.NEWEST -> {
-					payload["vars[orderby]"] = "date"
-					payload["vars[order]"] = "desc"
-				}
-
-				SortOrder.NEWEST_ASC -> {
-					payload["vars[orderby]"] = "date"
-					payload["vars[order]"] = "asc"
-				}
-
-				SortOrder.ALPHABETICAL -> {
-					payload["vars[orderby]"] = "post_title"
-					payload["vars[order]"] = "asc"
-				}
-
-				SortOrder.ALPHABETICAL_DESC -> {
-					payload["vars[orderby]"] = "post_title"
-					payload["vars[order]"] = "desc"
-				}
-
-				SortOrder.RATING -> {
-					payload["vars[meta_query][0][query_avarage_reviews][key]"] = "_manga_avarage_reviews"
-					payload["vars[meta_query][0][query_total_reviews][key]"] = "_manga_total_votes"
-
-					payload["vars[orderby][query_avarage_reviews]"] = "DESC"
-					payload["vars[orderby][query_total_reviews]"] = "DESC"
-				}
-
-				SortOrder.RATING_ASC -> {
-					payload["vars[meta_query][0][query_avarage_reviews][key]"] = "_manga_avarage_reviews"
-					payload["vars[meta_query][0][query_total_reviews][key]"] = "_manga_total_votes"
-
-					payload["vars[orderby][query_avarage_reviews]"] = "ASC"
-					payload["vars[orderby][query_total_reviews]"] = "ASC"
-				}
-
-				SortOrder.RELEVANCE -> {
-					payload["vars[orderby]"] = ""
-				}
-
-				else -> payload["vars[orderby]"] = ""
+			SortOrder.NEWEST_ASC -> {
+				payload["vars[orderby]"] = "date"
+				payload["vars[order]"] = "asc"
 			}
 
-			filter.states.forEach {
-				payload["vars[meta_query][0][0][key]"] = "_wp_manga_status"
-				payload["vars[meta_query][0][0][compare]"] = "IN"
-				payload["vars[meta_query][0][0][value][]"] =
-					when (it) {
-						MangaState.ONGOING -> "on-going"
-						MangaState.FINISHED -> "end"
-						MangaState.ABANDONED -> "canceled"
-						MangaState.PAUSED -> "on-hold"
-						MangaState.UPCOMING -> "upcoming"
-						else -> throw IllegalArgumentException("$it not supported")
-					}
+			SortOrder.ALPHABETICAL -> {
+				payload["vars[orderby]"] = "post_title"
+				payload["vars[order]"] = "asc"
 			}
 
-			filter.contentRating.oneOrThrowIfMany()?.let {
-				payload["vars[meta_query][0][1][key]"] = "manga_adult_content"
-				payload["vars[meta_query][0][1][value]"] =
-					when (it) {
-						ContentRating.SAFE -> ""
-						ContentRating.ADULT -> "a%3A1%3A%7Bi%3A0%3Bs%3A3%3A%22yes%22%3B%7D"
-						else -> ""
-					}
+			SortOrder.ALPHABETICAL_DESC -> {
+				payload["vars[orderby]"] = "post_title"
+				payload["vars[order]"] = "desc"
 			}
 
-			return parseMangaList(
+			SortOrder.RATING -> {
+				payload["vars[meta_query][0][query_avarage_reviews][key]"] = "_manga_avarage_reviews"
+				payload["vars[meta_query][0][query_total_reviews][key]"] = "_manga_total_votes"
+
+				payload["vars[orderby][query_avarage_reviews]"] = "DESC"
+				payload["vars[orderby][query_total_reviews]"] = "DESC"
+			}
+
+			SortOrder.RATING_ASC -> {
+				payload["vars[meta_query][0][query_avarage_reviews][key]"] = "_manga_avarage_reviews"
+				payload["vars[meta_query][0][query_total_reviews][key]"] = "_manga_total_votes"
+
+				payload["vars[orderby][query_avarage_reviews]"] = "ASC"
+				payload["vars[orderby][query_total_reviews]"] = "ASC"
+			}
+
+			SortOrder.RELEVANCE -> {
+				payload["vars[orderby]"] = ""
+			}
+
+			else -> payload["vars[orderby]"] = ""
+		}
+
+		filter.states.forEach {
+			payload["vars[meta_query][0][0][key]"] = "_wp_manga_status"
+			payload["vars[meta_query][0][0][compare]"] = "IN"
+			payload["vars[meta_query][0][0][value][]"] =
+				when (it) {
+					MangaState.ONGOING -> "on-going"
+					MangaState.FINISHED -> "end"
+					MangaState.ABANDONED -> "canceled"
+					MangaState.PAUSED -> "on-hold"
+					MangaState.UPCOMING -> "upcoming"
+					else -> throw IllegalArgumentException("$it not supported")
+				}
+		}
+
+		filter.contentRating.oneOrThrowIfMany()?.let {
+			payload["vars[meta_query][0][1][key]"] = "manga_adult_content"
+			payload["vars[meta_query][0][1][value]"] =
+				when (it) {
+					ContentRating.SAFE -> ""
+					ContentRating.ADULT -> "a%3A1%3A%7Bi%3A0%3Bs%3A3%3A%22yes%22%3B%7D"
+					else -> ""
+				}
+		}
+
+		// Many Madara hosts break admin-ajax (400/404/405) or return empty HTML while
+		// the classic search listing still works — fall back on first unfiltered page.
+		val allowHtmlFallback = page == paginator.firstPage &&
+			filter.query.isNullOrEmpty() &&
+			filter.tags.isEmpty() &&
+			filter.tagsExclude.isEmpty() &&
+			filter.states.isEmpty() &&
+			filter.year == 0
+
+		try {
+			val list = parseMangaList(
 				webClient.httpPost(
 					"https://$domain/wp-admin/admin-ajax.php",
 					payload,
 				).parseHtml(),
 			)
+			if (list.isNotEmpty() || !allowHtmlFallback) {
+				return list
+			}
+		} catch (e: HttpStatusException) {
+			if (!allowHtmlFallback) throw e
 		}
+
+		return getListPageHtml(page, order, filter)
+	}
+
+	protected open suspend fun getListPageHtml(page: Int, order: SortOrder, filter: MangaListFilter): List<Manga> {
+		val pages = page + 1
+
+		val url = buildString {
+			append("https://")
+			append(domain)
+
+			if (pages > 1) {
+				append("/page/")
+				append(pages.toString())
+			}
+			append("/?s=")
+
+			filter.query?.let {
+				append(filter.query.urlEncoded())
+			}
+
+			append("&post_type=wp-manga")
+
+			// Known bug: in some cases, if there are no manga with the associated tags, the source returns the full list of manga
+			if (filter.tags.isNotEmpty()) {
+				filter.tags.forEach {
+					append("&genre[]=")
+					append(it.key)
+				}
+			}
+
+			filter.states.forEach {
+				append("&status[]=")
+				when (it) {
+					MangaState.ONGOING -> append("on-going")
+					MangaState.FINISHED -> append("end")
+					MangaState.ABANDONED -> append("canceled")
+					MangaState.PAUSED -> append("on-hold")
+					MangaState.UPCOMING -> append("upcoming")
+					else -> throw IllegalArgumentException("$it not supported")
+				}
+			}
+
+			filter.contentRating.oneOrThrowIfMany()?.let {
+				append("&adult=")
+				append(
+					when (it) {
+						ContentRating.SAFE -> "0"
+						ContentRating.ADULT -> "1"
+						else -> ""
+					},
+				)
+			}
+
+			if (filter.year != 0) {
+				append("&release=")
+				append(filter.year.toString())
+			}
+
+			if (!filter.author.isNullOrEmpty()) {
+				filter.author.let {
+					append("&author=")
+					// should be like "minamida-usuke"
+					append(it.lowercase().replace(" ", "-"))
+				}
+			}
+
+			append("&m_orderby=")
+			when (order) {
+				SortOrder.POPULARITY -> append("views")
+				SortOrder.UPDATED -> append("latest")
+				SortOrder.NEWEST -> append("new-manga")
+				SortOrder.ALPHABETICAL -> append("alphabet")
+				SortOrder.RATING -> append("rating")
+				SortOrder.RELEVANCE -> {}
+				else -> {}
+			}
+		}
+		return parseMangaList(webClient.httpGet(url).parseHtml())
 	}
 
 	protected open fun parseMangaList(doc: Document): List<Manga> {

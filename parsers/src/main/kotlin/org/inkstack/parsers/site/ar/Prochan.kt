@@ -24,7 +24,7 @@ internal class Prochan(context: MangaLoaderContext) : PagedMangaParser(
 	source = MangaParserSource.PROCHAN,
 	pageSize = 18,
 ) {
-	override val configKeyDomain = ConfigKey.Domain("prochan.pro")
+	override val configKeyDomain = ConfigKey.Domain("procomic.pro", "prochan.pro")
 
 	override val availableSortOrders: Set<SortOrder> = EnumSet.of(
 		SortOrder.UPDATED,
@@ -47,7 +47,7 @@ internal class Prochan(context: MangaLoaderContext) : PagedMangaParser(
 
 	override suspend fun getListPage(page: Int, order: SortOrder, filter: MangaListFilter): List<Manga> {
 		val url = buildString {
-			append("https://prochan.pro/api/public/series/search?")
+			append("https://$domain/api/public/series/search?")
 			append("status=approved")
 			append("&limit=18")
 			append("&page=$page")
