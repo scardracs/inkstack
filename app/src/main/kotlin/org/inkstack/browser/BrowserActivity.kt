@@ -3,11 +3,14 @@ package org.inkstack.browser
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContract
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.inkstack.R
@@ -23,14 +26,14 @@ import org.inkstack.parsers.model.MangaSource
 class BrowserActivity : BaseBrowserActivity() {
 
 	override fun onCreate2(savedInstanceState: Bundle?, source: MangaSource, repository: ParserMangaRepository?) {
-		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = true)
-		viewBinding.webView.webViewClient = BrowserClient(this)
+		showCloseNavigation = true
+		webView.webViewClient = BrowserClient(this)
 		lifecycleScope.launch {
 			try {
 				proxyProvider.applyWebViewConfig()
 			} catch (e: Exception) {
 				e.printStackTraceDebug()
-				Snackbar.make(viewBinding.webView, e.getDisplayMessage(resources), Snackbar.LENGTH_LONG).show()
+				snackbarHostState.showSnackbar(e.getDisplayMessage(resources))
 			}
 			if (savedInstanceState == null) {
 				val url = intent?.dataString
@@ -41,33 +44,29 @@ class BrowserActivity : BaseBrowserActivity() {
 						intent?.getStringExtra(AppRouter.KEY_TITLE) ?: getString(R.string.loading_),
 						url,
 					)
-					viewBinding.webView.loadUrl(url)
+					webView.loadUrl(url)
 				}
 			}
 		}
 	}
 
-	override fun onCreateOptionsMenu(menu: Menu): Boolean {
-		super.onCreateOptionsMenu(menu)
-		menuInflater.inflate(R.menu.opt_browser, menu)
-		return true
-	}
-
-	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-		android.R.id.home -> {
-			viewBinding.webView.stopLoading()
-			finishAfterTransition()
-			true
+	@Composable
+	override fun RowScope.BrowserTopBarActions() {
+		val openLabel = stringResource(R.string.open_in_browser)
+		IconButton(
+			onClick = {
+				if (!router.openExternalBrowser(webView.url.orEmpty(), openLabel)) {
+					lifecycleScope.launch {
+						snackbarHostState.showSnackbar(getString(R.string.operation_not_supported))
+					}
+				}
+			},
+		) {
+			Icon(
+				painter = painterResource(R.drawable.ic_open_external),
+				contentDescription = openLabel,
+			)
 		}
-
-		R.id.action_browser -> {
-			if (!router.openExternalBrowser(viewBinding.webView.url.orEmpty(), item.title)) {
-				Snackbar.make(viewBinding.webView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT).show()
-			}
-			true
-		}
-
-		else -> super.onOptionsItemSelected(item)
 	}
 
 	class Contract : ActivityResultContract<InteractiveActionRequiredException, Unit>() {

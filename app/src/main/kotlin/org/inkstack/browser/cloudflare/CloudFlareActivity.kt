@@ -4,17 +4,26 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import android.view.WindowManager
 import android.webkit.CookieManager
 import android.webkit.WebSettings
 import androidx.activity.result.contract.ActivityResultContract
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.core.view.doOnLayout
-import androidx.core.view.isGone
-import androidx.core.view.isInvisible
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -63,6 +72,8 @@ open class CloudFlareActivity : BaseBrowserActivity(), CloudFlareCallback {
 	private var resolveJob: Job? = null
 	private var isHiddenPresentation = false
 	private var lastChallengeState: String? = null
+	private var showRetryMenu by mutableStateOf(false)
+	private var retryMenuExpanded by mutableStateOf(false)
 
 	@Inject
 	lateinit var cookieJar: MutableCookieJar
@@ -80,15 +91,17 @@ open class CloudFlareActivity : BaseBrowserActivity(), CloudFlareCallback {
 			isHiddenPresentation = true
 			// Keep the window focused and the WebView rendered: Turnstile treats a non-focused or
 			// detached WebView differently. The translucent theme exposes the previous screen.
-			viewBinding.appbar.isGone = true
-			viewBinding.root.alpha = HIDDEN_RENDER_ALPHA
+			showChrome = false
+			showRetryMenu = false
+			contentAlpha = HIDDEN_RENDER_ALPHA
 			window.setDimAmount(0f)
 			window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
 			(this as? CloudFlareHiddenActivity)?.let {
 				captchaAutoResolveCoordinator.registerHiddenActivity(it)
 			}
 		} else {
-			setDisplayHomeAsUp(isEnabled = true, showUpAsClose = true)
+			showCloseNavigation = true
+			showRetryMenu = true
 		}
 		val url = intent?.dataString
 		if (url.isNullOrEmpty()) {
@@ -110,12 +123,12 @@ open class CloudFlareActivity : BaseBrowserActivity(), CloudFlareCallback {
 			CloudFlareClient(cookieJar, this, url)
 		}
 
-		viewBinding.webView.webViewClient = cfClient
+		webView.webViewClient = cfClient
 		lifecycleScope.launch {
 			try {
 				proxyProvider.applyWebViewConfig()
 			} catch (e: Exception) {
-				Snackbar.make(viewBinding.webView, e.getDisplayMessage(resources), Snackbar.LENGTH_LONG).show()
+				snackbarHostState.showSnackbar(e.getDisplayMessage(resources))
 			}
 			if (savedInstanceState == null || autoRecreateCount > 0) {
 				if (isAutoResolve && autoRecreateCount == 0) {
@@ -131,7 +144,7 @@ open class CloudFlareActivity : BaseBrowserActivity(), CloudFlareCallback {
 				// coroutine, so anchoring the deadlines on onCreate2 spent the whole allowance before the
 				// challenge had even started loading.
 				challengeStartedAt = System.currentTimeMillis()
-				viewBinding.webView.loadUrl(url)
+				webView.loadUrl(url)
 			} else {
 				// Restored after a configuration change: the WebView kept its page, so the challenge is
 				// already in flight.
@@ -143,25 +156,26 @@ open class CloudFlareActivity : BaseBrowserActivity(), CloudFlareCallback {
 		resolveJob = lifecycleScope.launch { runResolveLoop() }
 	}
 
-	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-		if (isHiddenPresentation) return false
-		menuInflater.inflate(R.menu.opt_captcha, menu)
-		return super.onCreateOptionsMenu(menu)
-	}
-
-	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-		android.R.id.home -> {
-			viewBinding.webView.stopLoading()
-			finishAfterTransition()
-			true
+	@Composable
+	override fun RowScope.BrowserTopBarActions() {
+		if (!showRetryMenu) return
+		Box {
+			IconButton(onClick = { retryMenuExpanded = true }) {
+				Icon(Icons.Default.MoreVert, contentDescription = null)
+			}
+			DropdownMenu(
+				expanded = retryMenuExpanded,
+				onDismissRequest = { retryMenuExpanded = false },
+			) {
+				DropdownMenuItem(
+					text = { Text(stringResource(R.string.try_again)) },
+					onClick = {
+						retryMenuExpanded = false
+						restartCheck()
+					},
+				)
+			}
 		}
-
-		R.id.action_retry -> {
-			restartCheck()
-			true
-		}
-
-		else -> super.onOptionsItemSelected(item)
 	}
 
 	override fun finish() {
@@ -197,7 +211,7 @@ open class CloudFlareActivity : BaseBrowserActivity(), CloudFlareCallback {
 	fun cancelAutomaticResolve() {
 		if (!isAutoResolve || isFinishing || isDestroyed) return
 		resolveJob?.cancel()
-		viewBinding.webView.stopLoading()
+		webView.stopLoading()
 		finishAfterTransition()
 	}
 
@@ -209,24 +223,32 @@ open class CloudFlareActivity : BaseBrowserActivity(), CloudFlareCallback {
 	 * the resolve loop would time out against a WebView that never navigated at all.
 	 */
 	private suspend fun awaitChallengeViewport() {
+		val attachDeadline = System.currentTimeMillis() + VIEWPORT_FOCUS_TIMEOUT_MS
+		while (!webView.isAttachedToWindow && System.currentTimeMillis() < attachDeadline) {
+			delay(VIEWPORT_POLL_INTERVAL_MS)
+		}
+		if (!webView.isAttachedToWindow) {
+			// Compose AndroidView did not attach in time; still load so the resolve loop can progress.
+			return
+		}
 		val focusDeadline = System.currentTimeMillis() + VIEWPORT_FOCUS_TIMEOUT_MS
-		while (!viewBinding.webView.hasWindowFocus() && System.currentTimeMillis() < focusDeadline) {
+		while (!webView.hasWindowFocus() && System.currentTimeMillis() < focusDeadline) {
 			delay(VIEWPORT_POLL_INTERVAL_MS)
 		}
 		suspendCancellableCoroutine { cont ->
-			viewBinding.webView.doOnLayout {
+			webView.doOnLayout {
 				if (cont.isActive) cont.resume(Unit)
 			}
 		}
 		suspendCancellableCoroutine { cont ->
-			viewBinding.webView.postOnAnimation {
+			webView.postOnAnimation {
 				if (cont.isActive) cont.resume(Unit)
 			}
 		}
 	}
 
 	override fun onPageLoaded() {
-		viewBinding.progressBar.isInvisible = true
+		setBrowserLoadingVisible(false)
 	}
 
 	override fun onLoopDetected() = Unit
@@ -279,7 +301,7 @@ open class CloudFlareActivity : BaseBrowserActivity(), CloudFlareCallback {
 				lastChallengeState = challengeState
 				Log.d(
 					TAG,
-					"Challenge state: $challengeState, url=${viewBinding.webView.url}, title=${viewBinding.webView.title}",
+					"Challenge state: $challengeState, url=${webView.url}, title=${webView.title}",
 				)
 			}
 			if (challengeState == CF_STATE_OK) {
@@ -340,15 +362,16 @@ open class CloudFlareActivity : BaseBrowserActivity(), CloudFlareCallback {
 	private fun revealForManualCompletion() {
 		if (!isHiddenPresentation) return
 		isHiddenPresentation = false
-		viewBinding.root.alpha = 1f
-		viewBinding.appbar.isGone = false
+		contentAlpha = 1f
+		showChrome = true
+		showCloseNavigation = true
+		showRetryMenu = true
 		window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = true)
-		invalidateOptionsMenu()
 		Log.d(TAG, "Automatic challenge needs user interaction; revealing the existing solver")
 	}
+
 	private suspend fun probeChallengeState(): String = suspendCancellableCoroutine { cont ->
-		viewBinding.webView.evaluateJavascript(CF_STATE_JS) { raw ->
+		webView.evaluateJavascript(CF_STATE_JS) { raw ->
 			if (cont.isActive) {
 				cont.resume(raw?.removeSurrounding("\"") ?: CF_STATE_WAIT)
 			}
@@ -376,14 +399,14 @@ open class CloudFlareActivity : BaseBrowserActivity(), CloudFlareCallback {
 	}
 
 	override fun onTitleChanged(title: CharSequence, subtitle: CharSequence?) {
-		setTitle(title)
-		supportActionBar?.subtitle = subtitle?.toString()?.toHttpUrlOrNull()?.host.ifNullOrEmpty { subtitle }
+		val hostSubtitle = subtitle?.toString()?.toHttpUrlOrNull()?.host.ifNullOrEmpty { subtitle }
+		super<BaseBrowserActivity>.onTitleChanged(title, hostSubtitle)
 	}
 
 	private fun restartCheck() {
 		lifecycleScope.launch {
 			resolveJob?.cancel()
-			viewBinding.webView.stopLoading()
+			webView.stopLoading()
 			yield()
 			cfClient.reset()
 			val targetUrl = intent?.dataString?.toHttpUrlOrNull()
@@ -391,7 +414,7 @@ open class CloudFlareActivity : BaseBrowserActivity(), CloudFlareCallback {
 				clearCfCookies(targetUrl)
 				clearanceUpdateObservedAt = 0L
 				challengeStartedAt = System.currentTimeMillis()
-				viewBinding.webView.loadUrl(targetUrl.toString())
+				webView.loadUrl(targetUrl.toString())
 				resolveJob = lifecycleScope.launch { runResolveLoop() }
 			}
 		}
@@ -432,14 +455,14 @@ open class CloudFlareActivity : BaseBrowserActivity(), CloudFlareCallback {
 		if (repository == null) return
 		val engineUserAgent = runCatching { WebSettings.getDefaultUserAgent(this) }.getOrNull()
 		if (engineUserAgent.isNullOrEmpty() || ANDROID_UA_TOKEN !in engineUserAgent) return
-		val currentUserAgent = viewBinding.webView.settings.userAgentString
+		val currentUserAgent = webView.settings.userAgentString
 		if (currentUserAgent.isNullOrEmpty() || ANDROID_UA_TOKEN in currentUserAgent) return
 		Log.w(
 			TAG,
 			"Configured User-Agent contradicts the WebView engine, realigning so the challenge can pass." +
 				"\n  was: $currentUserAgent\n  now: $engineUserAgent",
 		)
-		viewBinding.webView.settings.userAgentString = engineUserAgent
+		webView.settings.userAgentString = engineUserAgent
 		runCatching {
 			repository.getConfig().cloudFlareUserAgent = engineUserAgent
 		}.onFailure {
