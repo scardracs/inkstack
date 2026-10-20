@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
@@ -44,11 +43,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import androidx.fragment.app.FragmentManager
@@ -398,7 +399,10 @@ private fun IntroStep(serverUrl: String, onOpenLink: (String, String) -> Unit) {
 	val privacy = stringResource(R.string.community_privacy)
 	val policyText = stringResource(R.string.community_policy_links, terms, privacy)
 	val linkColor = MaterialTheme.colorScheme.primary
-	val annotated = remember(policyText, terms, privacy, linkColor) {
+	val linkStyle = TextLinkStyles(
+		style = SpanStyle(color = linkColor, textDecoration = TextDecoration.Underline),
+	)
+	val annotated = remember(policyText, terms, privacy, linkColor, serverUrl, onOpenLink) {
 		buildAnnotatedString {
 			val termsStart = policyText.indexOf(terms)
 			val privacyStart = policyText.indexOf(privacy)
@@ -406,19 +410,31 @@ private fun IntroStep(serverUrl: String, onOpenLink: (String, String) -> Unit) {
 			while (i < policyText.length) {
 				when (i) {
 					termsStart -> {
-						pushStringAnnotation("terms", "$serverUrl/terms")
-						withStyle(SpanStyle(color = linkColor, textDecoration = TextDecoration.Underline)) {
+						withLink(
+							LinkAnnotation.Clickable(
+								tag = "terms",
+								styles = linkStyle,
+								linkInteractionListener = {
+									onOpenLink("$serverUrl/terms", terms)
+								},
+							),
+						) {
 							append(terms)
 						}
-						pop()
 						i += terms.length
 					}
 					privacyStart -> {
-						pushStringAnnotation("privacy", "$serverUrl/privacy")
-						withStyle(SpanStyle(color = linkColor, textDecoration = TextDecoration.Underline)) {
+						withLink(
+							LinkAnnotation.Clickable(
+								tag = "privacy",
+								styles = linkStyle,
+								linkInteractionListener = {
+									onOpenLink("$serverUrl/privacy", privacy)
+								},
+							),
+						) {
 							append(privacy)
 						}
-						pop()
 						i += privacy.length
 					}
 					else -> {
@@ -438,15 +454,9 @@ private fun IntroStep(serverUrl: String, onOpenLink: (String, String) -> Unit) {
 			color = MaterialTheme.colorScheme.primary,
 		)
 		Spacer(Modifier.height(8.dp))
-		ClickableText(
+		Text(
 			text = annotated,
 			style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
-			onClick = { offset ->
-				annotated.getStringAnnotations(offset, offset).firstOrNull()?.let { ann ->
-					val title = if (ann.tag == "terms") terms else privacy
-					onOpenLink(ann.item, title)
-				}
-			},
 		)
 	}
 }

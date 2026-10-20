@@ -105,7 +105,7 @@ class ScrobblingInfoSheet : ComposeAdaptiveSheet() {
 						.width(72.dp)
 						.clickable {
 							router.openImage(
-								url = scrobbling.coverUrl ?: return@clickable,
+								url = scrobbling.coverUrl,
 								source = null,
 								anchor = null,
 							)
@@ -123,7 +123,7 @@ class ScrobblingInfoSheet : ComposeAdaptiveSheet() {
 							modifier = Modifier.size(20.dp),
 						)
 						Text(
-							text = scrobbling.title.orEmpty(),
+							text = scrobbling.title,
 							style = MaterialTheme.typography.titleMedium,
 							modifier = Modifier
 								.weight(1f)
@@ -144,8 +144,11 @@ class ScrobblingInfoSheet : ComposeAdaptiveSheet() {
 									text = { Text(stringResource(R.string.open_in_browser)) },
 									onClick = {
 										menuExpanded = false
-										val url = scrobbling.externalUrl ?: return@DropdownMenuItem
-										if (!router.openExternalBrowser(url, context.getString(R.string.open_in_browser))) {
+										if (!router.openExternalBrowser(
+												scrobbling.externalUrl,
+												context.getString(R.string.open_in_browser),
+											)
+										) {
 											Snackbar.make(requireView(), R.string.operation_not_supported, Snackbar.LENGTH_SHORT).show()
 										}
 									},

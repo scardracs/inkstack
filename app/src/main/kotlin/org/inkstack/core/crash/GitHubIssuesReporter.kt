@@ -89,7 +89,7 @@ object GitHubIssuesReporter {
 				.post(payload.toString().toRequestBody(jsonMedia))
 				.build()
 			client.newCall(request).execute().use { response ->
-				val responseBody = response.body?.string().orEmpty()
+				val responseBody = response.body.string()
 				if (!response.isSuccessful) {
 					error("GitHub API ${response.code}: ${responseBody.take(400)}")
 				}

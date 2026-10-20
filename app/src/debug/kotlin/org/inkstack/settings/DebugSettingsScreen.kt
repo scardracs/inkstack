@@ -14,6 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.fragment.app.FragmentActivity
 import leakcanary.LeakCanary
 import org.inkstack.InkstackApp
 import org.inkstack.R
@@ -72,7 +73,11 @@ fun DebugSettingsScreen(
 				modifier = Modifier
 					.fillMaxWidth()
 					.clickable {
-						context.findActivity()?.router?.openList(TestMangaSource, null, null)
+						(context.findActivity() as? FragmentActivity)?.router?.openList(
+							TestMangaSource,
+							null,
+							null,
+						)
 					},
 			)
 		}

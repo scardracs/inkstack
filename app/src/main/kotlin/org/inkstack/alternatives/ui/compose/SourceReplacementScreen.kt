@@ -118,7 +118,7 @@ fun SourceReplacementScreen(
 						)
 					} else {
 						Column {
-							Text(current?.title ?: stringResource(R.string.replace_source))
+							Text(current.title.ifEmpty { stringResource(R.string.replace_source) })
 							if (queueSize > 0) {
 								Text(
 									"${queuePos + 1} / $queueSize",
