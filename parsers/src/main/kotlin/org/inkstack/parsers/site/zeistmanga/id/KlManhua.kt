@@ -11,7 +11,7 @@ import org.inkstack.parsers.util.mapToSet
 import org.inkstack.parsers.util.parseHtml
 import org.inkstack.parsers.util.requireElementById
 
-@Broken
+@Broken("Site unreachable (HTTP gone)")
 @MangaSourceParser("KLMANHUA", "KlManhua", "id", ContentType.HENTAI)
 internal class KlManhua(context: MangaLoaderContext) :
 	ZeistMangaParser(context, MangaParserSource.KLMANHUA, "klmanhua.blogspot.com") {

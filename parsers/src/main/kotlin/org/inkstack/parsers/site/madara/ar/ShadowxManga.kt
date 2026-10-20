@@ -6,7 +6,7 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("SHADOWXMANGA", "ShadowXManga", "ar")
 internal class ShadowxManga(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.SHADOWXMANGA, "www.shadowxmanga.com") {

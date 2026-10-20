@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.mmrcms.MmrcmsParser
 import java.util.*
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("FRSCANSCOM", "FrScans.com", "fr")
 internal class FrScansCom(context: MangaLoaderContext) :
 	MmrcmsParser(context, MangaParserSource.FRSCANSCOM, "frscans.com") {

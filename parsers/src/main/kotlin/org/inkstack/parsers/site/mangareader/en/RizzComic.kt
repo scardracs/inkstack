@@ -11,10 +11,8 @@ import org.inkstack.parsers.util.json.getFloatOrDefault
 import org.inkstack.parsers.util.json.getStringOrNull
 import org.inkstack.parsers.util.json.mapJSON
 import org.inkstack.parsers.util.suspendlazy.suspendLazy
-import org.inkstack.parsers.Broken
 import java.util.*
 
-@Broken
 @MangaSourceParser("RIZZCOMIC", "RizzComic", "en")
 internal class RizzComic(context: MangaLoaderContext) :
 	MangaReaderParser(context, MangaParserSource.RIZZCOMIC, "rizzfables.com", pageSize = 50, searchPageSize = 20) {

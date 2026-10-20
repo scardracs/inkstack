@@ -6,7 +6,7 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.mangareader.MangaReaderParser
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("MANGACIM", "Mangacim", "tr")
 internal class Mangacim(context: MangaLoaderContext) :
 	MangaReaderParser(context, MangaParserSource.MANGACIM, "mangacim.com.tr", pageSize = 20, searchPageSize = 20) {

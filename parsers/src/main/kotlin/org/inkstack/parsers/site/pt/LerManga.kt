@@ -11,7 +11,7 @@ import org.inkstack.parsers.util.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("LERMANGA", "LerManga", "pt")
 internal class LerManga(context: MangaLoaderContext) : PagedMangaParser(context, MangaParserSource.LERMANGA, 24) {
 

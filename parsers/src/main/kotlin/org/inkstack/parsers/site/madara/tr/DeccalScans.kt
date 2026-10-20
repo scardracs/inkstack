@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.ContentType
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("DECCALSCANS", "DeccalScans", "tr", ContentType.HENTAI)
 internal class DeccalScans(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.DECCALSCANS, "fuchscans.com") {

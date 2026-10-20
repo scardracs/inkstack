@@ -8,7 +8,7 @@ import org.inkstack.parsers.model.MangaListFilterCapabilities
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.mangareader.MangaReaderParser
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("DOUJINS", "Doujins.lat", "es", ContentType.HENTAI)
 internal class Doujins(context: MangaLoaderContext) :
 	MangaReaderParser(context, MangaParserSource.DOUJINS, "doujins.lat", pageSize = 20, searchPageSize = 10) {

@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.MangaListFilterCapabilities
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.mangareader.MangaReaderParser
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("WITCOMICS", "WitComics", "it")
 internal class WitComics(context: MangaLoaderContext) :
 	MangaReaderParser(context, MangaParserSource.WITCOMICS, "www.witcomics.net", pageSize = 5, searchPageSize = 10) {

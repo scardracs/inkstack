@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.MangaListFilterCapabilities
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.mangareader.MangaReaderParser
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("MANJANOON_EN", "NoonScan.net", "en")
 internal class Manjanoon(context: MangaLoaderContext) :
 	MangaReaderParser(context, MangaParserSource.MANJANOON_EN, "noonscan.net", pageSize = 20, searchPageSize = 10) {

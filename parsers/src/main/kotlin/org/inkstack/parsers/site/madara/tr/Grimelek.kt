@@ -6,7 +6,7 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 
-@Broken
+@Broken("Site unreachable (DNS)")
 //This source requires an account.
 @MangaSourceParser("GRIMELEK", "Grimelek", "tr")
 internal class Grimelek(context: MangaLoaderContext) :

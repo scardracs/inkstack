@@ -12,7 +12,7 @@ import java.util.ArrayList
 import java.util.Base64
 import org.inkstack.parsers.Broken
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("CATHARSISFANTASY", "CatharsisFantasy", "es")
 internal class CatharsisFantasy(context: MangaLoaderContext) :
 	MangaReaderParser(

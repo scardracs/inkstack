@@ -6,7 +6,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.heancmsalt.HeanCmsAlt
 import org.inkstack.parsers.Broken
 
-@Broken("Not dead, changed template")
+@Broken("Selectors outdated (comics 404)")
 @MangaSourceParser("LEGIONSCANS", "CerberusSeries", "es")
 internal class CerberuSeries(context: MangaLoaderContext) :
 	HeanCmsAlt(context, MangaParserSource.LEGIONSCANS, "legionscans.com")

@@ -3,7 +3,6 @@ package org.inkstack.parsers.site.madara.fr
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import org.jsoup.nodes.Document
-import org.inkstack.parsers.Broken
 import org.inkstack.parsers.MangaLoaderContext
 import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.exception.ParseException
@@ -12,7 +11,6 @@ import org.inkstack.parsers.site.madara.MadaraParser
 import org.inkstack.parsers.util.*
 import java.text.SimpleDateFormat
 
-@Broken
 @MangaSourceParser("HENTAIORIGINES", "HentaiOrigines", "fr", ContentType.HENTAI)
 internal class HentaiOrigines(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.HENTAIORIGINES, "hentai-origines.com") {

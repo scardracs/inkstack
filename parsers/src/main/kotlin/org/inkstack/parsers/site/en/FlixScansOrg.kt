@@ -17,7 +17,7 @@ import org.inkstack.parsers.util.json.mapJSON
 import java.text.SimpleDateFormat
 import java.util.*
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("FLIXSCANSORG", "FlixScans.org", "en")
 internal class FlixScansOrg(context: MangaLoaderContext) :
 	PagedMangaParser(context, MangaParserSource.FLIXSCANSORG, 18) {

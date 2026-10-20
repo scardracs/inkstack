@@ -6,7 +6,7 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 
-@Broken
+@Broken("Site unreachable (HTTP_525)")
 @MangaSourceParser("READERGEN", "ReaderGen", "fr")
 internal class Readergen(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.READERGEN, "fr.readergen.fr", 18)

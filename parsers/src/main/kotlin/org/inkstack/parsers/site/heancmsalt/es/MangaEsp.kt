@@ -6,7 +6,7 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.heancmsalt.HeanCmsAlt
 
-@Broken("Not dead, changed template")
+@Broken("Selectors outdated (comic 404)")
 @MangaSourceParser("MANGAESP", "MangaEsp", "es")
 internal class MangaEsp(context: MangaLoaderContext) :
 	HeanCmsAlt(context, MangaParserSource.MANGAESP, "mangaesp.topmanhuas.org", 15) {

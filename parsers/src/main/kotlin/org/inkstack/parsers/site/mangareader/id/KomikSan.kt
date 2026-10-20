@@ -9,7 +9,7 @@ import org.inkstack.parsers.util.oneOrThrowIfMany
 import org.inkstack.parsers.util.parseHtml
 import org.inkstack.parsers.util.urlEncoded
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("KOMIKSAN", "KomikSan", "id")
 internal class KomikSan(context: MangaLoaderContext) :
 	MangaReaderParser(context, MangaParserSource.KOMIKSAN, "komiksan.link", pageSize = 40, searchPageSize = 10) {

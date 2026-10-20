@@ -6,7 +6,7 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.zeistmanga.ZeistMangaParser
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("MAXGSSCAN", "MaxgsScan", "pt")
 internal class MaxgsScan(context: MangaLoaderContext) :
 	ZeistMangaParser(context, MangaParserSource.MAXGSSCAN, "www.maxgsscan.online")

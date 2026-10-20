@@ -6,7 +6,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 import org.inkstack.parsers.Broken
 
-@Broken
+@Broken("Site unreachable (HTTP_500)")
 @MangaSourceParser("READFREECOMICS", "ReadFreeComics", "en")
 internal class ReadFreeComics(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.READFREECOMICS, "readfreecomics.com") {

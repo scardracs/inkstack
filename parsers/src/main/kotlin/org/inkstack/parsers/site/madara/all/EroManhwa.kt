@@ -8,7 +8,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 import java.util.*
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("EROMANHWA", "EroManhwa", "", ContentType.HENTAI)
 internal class EroManhwa(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.EROMANHWA, "eromanhwa.org") {

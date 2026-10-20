@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.ContentType
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("PONYMANGA", "PonyManga", "en", ContentType.HENTAI)
 internal class PonyManga(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.PONYMANGA, "ponymanga.com", 10)

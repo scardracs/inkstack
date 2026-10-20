@@ -8,7 +8,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 
 //Manga +18 require login.
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("VIYAFANSUB", "ViyaFansub", "tr", ContentType.HENTAI)
 internal class ViyaFansub(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.VIYAFANSUB, "viyafansub.com")

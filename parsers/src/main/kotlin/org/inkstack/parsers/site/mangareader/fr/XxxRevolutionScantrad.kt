@@ -9,7 +9,7 @@ import org.inkstack.parsers.site.mangareader.MangaReaderParser
 import org.inkstack.parsers.util.*
 import java.text.SimpleDateFormat
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("XXXREVOLUTIONSCANTRAD", "Xxx.RevolutionScantrad", "fr", ContentType.HENTAI)
 internal class XxxRevolutionScantrad(context: MangaLoaderContext) :
 	MangaReaderParser(

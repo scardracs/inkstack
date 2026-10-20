@@ -8,7 +8,7 @@ import org.inkstack.parsers.site.mangareader.MangaReaderParser
 import java.util.Locale
 import org.inkstack.parsers.Broken
 
-@Broken("Not dead, changed template")
+@Broken("Selectors outdated (list 404)")
 @MangaSourceParser("CATHARSISWORLD", "CatharsisWorld", "es")
 internal class CatharsisWorld(context: MangaLoaderContext) :
 	MangaReaderParser(context, MangaParserSource.CATHARSISWORLD, "catharsisworld.dig-it.info", pageSize = 30, searchPageSize = 10) {

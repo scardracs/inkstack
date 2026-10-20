@@ -13,7 +13,7 @@ import org.inkstack.parsers.util.*
 import org.inkstack.parsers.util.json.asTypedList
 import java.text.SimpleDateFormat
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("KOMIKGES", "KomikGes", "id")
 internal class KomikGes(context: MangaLoaderContext) :
 	ZeistMangaParser(context, MangaParserSource.KOMIKGES, "www.komikges.my.id") {

@@ -17,7 +17,7 @@ import org.inkstack.parsers.util.*
 import java.text.SimpleDateFormat
 import java.util.zip.ZipInputStream
 
-@Broken("Not dead, changed template")
+@Broken("Site blocked (HTTP 403)")
 @MangaSourceParser("RANDOMSCANS", "LuratoonScan", "pt")
 internal class LuratoonScansParser(context: MangaLoaderContext) :
     SinglePageMangaParser(context, MangaParserSource.RANDOMSCANS),

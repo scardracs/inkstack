@@ -3,7 +3,6 @@ package org.inkstack.parsers.site.be
 import androidx.collection.ArraySet
 import org.json.JSONArray
 import org.json.JSONObject
-import org.inkstack.parsers.Broken
 import org.inkstack.parsers.MangaLoaderContext
 import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.config.ConfigKey
@@ -19,7 +18,6 @@ import org.inkstack.parsers.util.nullIfEmpty
 import org.inkstack.parsers.util.toAbsoluteUrl
 import java.util.*
 
-@Broken
 @MangaSourceParser("ANIBEL", "Anibel", "be")
 internal class AnibelParser(context: MangaLoaderContext) : AbstractMangaParser(context, MangaParserSource.ANIBEL) {
 

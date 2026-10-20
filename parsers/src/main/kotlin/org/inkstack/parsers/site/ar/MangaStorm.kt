@@ -10,7 +10,7 @@ import org.inkstack.parsers.network.UserAgents
 import org.inkstack.parsers.util.*
 import java.util.*
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("MANGASTORM", "MangaStorm", "ar")
 internal class MangaStorm(context: MangaLoaderContext) :
 	PagedMangaParser(context, MangaParserSource.MANGASTORM, 30) {

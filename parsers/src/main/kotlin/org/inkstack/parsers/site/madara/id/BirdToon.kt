@@ -8,7 +8,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 import java.util.*
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("BIRDTOON", "BirdToon", "id", ContentType.HENTAI)
 internal class BirdToon(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.BIRDTOON, "birdtoon.shop", 10) {

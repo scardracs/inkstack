@@ -10,7 +10,7 @@ import org.inkstack.parsers.util.mapToSet
 import org.inkstack.parsers.util.parseHtml
 import org.inkstack.parsers.util.requireElementById
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("EPIKMAN", "EpikMan", "tr")
 internal class EpikMan(context: MangaLoaderContext) :
 	ZeistMangaParser(context, MangaParserSource.EPIKMAN, "www.epikman.ga") {

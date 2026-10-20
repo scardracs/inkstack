@@ -6,7 +6,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 import org.inkstack.parsers.Broken
 
-@Broken("Not dead, changed template")
+@Broken("Selectors outdated (empty list)")
 @MangaSourceParser("HAREMSCANN", "HaremScann", "es")
 internal class HaremScann(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.HAREMSCANN, "haremscann.es") {

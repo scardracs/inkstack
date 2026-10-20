@@ -6,7 +6,6 @@ import kotlinx.coroutines.coroutineScope
 import okhttp3.Protocol
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
-import org.inkstack.parsers.Broken
 import org.inkstack.parsers.MangaLoaderContext
 import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.ContentRating
@@ -27,7 +26,6 @@ import org.inkstack.parsers.util.textOrNull
 import org.inkstack.parsers.util.toAbsoluteUrl
 import java.text.SimpleDateFormat
 
-@Broken
 @MangaSourceParser("HUNTERSSCAN", "HuntersScan", "pt")
 internal class HuntersScan(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.HUNTERSSCAN, "readhunters.xyz", pageSize = 50) {

@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.ContentType
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("YAOIMOBI", "Yaoi.Mobi", "en", ContentType.HENTAI)
 internal class YaoiMobi(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.YAOIMOBI, "yaoi.mobi") {

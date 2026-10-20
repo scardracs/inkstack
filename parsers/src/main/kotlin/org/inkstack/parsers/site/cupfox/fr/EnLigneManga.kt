@@ -6,7 +6,7 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.cupfox.CupFoxParser
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("ENLIGNEMANGA", "EnLigneManga", "fr")
 internal class EnLigneManga(context: MangaLoaderContext) :
 	CupFoxParser(context, MangaParserSource.ENLIGNEMANGA, "www.enlignemanga.com")

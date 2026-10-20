@@ -14,7 +14,7 @@ import org.inkstack.parsers.util.parseSafe
 import java.text.SimpleDateFormat
 import java.util.*
 
-@Broken
+@Broken("Site unreachable (HTTP_522)")
 @MangaSourceParser("LUACOMIC_COM", "Lua Scans", "en")
 internal class LuaScans(context: MangaLoaderContext) :
     HeanCms(context, MangaParserSource.LUACOMIC_COM, "luacomic.com") {

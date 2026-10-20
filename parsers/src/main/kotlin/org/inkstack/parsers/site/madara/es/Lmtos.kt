@@ -6,7 +6,7 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 
-@Broken("Not dead, changed template")
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("LMTOS", "Lmtos", "es")
 internal class Lmtos(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.LMTOS, "lmtos.com") {

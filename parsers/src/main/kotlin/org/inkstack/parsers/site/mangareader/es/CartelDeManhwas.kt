@@ -6,7 +6,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.mangareader.MangaReaderParser
 import org.inkstack.parsers.Broken
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("CARTELDEMANHWAS", "Cartel De Manhwas", "es")
 internal class CartelDeManhwas(context: MangaLoaderContext) :
 	MangaReaderParser(

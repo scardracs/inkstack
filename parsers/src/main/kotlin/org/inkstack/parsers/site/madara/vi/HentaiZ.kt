@@ -11,7 +11,7 @@ import org.inkstack.parsers.model.*
 import org.inkstack.parsers.util.*
 import org.inkstack.parsers.Broken
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("HENTAIZ", "HentaiZ", "vi", ContentType.HENTAI)
 internal class HentaiZ(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.HENTAIZ, "hentaiz.news", 24) {

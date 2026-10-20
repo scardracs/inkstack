@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.ContentType
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.zeistmanga.ZeistMangaParser
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("ZSCANLATION", "ZScanlation", "pt", ContentType.HENTAI)
 internal class ZScanlation(context: MangaLoaderContext) :
 	ZeistMangaParser(context, MangaParserSource.ZSCANLATION, "www.zscanlation.com") {

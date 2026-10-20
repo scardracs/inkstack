@@ -6,7 +6,7 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.zeistmanga.ZeistMangaParser
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("ASUPANKOMIK", "AsupanKomik", "id")
 internal class AsupanKomik(context: MangaLoaderContext) :
 	ZeistMangaParser(context, MangaParserSource.ASUPANKOMIK, "www.asupankomik.my.id")

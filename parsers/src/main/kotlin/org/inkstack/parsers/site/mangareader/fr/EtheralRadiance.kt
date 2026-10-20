@@ -8,7 +8,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.mangareader.MangaReaderParser
 import org.inkstack.parsers.util.insertCookies
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("ETHERALRADIANCE", "EtheralRadiance", "fr")
 internal class EtheralRadiance(context: MangaLoaderContext) :
 	MangaReaderParser(

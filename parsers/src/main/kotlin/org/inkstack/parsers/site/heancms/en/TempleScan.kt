@@ -6,7 +6,7 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.heancms.HeanCms
 
-@Broken("Not dead, changed template")
+@Broken("Site blocked (HTTP 403)")
 @MangaSourceParser("TEMPLESCAN", "TempleScan", "en")
 internal class TempleScan(context: MangaLoaderContext) :
 	HeanCms(context, MangaParserSource.TEMPLESCAN, "templetoons.com") {

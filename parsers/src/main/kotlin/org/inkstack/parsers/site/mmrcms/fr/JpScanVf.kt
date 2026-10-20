@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.mmrcms.MmrcmsParser
 import java.util.*
 
-@Broken
+@Broken("Site unreachable (HTTP_521)")
 @MangaSourceParser("JPSCANVF", "LireScanVf.com", "fr")
 internal class JpScanVf(context: MangaLoaderContext) :
 	MmrcmsParser(context, MangaParserSource.JPSCANVF, "lirescanvf.com") {

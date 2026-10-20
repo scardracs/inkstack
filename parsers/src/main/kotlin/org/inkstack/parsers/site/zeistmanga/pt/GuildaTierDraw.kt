@@ -10,7 +10,7 @@ import org.inkstack.parsers.util.mapToSet
 import org.inkstack.parsers.util.parseHtml
 import org.inkstack.parsers.util.requireElementById
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("GUILDATIERDRAW", "GuildaTierDraw", "pt")
 internal class GuildaTierDraw(context: MangaLoaderContext) :
 	ZeistMangaParser(context, MangaParserSource.GUILDATIERDRAW, "www.guildatierdraw.top") {

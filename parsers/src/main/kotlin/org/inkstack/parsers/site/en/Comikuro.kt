@@ -45,7 +45,7 @@ import org.inkstack.parsers.util.json.mapJSONNotNull
 import java.util.EnumSet
 import java.util.Locale
 
-@Broken
+@Broken("Site unreachable (HTTP_522)")
 @MangaSourceParser("COMIKURO", "Comikuro", "en")
 internal class Comikuro(context: MangaLoaderContext) : PagedMangaParser(context, MangaParserSource.COMIKURO, 21) {
 

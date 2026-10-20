@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.hotcomics.HotComicsParser
 import java.util.Locale
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("TOOMICS", "Toomics", "de")
 internal class Toomics(context: MangaLoaderContext) :
 	HotComicsParser(context, MangaParserSource.TOOMICS, "toomics.top/de") {

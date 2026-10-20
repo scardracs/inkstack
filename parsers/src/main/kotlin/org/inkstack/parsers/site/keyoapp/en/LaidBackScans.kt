@@ -6,7 +6,7 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.keyoapp.KeyoappParser
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("LAIDBACKSCANS", "LaidBackScans", "en")
 internal class LaidBackScans(context: MangaLoaderContext) :
 	KeyoappParser(context, MangaParserSource.LAIDBACKSCANS, "laidbackscans.org")

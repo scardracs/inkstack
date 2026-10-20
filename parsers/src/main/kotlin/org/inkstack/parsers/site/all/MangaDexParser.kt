@@ -9,7 +9,6 @@ import kotlinx.coroutines.coroutineScope
 import okhttp3.HttpUrl
 import org.json.JSONArray
 import org.json.JSONObject
-import org.inkstack.parsers.Broken
 import org.inkstack.parsers.MangaLoaderContext
 import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.config.ConfigKey
@@ -35,7 +34,6 @@ private const val LOCALE_FALLBACK = "en"
 private const val SERVER_DATA = "data"
 private const val SERVER_DATA_SAVER = "data-saver"
 
-@Broken("MangaDex not working in-app")
 @MangaSourceParser("MANGADEX", "MangaDex")
 internal class MangaDexParser(context: MangaLoaderContext) : FlexibleMangaParser(context, MangaParserSource.MANGADEX) {
 

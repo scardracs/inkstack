@@ -7,7 +7,7 @@ import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.mangareader.MangaReaderParser
 import org.inkstack.parsers.Broken
 
-@Broken // The website is either closed or constantly blocked
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("SIIKOMIK", "SiiKomik", "id")
 internal class SiiKomik(context: MangaLoaderContext) :
 	MangaReaderParser(context, MangaParserSource.SIIKOMIK, "siikomik.fun", pageSize = 20, searchPageSize = 10) {

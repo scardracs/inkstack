@@ -6,7 +6,7 @@ import org.inkstack.parsers.MangaSourceParser
 import org.inkstack.parsers.model.MangaParserSource
 import org.inkstack.parsers.site.madara.MadaraParser
 
-@Broken
+@Broken("Site unreachable (DNS)")
 @MangaSourceParser("LIKEMANGAIN", "LikeManga.in", "en")
 internal class LikeMangaIn(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.LIKEMANGAIN, "likemanga.in", 36) {
