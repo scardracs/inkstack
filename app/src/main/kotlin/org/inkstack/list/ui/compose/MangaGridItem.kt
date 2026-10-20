@@ -6,7 +6,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,11 +27,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
 import coil3.request.ImageRequest
 import org.inkstack.R
+import org.inkstack.core.ui.compose.CoverWithTitle
 import org.inkstack.core.ui.compose.MangaCover
 import org.inkstack.core.util.ext.mangaExtra
 import org.inkstack.list.domain.ReadingProgress
@@ -57,7 +56,8 @@ fun MangaGridItem(
 		.build()
 	val shape = RoundedCornerShape(16.dp)
 	val progress = item.readingProgress()
-	Column(
+	CoverWithTitle(
+		title = item.title,
 		modifier = modifier
 			.fillMaxWidth()
 			.combinedClickable(
@@ -136,16 +136,6 @@ fun MangaGridItem(
 					}
 				}
 			},
-		)
-		Text(
-			text = item.title,
-			color = MaterialTheme.colorScheme.onSurface,
-			style = MaterialTheme.typography.labelMedium,
-			maxLines = 2,
-			overflow = TextOverflow.Ellipsis,
-			modifier = Modifier
-				.fillMaxWidth()
-				.padding(top = 6.dp, start = 2.dp, end = 2.dp),
 		)
 	}
 }

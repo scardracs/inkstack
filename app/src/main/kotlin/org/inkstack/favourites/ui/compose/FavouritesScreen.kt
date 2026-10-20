@@ -8,10 +8,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.ImageLoader
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.inkstack.R
 import org.inkstack.favourites.ui.list.FavouritesListViewModel
 import org.inkstack.list.ui.compose.MangaListPane
+import org.inkstack.list.ui.compose.confirmMarkAsCompleted
 import org.inkstack.list.ui.compose.rememberMangaListSelection
 import org.inkstack.parsers.model.Manga
 
@@ -46,18 +46,12 @@ fun FavouritesScreen(
 				finish()
 				true
 			}
-			R.id.action_mark_current -> {
-				MaterialAlertDialogBuilder(context)
-					.setTitle(R.string.mark_as_completed)
-					.setMessage(R.string.mark_as_completed_prompt)
-					.setNegativeButton(android.R.string.cancel, null)
-					.setPositiveButton(android.R.string.ok) { _, _ ->
-						viewModel.markAsRead(manga)
-						finish()
-					}
-					.show()
-				true
-			}
+			R.id.action_mark_current -> confirmMarkAsCompleted(
+				context = context,
+				manga = manga,
+				finish = finish,
+				onConfirm = viewModel::markAsRead,
+			)
 			else -> false
 		}
 	}

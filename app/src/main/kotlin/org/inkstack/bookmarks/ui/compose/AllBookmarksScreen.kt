@@ -1,22 +1,18 @@
 package org.inkstack.bookmarks.ui.compose
 
-import android.view.Menu
 import android.widget.Toast
-import androidx.appcompat.view.menu.MenuBuilder
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -31,15 +27,11 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,7 +39,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -55,19 +46,18 @@ import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import org.inkstack.R
-import org.inkstack.core.ui.BaseComposeActivity
-import org.inkstack.core.ui.compose.SelectionChromeHost
-import org.inkstack.core.ui.compose.SelectionChromeSession
-import org.inkstack.list.ui.compose.toChromeActions
 import org.inkstack.bookmarks.domain.Bookmark
 import org.inkstack.bookmarks.ui.AllBookmarksViewModel
 import org.inkstack.core.nav.ReaderIntent
 import org.inkstack.core.nav.router
 import org.inkstack.core.ui.compose.fastscroll.FastScrollBubbleSize
 import org.inkstack.core.ui.compose.fastscroll.FastScroller
+import org.inkstack.core.ui.compose.rememberSelectionChromeController
 import org.inkstack.core.ui.util.reverseAsync
 import org.inkstack.core.util.ext.findActivity
 import org.inkstack.list.domain.ReadingProgress
+import org.inkstack.list.ui.compose.EmptyStatePane
+import org.inkstack.list.ui.compose.ErrorStatePane
 import org.inkstack.list.ui.compose.ReadingProgressBadge
 import org.inkstack.list.ui.model.EmptyState
 import org.inkstack.list.ui.model.ErrorState
@@ -90,21 +80,28 @@ fun AllBookmarksScreen(
 ) {
 	val context = LocalContext.current
 	val content by viewModel.content.collectAsState()
-	val selection = rememberBookmarkSelection(content) { itemId, ids, finish ->
-		when (itemId) {
-			R.id.action_remove -> {
-				viewModel.removeBookmarks(ids)
-				finish()
-				true
+	val contentState = rememberUpdatedState(content)
+	val selection = rememberSelectionChromeController(
+		menuRes = R.menu.mode_bookmarks,
+		collectAllIds = {
+			contentState.value.mapNotNull { (it as? Bookmark)?.pageId }.toSet()
+		},
+		handleAction = { itemId, ids, finish ->
+			when (itemId) {
+				R.id.action_remove -> {
+					viewModel.removeBookmarks(ids)
+					finish()
+					true
+				}
+				R.id.action_save -> {
+					viewModel.savePages(pageSaveHelper, ids)
+					finish()
+					true
+				}
+				else -> false
 			}
-			R.id.action_save -> {
-				viewModel.savePages(pageSaveHelper, ids)
-				finish()
-				true
-			}
-			else -> false
-		}
-	}
+		},
+	)
 
 	LaunchedEffect(viewModel) {
 		viewModel.onError.collect { event ->
@@ -178,8 +175,8 @@ fun AllBookmarksScreen(
 						},
 						onLongClick = { selection.onItemLongClick(item.pageId) },
 					)
-					is EmptyState -> EmptyPane(item)
-					is ErrorState -> ErrorPane(item)
+					is EmptyState -> EmptyStatePane(state = item)
+					is ErrorState -> ErrorStatePane(state = item)
 					is LoadingState -> Box(
 						modifier = Modifier
 							.fillMaxWidth()
@@ -285,171 +282,6 @@ private fun BookmarkThumb(
 				.padding(dimensionResource(R.dimen.card_indicator_offset)),
 		)
 	}
-}
-
-@Composable
-private fun EmptyPane(state: EmptyState) {
-	Column(
-		modifier = Modifier
-			.fillMaxWidth()
-			.padding(32.dp),
-		horizontalAlignment = Alignment.CenterHorizontally,
-		verticalArrangement = Arrangement.spacedBy(8.dp),
-	) {
-		Text(
-			text = stringResource(state.textPrimary),
-			style = MaterialTheme.typography.titleMedium,
-			textAlign = TextAlign.Center,
-		)
-		if (state.textSecondary != 0) {
-			Text(
-				text = stringResource(state.textSecondary),
-				style = MaterialTheme.typography.bodyMedium,
-				color = MaterialTheme.colorScheme.onSurfaceVariant,
-				textAlign = TextAlign.Center,
-			)
-		}
-	}
-}
-
-@Composable
-private fun ErrorPane(state: ErrorState) {
-	Column(
-		modifier = Modifier
-			.fillMaxWidth()
-			.padding(32.dp),
-		horizontalAlignment = Alignment.CenterHorizontally,
-	) {
-		Text(
-			text = state.exception.localizedMessage ?: state.exception.javaClass.simpleName,
-			style = MaterialTheme.typography.bodyMedium,
-			textAlign = TextAlign.Center,
-		)
-	}
-}
-
-@Stable
-private class BookmarkSelectionState(
-	private val activity: FragmentActivity?,
-	private val chrome: SelectionChromeHost?,
-	private val contentProvider: () -> List<ListModel>,
-	private val actionHandler: (itemId: Int, ids: Set<Long>, finish: () -> Unit) -> Boolean,
-) {
-	var selectedIds by mutableStateOf(emptySet<Long>())
-		private set
-
-	private var session: BookmarkSelectionSession? = null
-
-	fun onItemClick(id: Long, open: () -> Unit) {
-		if (selectedIds.isEmpty()) {
-			open()
-		} else {
-			toggle(id)
-		}
-	}
-
-	fun onItemLongClick(id: Long) {
-		if (selectedIds.isEmpty()) {
-			selectedIds = setOf(id)
-			startSession()
-		} else {
-			toggle(id)
-		}
-	}
-
-	fun clear() {
-		val active = session
-		session = null
-		selectedIds = emptySet()
-		if (active != null) {
-			chrome?.hide(active)
-		}
-	}
-
-	private fun toggle(id: Long) {
-		val next = if (id in selectedIds) selectedIds - id else selectedIds + id
-		selectedIds = next
-		if (next.isEmpty()) {
-			clear()
-		} else {
-			session?.publish()
-		}
-	}
-
-	private fun selectAll() {
-		selectedIds = contentProvider().mapNotNull { (it as? Bookmark)?.pageId }.toSet()
-		session?.publish()
-	}
-
-	private fun startSession() {
-		val host = chrome ?: run {
-			selectedIds = emptySet()
-			return
-		}
-		val ctx = activity ?: run {
-			selectedIds = emptySet()
-			return
-		}
-		val newSession = BookmarkSelectionSession(ctx)
-		session = newSession
-		newSession.publish()
-		host.show(newSession)
-	}
-
-	private inner class BookmarkSelectionSession(
-		context: android.content.Context,
-	) : SelectionChromeSession {
-		private val menu: Menu = MenuBuilder(context).also {
-			activity?.menuInflater?.inflate(R.menu.mode_bookmarks, it)
-		}
-
-		override var title: String = ""
-			private set
-		override var actions: List<org.inkstack.core.ui.compose.SelectionChromeAction> = emptyList()
-			private set
-
-		fun publish() {
-			title = selectedIds.size.toString()
-			actions = menu.toChromeActions()
-			chrome?.refresh()
-		}
-
-		override fun onAction(id: Int) {
-			if (id == R.id.action_select_all) {
-				selectAll()
-				return
-			}
-			actionHandler(id, selectedIds) { dismiss() }
-		}
-
-		override fun dismiss() {
-			clear()
-		}
-	}
-}
-
-@Composable
-private fun rememberBookmarkSelection(
-	content: List<ListModel>,
-	onAction: (itemId: Int, ids: Set<Long>, finish: () -> Unit) -> Boolean,
-): BookmarkSelectionState {
-	val context = LocalContext.current
-	val activity = remember(context) { context.findActivity() as? FragmentActivity }
-	val chrome = remember(activity) { (activity as? BaseComposeActivity)?.selectionChrome }
-	val contentState = rememberUpdatedState(content)
-	val actionState = rememberUpdatedState(onAction)
-	val state = remember(activity, chrome) {
-		BookmarkSelectionState(
-			activity = activity,
-			chrome = chrome,
-			contentProvider = { contentState.value },
-			actionHandler = { itemId, ids, finish -> actionState.value(itemId, ids, finish) },
-		)
-	}
-	DisposableEffect(state) {
-		onDispose { state.clear() }
-	}
-	return state
 }
 
 private fun bookmarkListKey(item: ListModel, index: Int): Any = when (item) {

@@ -33,8 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -285,70 +283,6 @@ fun MangaListPane(
 }
 
 @Composable
-private fun EmptyStatePane(
-	state: EmptyState,
-	onAction: (() -> Unit)?,
-) {
-	Column(
-		modifier = Modifier
-			.fillMaxWidth()
-			.padding(32.dp),
-		horizontalAlignment = Alignment.CenterHorizontally,
-		verticalArrangement = Arrangement.spacedBy(8.dp),
-	) {
-		Text(
-			text = stringResource(state.textPrimary),
-			style = MaterialTheme.typography.titleMedium,
-			textAlign = TextAlign.Center,
-		)
-		if (state.textSecondary != 0) {
-			Text(
-				text = stringResource(state.textSecondary),
-				style = MaterialTheme.typography.bodyMedium,
-				color = MaterialTheme.colorScheme.onSurfaceVariant,
-				textAlign = TextAlign.Center,
-			)
-		}
-		if (state.actionStringRes != 0 && onAction != null) {
-			TextButton(onClick = onAction) {
-				Text(stringResource(state.actionStringRes))
-			}
-		}
-	}
-}
-
-@Composable
-private fun ErrorStatePane(
-	state: ErrorState,
-	onRetry: (() -> Unit)?,
-	onSecondaryAction: ((Throwable) -> Unit)?,
-) {
-	Column(
-		modifier = Modifier
-			.fillMaxWidth()
-			.padding(32.dp),
-		horizontalAlignment = Alignment.CenterHorizontally,
-		verticalArrangement = Arrangement.spacedBy(8.dp),
-	) {
-		Text(
-			text = state.exception.localizedMessage ?: state.exception.javaClass.simpleName,
-			style = MaterialTheme.typography.bodyMedium,
-			textAlign = TextAlign.Center,
-		)
-		if (state.canRetry && onRetry != null) {
-			TextButton(onClick = onRetry) {
-				Text(stringResource(state.buttonText))
-			}
-		}
-		if (state.secondaryButtonText != 0 && onSecondaryAction != null) {
-			TextButton(onClick = { onSecondaryAction(state.exception) }) {
-				Text(stringResource(state.secondaryButtonText))
-			}
-		}
-	}
-}
-
-@Composable
 private fun TipPane(
 	item: TipModel,
 	onPrimary: (() -> Unit)?,
@@ -432,10 +366,12 @@ private fun FeedItemCell(
 	imageLoader: ImageLoader?,
 ) {
 	val context = LocalContext.current
-	Column(
+	org.inkstack.core.ui.compose.CoverWithTitle(
+		title = item.title,
 		modifier = Modifier
 			.padding(horizontal = 4.dp)
 			.clickable(onClick = onClick),
+		titleStyle = MaterialTheme.typography.bodySmall,
 	) {
 		org.inkstack.core.ui.compose.MangaCover(
 			model = coil3.request.ImageRequest.Builder(context)
@@ -444,14 +380,6 @@ private fun FeedItemCell(
 			contentDescription = item.title,
 			imageLoader = imageLoader,
 			modifier = Modifier.fillMaxWidth(),
-		)
-		Text(
-			text = item.title,
-			style = MaterialTheme.typography.bodySmall,
-			color = MaterialTheme.colorScheme.onSurface,
-			maxLines = 2,
-			overflow = TextOverflow.Ellipsis,
-			modifier = Modifier.padding(top = 6.dp),
 		)
 	}
 }

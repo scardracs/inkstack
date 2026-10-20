@@ -24,41 +24,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Set up JDK 27
-        uses: actions/setup-java@v6
-        with:
-          distribution: temurin
-          java-version: "27"
-
-      - name: Install Android CLI
-        run: |
-          curl -fsSL https://dl.google.com/android/cli/latest/linux_x86_64/install.sh | bash
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-
-      - name: Install Android SDK packages
-        run: |
-          mkdir -p "$ANDROID_HOME/licenses"
-          # Pre-accept common SDK licenses (non-interactive CI)
-          printf '24333f8a63b6825ea9c5514f83c2829b004d1fee\n' > "$ANDROID_HOME/licenses/android-sdk-license"
-          printf '84831b9409646a918e30573bab4c9c91346d8abd\n' > "$ANDROID_HOME/licenses/android-sdk-preview-license"
-          printf 'd56f5187479451bebfb76e3538eab2e3\n' > "$ANDROID_HOME/licenses/android-googletv-license"
-          printf '33b6a2b64607f11b759f320ef9dff4ae\n' > "$ANDROID_HOME/licenses/google-gdk-license"
-          # Prefer android-37; fall back to 36 if the package is not published yet
-          android --no-metrics --sdk="$ANDROID_HOME" sdk install \
-            platform-tools \
-            platforms/android-37 \
-            platforms/android-36 \
-            build-tools/36.0.0 \
-            || android --no-metrics --sdk="$ANDROID_HOME" sdk install \
-              platform-tools \
-              platforms/android-36 \
-              build-tools/36.0.0
-
-      - name: Gradle cache
-        uses: gradle/actions/setup-gradle@v6
-        with:
-          # Open-source cache; avoid default enhanced (proprietary Terms of Use)
-          cache-provider: basic
+      - name: Setup Android + Gradle
+        uses: ./.github/actions/setup-android
 
       - name: Assemble debug
         run: ./gradlew :app:assembleDebug --stacktrace
@@ -88,36 +55,8 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: actions/setup-java@v6
-        with:
-          distribution: temurin
-          java-version: "27"
-
-      - name: Install Android CLI
-        run: |
-          curl -fsSL https://dl.google.com/android/cli/latest/linux_x86_64/install.sh | bash
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-
-      - name: Install Android SDK packages
-        run: |
-          mkdir -p "$ANDROID_HOME/licenses"
-          printf '24333f8a63b6825ea9c5514f83c2829b004d1fee\n' > "$ANDROID_HOME/licenses/android-sdk-license"
-          printf '84831b9409646a918e30573bab4c9c91346d8abd\n' > "$ANDROID_HOME/licenses/android-sdk-preview-license"
-          printf 'd56f5187479451bebfb76e3538eab2e3\n' > "$ANDROID_HOME/licenses/android-googletv-license"
-          printf '33b6a2b64607f11b759f320ef9dff4ae\n' > "$ANDROID_HOME/licenses/google-gdk-license"
-          android --no-metrics --sdk="$ANDROID_HOME" sdk install \
-            platform-tools \
-            platforms/android-37 \
-            platforms/android-36 \
-            build-tools/36.0.0 \
-            || android --no-metrics --sdk="$ANDROID_HOME" sdk install \
-              platform-tools \
-              platforms/android-36 \
-              build-tools/36.0.0
-
-      - uses: gradle/actions/setup-gradle@v6
-        with:
-          cache-provider: basic
+      - name: Setup Android + Gradle
+        uses: ./.github/actions/setup-android
 
       - name: Require signing secrets for tagged releases
         if: startsWith(github.ref, 'refs/tags/v')

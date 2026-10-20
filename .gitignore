@@ -21,3 +21,6 @@ keystore/*.p12
 
 # Broken sources triage report
 parsers/broken-triage.tsv
+
+# Local Cursor agent skills — keep out of the repo
+.cursor/skills/

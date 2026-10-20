@@ -3,11 +3,7 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
-	<item
-		android:id="@+id/action_share"
-		android:icon="@drawable/ic_share"
-		android:title="@string/share"
-		app:showAsAction="ifRoom|withText" />
+	<include menu="@menu/include_action_share" />
 
 	<item
 		android:id="@+id/action_pin"
@@ -27,11 +23,7 @@
 		android:title="@string/remove"
 		app:showAsAction="ifRoom|withText" />
 
-	<item
-		android:id="@+id/action_save"
-		android:icon="@drawable/ic_save"
-		android:title="@string/save"
-		app:showAsAction="ifRoom|withText" />
+	<include menu="@menu/include_action_save" />
 
 	<item
 		android:id="@+id/action_replace_source"
@@ -57,10 +49,6 @@
 		android:title="@string/mark_as_completed"
 		app:showAsAction="ifRoom|withText" />
 
-	<item
-		android:id="@+id/action_select_all"
-		android:icon="@drawable/ic_select_all"
-		android:title="@android:string/selectAll"
-		app:showAsAction="ifRoom|withText" />
+	<include menu="@menu/include_action_select_all" />
 
 </menu>

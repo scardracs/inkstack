@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.0.1
+
+Patch release after `v1.0.0` CI failed on unit tests (`VersionIdTest` still expected `0.1.0`).
+
+### Fixes
+
+- Align `VersionIdTest` with the shipped version name so `:app:testDebugUnitTest` passes in CI.
+- Selection chrome DRY: shared `SelectionChromeController`, menu includes, `CoverWithTitle`, shared empty/error panes, and `confirmMarkAsCompleted`.
+- CI: composite action `.github/actions/setup-android` for JDK/SDK/Gradle bootstrap on build and release jobs.
+
+### Notes
+
+- `v1.0.0` never published a GitHub Release (build job failed before the signed release job). Use this tag for the first signed APK.
+
 ## 1.0.0
 
 First stable Inkstack release.
