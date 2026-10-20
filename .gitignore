@@ -18,3 +18,6 @@ keystore/*.p12
 
 # Local UI smoke screenshots (not for VCS)
 .local-ref/
+
+# Broken sources triage report
+parsers/broken-triage.tsv

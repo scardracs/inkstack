@@ -1,0 +1,433 @@
+ACOMICS		parsers/src/main/kotlin/org/inkstack/parsers/site/ru/AComics.kt
+AFRODITSCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/tr/AfroditScans.kt
+AGSCOMICS		parsers/src/main/kotlin/org/inkstack/parsers/site/keyoapp/en/AgsComics.kt
+AIYUMANGASCANLATION		parsers/src/main/kotlin/org/inkstack/parsers/site/zeistmanga/es/AiyuMangaScanlation.kt
+ALCEASCAN		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/AlceaScan.kt
+ALLIED_FANSUB		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/tr/AlliedFansub.kt
+ALTAYSCANS	Original site closed	parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/en/AltayScans.kt
+ANCIENTCOMICS		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/pt/AncientComics.kt
+ANIBEL		parsers/src/main/kotlin/org/inkstack/parsers/site/be/AnibelParser.kt
+ANIGLISCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/en/AnigliScans.kt
+ANIKIGA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/tr/Anikiga.kt
+ANIMESAMA	Site inaccessible (timeout)	parsers/src/main/kotlin/org/inkstack/parsers/site/fr/AnimeSama.kt
+ANISA_MANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/tr/AnisaManga.kt
+ANSHSCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/AnshScans.kt
+ANTEIKUSCAN		parsers/src/main/kotlin/org/inkstack/parsers/site/keyoapp/fr/AnteikuScan.kt
+ARABSDOUJIN	Original site closed	parsers/src/main/kotlin/org/inkstack/parsers/site/zeistmanga/ar/ArabsDoujin.kt
+ARCANESCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/ArcaneScans.kt
+ARGOSCOMICS		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/pt/ArgosComics.kt
+ARTESSUPREMAS		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/es/ArtesSupremas.kt
+ASCALONSCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/en/AscalonScans.kt
+ASTRALMANGA	Website, come back soon	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/fr/AstralManga.kt
+ASTRAMES		parsers/src/main/kotlin/org/inkstack/parsers/site/keyoapp/fr/Astrames.kt
+ASUPANKOMIK		parsers/src/main/kotlin/org/inkstack/parsers/site/zeistmanga/id/AsupanKomik.kt
+ATLANTISSCAN		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/es/AtlantisScan.kt
+BAKAMAN		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/th/BakaMan.kt
+BAKAMH		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/zh/Bakamh.kt
+BANANASCAN		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/fr/BananaScan.kt
+BEEHENTAI	Redirects to ToonTop	parsers/src/main/kotlin/org/inkstack/parsers/site/madtheme/en/BeeHentai.kt
+BENTOMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/fr/BentomangaParser.kt
+BENTOSCAN		parsers/src/main/kotlin/org/inkstack/parsers/site/mmrcms/fr/BentoScan.kt
+BESTMANHUACOM		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/BestManhuaCom.kt
+BEST_MANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/ru/BestManga.kt
+BIBIMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/BibiManga.kt
+BIRDMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/en/BirdManga.kt
+BIRDTOON		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/id/BirdToon.kt
+BLOGTRUYEN	Original site closed	parsers/src/main/kotlin/org/inkstack/parsers/site/vi/BlogTruyenParser.kt
+BLOGTRUYENVN		parsers/src/main/kotlin/org/inkstack/parsers/site/vi/BlogTruyenVN.kt
+BLUESOLO		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/fr/BlueSolo.kt
+BOYS_LOVE		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/BoysLove.kt
+BRAKEOUT		parsers/src/main/kotlin/org/inkstack/parsers/site/heancmsalt/es/Brakeout.kt
+BRMANGAS		parsers/src/main/kotlin/org/inkstack/parsers/site/pt/BrMangas.kt
+BURNINGSCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/pt/BurningScans.kt
+CABAREDOWATAME		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/pt/Cabaredowatame.kt
+CARTELDEMANHWAS		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/es/CartelDeManhwas.kt
+CATHARSISFANTASY		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/es/CatharsisFantasy.kt
+CATHARSISWORLD	Not dead, changed template	parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/es/CatharsisWorld.kt
+CENTURYBOYS20TH	Original site closed	parsers/src/main/kotlin/org/inkstack/parsers/site/onemanga/fr/CenturyBoys20Th.kt
+CERISE_SCANS	Not dead, changed template	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/pt/CeriseScans.kt
+CLOVERMANGA	Redirect to @WEBTOONHATTI	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/tr/CloverManga.kt
+COCOMIC		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/CoComic.kt
+COCORIP		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/es/Cocorip.kt
+COLORED_MANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/ColoredManga.kt
+COMIC1000		parsers/src/main/kotlin/org/inkstack/parsers/site/manga18/en/Comic1000.kt
+COMIC21		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/Comic21.kt
+COMICARAB	Original site closed	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/ar/ComicArab.kt
+COMICEXTRA	Original site closed	parsers/src/main/kotlin/org/inkstack/parsers/site/en/ComicExtra.kt
+COMIKURO		parsers/src/main/kotlin/org/inkstack/parsers/site/en/Comikuro.kt
+CONSTELLARCOMIC		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/en/Constellarcomic.kt
+COPYPASTESCAN		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/es/Copypastescan.kt
+COSMICSCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/en/CosmicScansParser.kt
+CREEPYSCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/CreepyScans.kt
+CROWSCANS	Need to wait sources get more stable	parsers/src/main/kotlin/org/inkstack/parsers/site/ar/Vipmanga.kt
+CUBARI		parsers/src/main/kotlin/org/inkstack/parsers/site/all/Cubari.kt
+CULTURESUBS		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/tr/CultureSubs.kt
+DAPROB		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/es/Daprob.kt
+DARKNEBULUS	Original site closed	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/es/Darknebulus.kt
+DARKSCAN		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/DarkScan.kt
+DECCALSCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/tr/DeccalScans.kt
+DISKUSSCAN	Original site closed	parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/pt/DiskusScan.kt
+DOMALFANSB		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/tr/DomalFansb.kt
+DOUJINS		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/es/Doujins.kt
+DRAGONTRANSLATION	Redirect to DragonTranslation.org source	parsers/src/main/kotlin/org/inkstack/parsers/site/es/DragonTranslationParser.kt
+DRAKESCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/en/DrakeScans.kt
+DUCKMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/DuckManga.kt
+DUNIAKOMIK		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/Duniakomik.kt
+ELARCPAGE		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/en/Elarcpage.kt
+ELDERMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/tr/ElderManga.kt
+ELITEMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/EliteManga.kt
+ENLIGNEMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/cupfox/fr/EnLigneManga.kt
+EPIKMAN		parsers/src/main/kotlin/org/inkstack/parsers/site/zeistmanga/tr/EpikMan.kt
+EPSILONSCAN		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/fr/EpsilonscanParser.kt
+EPSILONSOFT		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/fr/EpsilonSoft.kt
+EROMANHWA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/all/EroManhwa.kt
+ESOMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/tr/EsoManga.kt
+ETHERALRADIANCE		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/fr/EtheralRadiance.kt
+FECOMICC	No longer available	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/vi/Fecomicc.kt
+FLIXSCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/ar/FlixScans.kt
+FLIXSCANSORG		parsers/src/main/kotlin/org/inkstack/parsers/site/en/FlixScansOrg.kt
+FOXWHITE		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/pt/FoxWhite.kt
+FRANXXMANGAS		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/pt/FranxxMangas.kt
+FREAKCOMIC		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/en/FreakComic.kt
+FREAKSCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/en/FreakScans.kt
+FREECOMICONLINE		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/FreeComicOnline.kt
+FREEWEBTOONCOINS		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/FreeWebtoonCoins.kt
+FRMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/cupfox/fr/FrManga.kt
+FRSCAN		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/fr/FrScan.kt
+FRSCANSCOM		parsers/src/main/kotlin/org/inkstack/parsers/site/mmrcms/fr/FrScansCom.kt
+FUTARI		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/Futari.kt
+GALINHASAMURAI	Original site closed	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/pt/GalinhaSamurai.kt
+GATEMANGA	Original site closed	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/ar/GateManga.kt
+GEKKOUSCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/pt/GekkouScans.kt
+GHOSTFANSUB	Redirect to @GRIMELEK	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/tr/GhostFansub.kt
+GLORYMANGA	Redirect to @MANGAGEZGINI	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/tr/GloryManga.kt
+GOODGIRLS		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/GoodGirls.kt
+GOOFFANSUB	Original site closed	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/pt/GoofFansub.kt
+GREMORYMANGAS		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/es/GremoryMangas.kt
+GRIMELEK		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/tr/Grimelek.kt
+GUFENGMH		parsers/src/main/kotlin/org/inkstack/parsers/site/sinmh/zh/Gufengmh.kt
+GUILDATIERDRAW		parsers/src/main/kotlin/org/inkstack/parsers/site/zeistmanga/pt/GuildaTierDraw.kt
+HAMTRUYEN		parsers/src/main/kotlin/org/inkstack/parsers/site/wpcomics/vi/HamTruyen.kt
+HAREMSCANN	Not dead, changed template	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/es/HaremScann.kt
+HARIMANGA	Down for now	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/HariManga.kt
+HENSEKAI		parsers/src/main/kotlin/org/inkstack/parsers/site/zmanga/id/Hensekai.kt
+HENTAI3Z	Redirect to @hentai20	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/Hentai3z.kt
+HENTAILIB		parsers/src/main/kotlin/org/inkstack/parsers/site/ru/rulib/HentaiLibParser.kt
+HENTAIORIGINES		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/fr/HentaiOrigines.kt
+HENTAIVN		parsers/src/main/kotlin/org/inkstack/parsers/site/vi/HentaiVNParser.kt
+HENTAIZ		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/vi/HentaiZ.kt
+HIJALA		parsers/src/main/kotlin/org/inkstack/parsers/site/zeistmanga/ar/Hijala.kt
+HOUSEMANGAS	Not dead, changed template	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/es/HouseMangas.kt
+HOUSEOFOTAKUS		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/es/HouseOfOtakus.kt
+HUNLIGHT		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/HunLight.kt
+HUNTERSSCAN		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/pt/HuntersScan.kt
+HUNTERSSCANEN		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/HuntersScanEn.kt
+HYPERIONSCANS	Original site closed	parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/tr/HyperionScans.kt
+ICHIROMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/zeistmanga/id/IchiroManga.kt
+IMMORTALUPDATES	Redirect to @MortalsGroove	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/ImmortalUpdates.kt
+IMPARATORMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/tr/ImparatorManga.kt
+IMPERIOSCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/pt/ImperioScans.kt
+INARIMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/es/InariManga.kt
+INARIPIKAV		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/es/InariPikav.kt
+INDO18H		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/id/Indo18h.kt
+INFAMOUSSCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/InfamousScans.kt
+INMORALNOFANSUB		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/es/InmoralNoFansub.kt
+INSTAMANHWA	Redirect to @XMANHWA	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/InstaManhwa.kt
+JAPSCANSFR		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/fr/JapScansFR.kt
+JELLYRING		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/tr/Jellyring.kt
+JPMANGAS		parsers/src/main/kotlin/org/inkstack/parsers/site/mmrcms/fr/JpMangas.kt
+JPSCANVF		parsers/src/main/kotlin/org/inkstack/parsers/site/mmrcms/fr/JpScanVf.kt
+KAIJUNO8		parsers/src/main/kotlin/org/inkstack/parsers/site/onemanga/fr/KaijuNo8.kt
+KATAKOMIK		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/KataKomik.kt
+KEDI		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/tr/Kedi.kt
+KENHUAV2SCANK		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/es/Kenhuav2Scan.kt
+KIARA18		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/Kiara18.kt
+KISHISAN		parsers/src/main/kotlin/org/inkstack/parsers/site/zeistmanga/id/Kishisan.kt
+KLIKMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/id/KlikManga.kt
+KLMANHUA		parsers/src/main/kotlin/org/inkstack/parsers/site/zeistmanga/id/KlManhua.kt
+KOINOBORISCAN	Not dead, changed template	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/es/KoinoboriScan.kt
+KOMIKAV		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/KomikAvParser.kt
+KOMIKGES		parsers/src/main/kotlin/org/inkstack/parsers/site/zeistmanga/id/KomikGes.kt
+KOMIKGO		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/KomikGo.kt
+KOMIKID		parsers/src/main/kotlin/org/inkstack/parsers/site/mmrcms/id/KomikId.kt
+KOMIKINDO_INFO	Redirect to @MANGASUSUKU	parsers/src/main/kotlin/org/inkstack/parsers/site/zmanga/id/KomikIndoInfo.kt
+KOMIKLAB		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/en/KomikLabParser.kt
+KOMIKLOKAL		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/KomikLokalParser.kt
+KOMIKLOKALCFD		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/KomiklokalCfd.kt
+KOMIKLOVERS		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/KomikLovers.kt
+KOMIKPIX		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/KomikPix.kt
+KOMIKSAN		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/KomikSan.kt
+KOMIKSAY		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/KomikSay.kt
+KOMIKSIN_CO		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/Komiksin.kt
+KUMAPAGE		parsers/src/main/kotlin/org/inkstack/parsers/site/id/Kumapage.kt
+KUROIMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/tr/KuroiManga.kt
+KYUMIK		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/Kyumik.kt
+LADYESTELARSCAN		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/pt/LadyestelarScan.kt
+LAIDBACKSCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/keyoapp/en/LaidBackScans.kt
+LECTORUNITOON		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/es/Lectorunitoon.kt
+LECTORUNM		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/es/Lectorunm.kt
+LEGACY_SCANS	images canvas need to refactor	parsers/src/main/kotlin/org/inkstack/parsers/site/fr/LegacyScansParser.kt
+LEGIONSCANS	Not dead, changed template	parsers/src/main/kotlin/org/inkstack/parsers/site/heancmsalt/es/CerberuSeries.kt
+LERMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/pt/LerManga.kt
+LERMANGAONLINE		parsers/src/main/kotlin/org/inkstack/parsers/site/pt/LerMangaOnline.kt
+LEVIATANSCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/LeviatanScans.kt
+LICHSUBS		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/tr/LichSubs.kt
+LIKEMANGAIN		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/LikeMangaIn.kt
+LINEWEBTOONS_DE		parsers/src/main/kotlin/org/inkstack/parsers/site/all/LineWebtoonsParser.kt
+LINEWEBTOONS_EN		parsers/src/main/kotlin/org/inkstack/parsers/site/all/LineWebtoonsParser.kt
+LINEWEBTOONS_ES		parsers/src/main/kotlin/org/inkstack/parsers/site/all/LineWebtoonsParser.kt
+LINEWEBTOONS_FR		parsers/src/main/kotlin/org/inkstack/parsers/site/all/LineWebtoonsParser.kt
+LINEWEBTOONS_ID		parsers/src/main/kotlin/org/inkstack/parsers/site/all/LineWebtoonsParser.kt
+LINEWEBTOONS_TH		parsers/src/main/kotlin/org/inkstack/parsers/site/all/LineWebtoonsParser.kt
+LINEWEBTOONS_ZH		parsers/src/main/kotlin/org/inkstack/parsers/site/all/LineWebtoonsParser.kt
+LINKSTARTSCAN		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/pt/LinkStartScan.kt
+LIRESCAN		parsers/src/main/kotlin/org/inkstack/parsers/site/fr/LireScan.kt
+LKSCANLATION		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/es/LkScanlation.kt
+LMTOS	Not dead, changed template	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/es/Lmtos.kt
+LOLICONMOBI		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/LoliconMobi.kt
+LUACOMIC_COM		parsers/src/main/kotlin/org/inkstack/parsers/site/heancms/en/LuaScans.kt
+LUFFYMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/LuffyManga.kt
+LUGNICASCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/fr/LugnicaScans.kt
+LUMINOUSSCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/en/LuminousScans.kt
+LUNARHENTAI		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/fr/LunarHentai.kt
+LUNARSCAN		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/pt/LunarScan.kt
+LUNARSCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/fr/LunarScans.kt
+LUXMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/LuxManga.kt
+MAGERIN		parsers/src/main/kotlin/org/inkstack/parsers/site/zeistmanga/id/Magerin.kt
+MANGA1001		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/Manga1001.kt
+MANGA18H	Redirect to @hentai20	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/Manga18h.kt
+MANGA18XYZ		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/Manga18Xyz.kt
+MANGA1K		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/Manga1k.kt
+MANGA4LIFE		parsers/src/main/kotlin/org/inkstack/parsers/site/nepnep/en/Manga4Life.kt
+MANGA68		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/Manga68.kt
+MANGAACTION		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/MangaAction.kt
+MANGABOB		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/MangaBob.kt
+MANGABR		parsers/src/main/kotlin/org/inkstack/parsers/site/scan/pt/MangaBr.kt
+MANGABUDDY	Website down forever	parsers/src/main/kotlin/org/inkstack/parsers/site/madtheme/en/MangaBuddy.kt
+MANGACIM		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/tr/Mangacim.kt
+MANGACULTIVATOR		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/MangaCultivator.kt
+MANGACUTE	Switched to mangakio	parsers/src/main/kotlin/org/inkstack/parsers/site/madtheme/en/MangaCute.kt
+MANGADEX	MangaDex not working in-app	parsers/src/main/kotlin/org/inkstack/parsers/site/all/MangaDexParser.kt
+MANGADOOR		parsers/src/main/kotlin/org/inkstack/parsers/site/mmrcms/es/MangaDoor.kt
+MANGAEFFECT	Redirect to @MANGAREAD	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/MangaEffect.kt
+MANGAESP	Not dead, changed template	parsers/src/main/kotlin/org/inkstack/parsers/site/heancmsalt/es/MangaEsp.kt
+MANGAFENXI		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/ja/MangaFenxi.kt
+MANGAGALAXY	Redirect to VortexScans	parsers/src/main/kotlin/org/inkstack/parsers/site/iken/en/MangaGalaxyParser.kt
+MANGAHALL		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/MangaHall.kt
+MANGAHUB_IO	BLOCKED BY CLOUDFARE	parsers/src/main/kotlin/org/inkstack/parsers/site/mangahub/en/MangaHubIo.kt
+MANGAID		parsers/src/main/kotlin/org/inkstack/parsers/site/mmrcms/id/Mangaid.kt
+MANGAIRO		parsers/src/main/kotlin/org/inkstack/parsers/site/mangabox/en/Mangairo.kt
+MANGAJINX	mgjinx.vip still broken in-app; needs further parser work	parsers/src/main/kotlin/org/inkstack/parsers/site/madtheme/en/MangaJinx.kt
+MANGAKAZANI		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/tr/MangaKazani.kt
+MANGAKYO		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/Mangakyo.kt
+MANGALESEN		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/de/MangaLesen.kt
+MANGAMOONS		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/th/MangaMoons.kt
+MANGANANQUIM		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/pt/MangaNanquim.kt
+MANGANATO		parsers/src/main/kotlin/org/inkstack/parsers/site/mangabox/en/Manganato.kt
+MANGANELO_COM		parsers/src/main/kotlin/org/inkstack/parsers/site/mangabox/en/MangaNeloCom.kt
+MANGANOON		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/ar/MangaNoon.kt
+MANGAOKU		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/tr/Mangaoku.kt
+MANGAOKUSANA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/tr/MangaOkusana.kt
+MANGAOWL		parsers/src/main/kotlin/org/inkstack/parsers/site/en/Mangaowl.kt
+MANGAOWLBLOG		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/MangaOwlBlog.kt
+MANGAOWL_ONE		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/MangaowlOne.kt
+MANGAOWL_US		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/MangaOwlUs.kt
+MANGAPARK		parsers/src/main/kotlin/org/inkstack/parsers/site/all/MangaPark.kt
+MANGAPEAK		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/ar/MangaPeak.kt
+MANGAPUMA	Now mangakio	parsers/src/main/kotlin/org/inkstack/parsers/site/madtheme/en/MangaPuma.kt
+MANGAPURE		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/MangaPure.kt
+MANGARBIC	Website is down or domain has been changed	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/ar/Mangarbic.kt
+MANGAROSIE		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/MangaRosie.kt
+MANGARUBY		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/MangaRuby.kt
+MANGARUHU		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/tr/MangaRuhu.kt
+MANGARYU		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/MangaRyu.kt
+MANGASCHAN		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/pt/MangasChan.kt
+MANGASEE		parsers/src/main/kotlin/org/inkstack/parsers/site/nepnep/en/MangaSee.kt
+MANGASHIRO		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/MangaShiro.kt
+MANGASIGINAGI		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/tr/MangaSiginagi.kt
+MANGASONLINE		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/pt/MangasOnline.kt
+MANGASORIGINESUNOFFICIAL		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/fr/MangasOriginesUnofficial.kt
+MANGASPARK		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/ar/Mangaspark.kt
+MANGASTORM		parsers/src/main/kotlin/org/inkstack/parsers/site/ar/MangaStorm.kt
+MANGASY		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/Mangasy.kt
+MANGATALE	Redirect to @IKIRU	parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/MangaTaleParser.kt
+MANGATIME		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/ar/MangaTime.kt
+MANGATOP		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/all/MangaTop.kt
+MANGAUS		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/Mangaus.kt
+MANGAXYZ	Now mangakio	parsers/src/main/kotlin/org/inkstack/parsers/site/madtheme/en/Mangaxyz.kt
+MANGAYARO		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/Mangayaro.kt
+MANGAYY		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/MangaYY.kt
+MANGAZODIAC		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/vi/MangaZodiac.kt
+MANGA_QUEEN		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/MangaQueen.kt
+MANGA_SCAN		parsers/src/main/kotlin/org/inkstack/parsers/site/mmrcms/fr/MangaScan.kt
+MANHUAKEY		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/th/Manhuakey.kt
+MANHUASCAN	kaliscans.org still broken in-app; needs further parser work	parsers/src/main/kotlin/org/inkstack/parsers/site/madtheme/en/ManhuaScan.kt
+MANHUASY		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/Manhuasy.kt
+MANHUAZONGHE	Site down: every page answers 503 or 404	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/ManhuaZonghe.kt
+MANHWA18APP		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/Manhwa18App.kt
+MANHWALIST	maintenance for an unspecified time	parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/ManhwalistParser.kt
+MANHWALOVER		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/en/ManhwaLover.kt
+MANHWANEW		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/ManhwaNew.kt
+MANHWAPLUS		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/ManhwaPlus.kt
+MANHWA_FREAK	Not dead, changed template	parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/en/ManhwaFreak.kt
+MANJANOON_EN		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/en/Manjanoon.kt
+MANWE		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/tr/Manwe.kt
+MANYCOMIC		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/ManyComic.kt
+MASTERKOMIK		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/MasterKomik.kt
+MAXGSSCAN		parsers/src/main/kotlin/org/inkstack/parsers/site/zeistmanga/pt/MaxgsScan.kt
+MILASUB	Content not found or removed	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/tr/MilaSub.kt
+MMDAOS		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/es/Mmdaos.kt
+MMSCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/MmScans.kt
+MODESCANLATOR		parsers/src/main/kotlin/org/inkstack/parsers/site/heancms/pt/ModeScanlator.kt
+MOMONOHANASCAN		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/pt/MomonohanaScan.kt
+MONARCAMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/es/MonarcaManga.kt
+MONZEEKOMIK		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/MonzeeKomik.kt
+MORTALSGROOVE		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/MortalsGroove.kt
+MSYPUBLISHER		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/MsyPublisher.kt
+NABISCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/tr/NabiScans.kt
+NEKOPOST	Redirect to @KINGS_MANGA	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/th/NekoPost.kt
+NEKOSCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/zeistmanga/es/NekoScans.kt
+NEOX_SCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/pt/Neoxscans.kt
+NETTRUYENX	Need to fix coverUrl	parsers/src/main/kotlin/org/inkstack/parsers/site/wpcomics/vi/NetTruyenX.kt
+NEWMANHUA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/NewManhua.kt
+NHENTAIWORLD		parsers/src/main/kotlin/org/inkstack/parsers/site/vi/NhentaiWorld.kt
+NIGHTCOMIC		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/NightComic.kt
+NIMEMOB		parsers/src/main/kotlin/org/inkstack/parsers/site/zeistmanga/id/Nimemob.kt
+NINEMANGA_BR		parsers/src/main/kotlin/org/inkstack/parsers/site/all/NineMangaParser.kt
+NINEMANGA_DE		parsers/src/main/kotlin/org/inkstack/parsers/site/all/NineMangaParser.kt
+NINEMANGA_EN		parsers/src/main/kotlin/org/inkstack/parsers/site/all/NineMangaParser.kt
+NINEMANGA_ES		parsers/src/main/kotlin/org/inkstack/parsers/site/all/NineMangaParser.kt
+NINEMANGA_FR		parsers/src/main/kotlin/org/inkstack/parsers/site/all/NineMangaParser.kt
+NINEMANGA_IT		parsers/src/main/kotlin/org/inkstack/parsers/site/all/NineMangaParser.kt
+NINEMANGA_RU		parsers/src/main/kotlin/org/inkstack/parsers/site/all/NineMangaParser.kt
+NINENINENINEHENTAI		parsers/src/main/kotlin/org/inkstack/parsers/site/all/NineNineNineHentaiParser.kt
+NOONSCAN		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/ar/NoonScan.kt
+NORMOYUN		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/ar/Normoyun.kt
+NOVELSTOWN		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/ar/Novelstown.kt
+NOXSCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/tr/NoxScans.kt
+NVMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/NvManga.kt
+NYXMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/tr/NyxManga.kt
+OIOIVN		parsers/src/main/kotlin/org/inkstack/parsers/site/cupfox/vi/OioiVn.kt
+ONEPIECEEX		parsers/src/main/kotlin/org/inkstack/parsers/site/pt/OnePieceEx.kt
+ONLYMANHWA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/OnlyManhwa.kt
+OTAKUSAN_EN	Original site closed	parsers/src/main/kotlin/org/inkstack/parsers/site/otakusanctuary/en/OtakusanEn.kt
+OTAKUSAN_VI	Original site closed	parsers/src/main/kotlin/org/inkstack/parsers/site/otakusanctuary/vi/OtakusanVi.kt
+OTSUGAMI		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/Otsugami.kt
+PANCONCOLA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/es/Panconcola.kt
+PANTHEONSCAN_FR		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/fr/PantheonScanFr.kt
+PAPSCAN		parsers/src/main/kotlin/org/inkstack/parsers/site/animebootstrap/fr/PapScan.kt
+PERF_SCAN	Site inaccessible (erreur 520)	parsers/src/main/kotlin/org/inkstack/parsers/site/heancms/fr/PerfScan.kt
+PHENIXSCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/fr/PhenixscansParser.kt
+PIANMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/PianManga.kt
+PINKTEACOMIC		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/vi/PinkTeaComic.kt
+PO2SCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/en/Po2Scans.kt
+PONYMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/PonyManga.kt
+PORNHWASCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/fr/PornhwaScans.kt
+POSEIDONSCANS	The source to change structure	parsers/src/main/kotlin/org/inkstack/parsers/site/fr/PoseidonScans.kt
+POTATOMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/ar/PotatoManga.kt
+POWERMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/foolslide/it/PowerManga.kt
+PRISMA_HENTAI		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/pt/Prismahentai.kt
+PROCHAN	Can't do it beceause of how they load images by stripes like tf :(	parsers/src/main/kotlin/org/inkstack/parsers/site/ar/Prochan.kt
+PROJETOSCANLATOR		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/pt/ProjetoScanlator.kt
+PRUNUSSCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/tr/PrunusScans.kt
+PSUNICORN		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/pt/Psunicorn.kt
+PURURIN		parsers/src/main/kotlin/org/inkstack/parsers/site/en/Pururin.kt
+RAGNAROKSCAN		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/es/RagnarokScan.kt
+RAGNASCAN		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/es/RagnaScan.kt
+RAINBOWFAIRYSCAN		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/pt/RainbowFairyScan.kt
+RANDOMSCANS	Not dead, changed template	parsers/src/main/kotlin/org/inkstack/parsers/site/pt/LuratoonScansParser.kt
+RAWMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/ja/RawManga.kt
+RAWXZ		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/ja/RawXz.kt
+READCOMICONLINE	Need to work on bypass protection for images	parsers/src/main/kotlin/org/inkstack/parsers/site/en/ReadComicOnline.kt
+READERGEN		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/fr/Readergen.kt
+READERSPOINT		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/en/ReadersPoint.kt
+READFREECOMICS		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/ReadFreeComics.kt
+READMANHUA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/ReadManhua.kt
+REAPERCOMICS	Closed site	parsers/src/main/kotlin/org/inkstack/parsers/site/heancms/en/ReaperComics.kt
+REAPERSCANS_FR		parsers/src/main/kotlin/org/inkstack/parsers/site/keyoapp/fr/ReaperScansFr.kt
+REMANGAS		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/pt/ReMangas.kt
+REVOLUTIONSCANTRAD		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/fr/RevolutionScantrad.kt
+RHPLUSMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/th/RhPlusManga.kt
+RIGHTDARKSCAN		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/es/RightdarkScan.kt
+RIZZCOMIC		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/en/RizzComic.kt
+ROBINMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/tr/RobinManga.kt
+ROGMANGAS		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/pt/RogMangas.kt
+SAYTRUYENHAY		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/vi/Saytruyenhay.kt
+SCAMBERTRASLATOR		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/es/Scambertraslator.kt
+SCANHENTAI		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/fr/ScanHentai.kt
+SCANMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/mmrcms/fr/ScanManga.kt
+SCANMANGAVF_WS		parsers/src/main/kotlin/org/inkstack/parsers/site/mmrcms/fr/ScanMangaVfWs.kt
+SCANSRAW	Original site closed	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/Scansraw.kt
+SCANS_MANGAS_ME		parsers/src/main/kotlin/org/inkstack/parsers/site/fr/ScansMangasMe.kt
+SCANTRADVF		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/fr/ScantradVf.kt
+SCARMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/ar/ScarManga.kt
+SENPAIEDICIONES	Original site closed	parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/es/Senpaiediciones.kt
+SHADOWMANGAS		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/es/Shadowmangas.kt
+SHADOWXMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/ar/ShadowxManga.kt
+SHEAKOMIK		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/Sheakomik.kt
+SIIKOMIK		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/SiiKomik.kt
+SINENSISSCANS	Not dead, changed template	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/pt/SinensisScans.kt
+SIRENKOMIK		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/SirenKomik.kt
+SKYMANGAS		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/es/SkyMangas.kt
+SKY_MANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/en/SkyManga.kt
+SNOWMTL		parsers/src/main/kotlin/org/inkstack/parsers/site/en/mtl/SnowMTL.kt
+SNOWSCANS	Redirect to @FLIXSCANS	parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/en/SnowScans.kt
+SOBATMANKU	Original site closed	parsers/src/main/kotlin/org/inkstack/parsers/site/zeistmanga/id/Sobatmanku.kt
+SOLARMTL		parsers/src/main/kotlin/org/inkstack/parsers/site/en/mtl/SolarMTL.kt
+SOLOOSCAN		parsers/src/main/kotlin/org/inkstack/parsers/site/zeistmanga/pt/SolooScan.kt
+SOMANGA	Original site closed	parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/th/SoManga.kt
+SPIDERSCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/en/SpiderScans.kt
+SSSSCANLATOR		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/pt/SssScanlator.kt
+STARBOUNDSCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/keyoapp/fr/StarboundScans.kt
+STICKHORSE		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/es/Stickhorse.kt
+STKISSMANGABLOG	Original site closed	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/StkissMangaBlog.kt
+STKISSMANGA_COM	Original site closed	parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/StkissMangaCom.kt
+STRAYFANSUB		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/tr/StrayFansub.kt
+TECNOPROJECTS		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/es/TecnoProjects.kt
+TECNOSCANN		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/es/TecnoScann.kt
+TEENMANHUA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/TeenManhua.kt
+TEMPESTFANSUB		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/tr/TempestfansubParser.kt
+TEMPLESCAN	Not dead, changed template	parsers/src/main/kotlin/org/inkstack/parsers/site/heancms/en/TempleScan.kt
+TEMPLESCANESP		parsers/src/main/kotlin/org/inkstack/parsers/site/es/TempleScanEsp.kt
+TENKAISCAN	Not dead, changed template	parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/es/TenkaiScan.kt
+THEBLANK		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/theblank/TheBlank.kt
+THEGUILDSCANS		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/Theguildscans.kt
+TMOMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/es/TmoManga.kt
+TOOMICS		parsers/src/main/kotlin/org/inkstack/parsers/site/hotcomics/de/Toomics.kt
+TOONCHILL		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/ToonChill.kt
+TOONILY_ME	Redirects to ToonTop	parsers/src/main/kotlin/org/inkstack/parsers/site/madtheme/en/ToonilyMe.kt
+TOONITUBE	Redirects to ToonTop	parsers/src/main/kotlin/org/inkstack/parsers/site/madtheme/en/TooniTube.kt
+TREE_MANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/TreeManga.kt
+TRUEMANGA	Down forever	parsers/src/main/kotlin/org/inkstack/parsers/site/madtheme/en/TrueManga.kt
+TUKANGKOMIK		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/Tukangkomik.kt
+UKIYOTOON		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/es/UkiyoToon.kt
+UZAYMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/tr/UzayManga.kt
+VCOMYCS		parsers/src/main/kotlin/org/inkstack/parsers/site/vi/VcomycsParser.kt
+VEXMANGA	Redirect to @VORTEXSCANS	parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/ar/VexManga.kt
+VFSCAN		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/fr/VfScan.kt
+VILLAINESSSCAN		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/pt/VillainessScan.kt
+VIYAFANSUB		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/tr/ViyaFansub.kt
+VOIDSCANS	Redirect to HiveComic	parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/en/VoidScans.kt
+VOIDSCANS_CO		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/en/VoidScansCo.kt
+VYVYMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/VyvyManga.kt
+WARUNGKOMIK		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/WarungKomik.kt
+WEBTOON		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/Webtoon.kt
+WITCOMICS		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/it/WitComics.kt
+WORLDMANHWAS		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/id/WorldManhwas.kt
+XBATCAT		parsers/src/main/kotlin/org/inkstack/parsers/site/all/BatoToParser.kt
+XXXREVOLUTIONSCANTRAD		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/fr/XxxRevolutionScantrad.kt
+YAOIMOBI		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/YaoiMobi.kt
+YAOITR		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/tr/YaoiTr.kt
+YDCOMICS		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/en/YdComics.kt
+YETISKINRUYAMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/tr/YetiskinRuyaManga.kt
+YUBIKIRI		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/id/Yubikiri.kt
+YUGEN_MANGAS_ES	Not dead, changed template	parsers/src/main/kotlin/org/inkstack/parsers/site/heancms/es/YugenMangasEs.kt
+YUMEKOMIK		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/id/YumeKomik.kt
+YURAMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/zmanga/id/YuraManga.kt
+YURINEKO	Original site closed	parsers/src/main/kotlin/org/inkstack/parsers/site/vi/YurinekoParser.kt
+ZAHARD		parsers/src/main/kotlin/org/inkstack/parsers/site/mangareader/en/Zahard.kt
+ZAMANMANGA		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/tr/ZamanManga.kt
+ZEVEP		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/es/Zevep.kt
+ZINMANGA_CC		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/ZinMangaCc.kt
+ZINMANGA_MS		parsers/src/main/kotlin/org/inkstack/parsers/site/madara/en/ZinMangaMS.kt
+ZSCANLATION		parsers/src/main/kotlin/org/inkstack/parsers/site/zeistmanga/pt/ZScanlation.kt
