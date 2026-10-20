@@ -1,91 +1,17 @@
 package org.inkstack.settings.storage.directories
 
-import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.view.ViewGroup
-import androidx.activity.viewModels
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isVisible
-import androidx.core.view.updateLayoutParams
-import androidx.core.view.updatePadding
-import com.google.android.material.snackbar.Snackbar
-import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import org.inkstack.R
-import org.inkstack.core.exceptions.resolve.SnackbarErrorObserver
-import org.inkstack.core.os.OpenDocumentTreeHelper
-import org.inkstack.core.ui.BaseActivity
-import org.inkstack.core.ui.list.OnListItemClickListener
-import org.inkstack.core.ui.list.decor.SpacingItemDecoration
-import org.inkstack.core.util.ext.observe
-import org.inkstack.core.util.ext.observeEvent
-import org.inkstack.core.util.ext.tryLaunch
-import org.inkstack.databinding.ActivityMangaDirectoriesBinding
-import org.inkstack.core.util.ext.consumeAll
+import org.inkstack.core.ui.BaseComposeActivity
+import org.inkstack.settings.storage.directories.compose.MangaDirectoriesScreen
 
 @AndroidEntryPoint
-class MangaDirectoriesActivity : BaseActivity<ActivityMangaDirectoriesBinding>(),
-	OnListItemClickListener<DirectoryConfigModel>, View.OnClickListener {
+class MangaDirectoriesActivity : BaseComposeActivity() {
 
-	private val viewModel: MangaDirectoriesViewModel by viewModels()
-	private val pickFileTreeLauncher = OpenDocumentTreeHelper(
-		activityResultCaller = this,
-		flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-			or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-			or Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION,
-	) {
-		if (it != null) viewModel.onCustomDirectoryPicked(it)
-	}
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(ActivityMangaDirectoriesBinding.inflate(layoutInflater))
-		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = false)
-		val adapter = AsyncListDifferDelegationAdapter(DirectoryConfigDiffCallback(), directoryConfigAD(this))
-        val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing_large)
-        viewBinding.recyclerView.adapter = adapter
-        viewBinding.recyclerView.addItemDecoration(SpacingItemDecoration(spacing, withBottomPadding = false))
-		viewBinding.fabAdd.setOnClickListener(this)
-		viewModel.items.observe(this) { adapter.items = it }
-		viewModel.isLoading.observe(this) { viewBinding.progressBar.isVisible = it }
-		viewModel.onError.observeEvent(
-			this,
-			SnackbarErrorObserver(viewBinding.root, null, exceptionResolver) {
-				if (it) viewModel.updateList()
-			},
-		)
-	}
-
-	override fun onItemClick(item: DirectoryConfigModel, view: View) {
-		viewModel.onRemoveClick(item.path)
-	}
-
-	override fun onClick(v: View?) {
-		val launched = pickFileTreeLauncher.tryLaunch(null)
-		if (!launched) {
-			Snackbar.make(
-				viewBinding.recyclerView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT,
-			).show()
+		setComposeContent {
+			MangaDirectoriesScreen(onBack = { dispatchNavigateUp() })
 		}
-	}
-
-	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-		viewBinding.fabAdd.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-			rightMargin = topMargin + barsInsets.right
-			leftMargin = topMargin + barsInsets.left
-			bottomMargin = topMargin + barsInsets.bottom
-		}
-		viewBinding.appbar.updatePadding(
-			left = barsInsets.left,
-			right = barsInsets.right,
-			top = barsInsets.top,
-		)
-		viewBinding.recyclerView.updatePadding(
-			left = barsInsets.left,
-			right = barsInsets.right,
-			bottom = barsInsets.bottom,
-		)
-		return insets.consumeAll(WindowInsetsCompat.Type.systemBars())
 	}
 }

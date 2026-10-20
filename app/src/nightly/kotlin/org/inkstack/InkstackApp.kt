@@ -8,6 +8,13 @@ import org.inkstack.core.BaseApp
 
 class InkstackApp : BaseApp(), SharedPreferences.OnSharedPreferenceChangeListener {
 
+	override fun onCreate() {
+		org.inkstack.settings.DebugSettingsAccess.register { onBack ->
+			org.inkstack.settings.DebugSettingsScreen(onBack = onBack)
+		}
+		super.onCreate()
+	}
+
 	override fun attachBaseContext(base: Context) {
 		super.attachBaseContext(base)
 		val prefs = PreferenceManager.getDefaultSharedPreferences(this)

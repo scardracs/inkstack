@@ -4,88 +4,93 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentFactory
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
 import dagger.hilt.android.AndroidEntryPoint
 import org.inkstack.R
-import org.inkstack.backups.ui.periodical.PeriodicalBackupSettingsFragment
 import org.inkstack.core.model.MangaSource
 import org.inkstack.core.nav.AppRouter
 import org.inkstack.core.prefs.AppSettings
 import org.inkstack.core.ui.BaseComposeActivity
-import org.inkstack.core.ui.compose.InkstackScaffold
-import org.inkstack.core.util.ext.buildBundle
 import org.inkstack.core.util.ext.getQuantityStringSafe
 import org.inkstack.core.util.ext.observeEvent
-import org.inkstack.settings.about.AboutSettingsFragment
-import org.inkstack.settings.about.changelog.ChangelogFragment
-import org.inkstack.settings.compose.PreferenceFragmentPane
 import org.inkstack.settings.compose.SettingsDestination
 import org.inkstack.settings.compose.SettingsScreen
 import org.inkstack.settings.compose.rememberRootSettingsDestinations
 import org.inkstack.settings.compose.sections.AboutSettingsScreen
+import org.inkstack.settings.compose.sections.AppearanceSettingsScreen
+import org.inkstack.settings.compose.sections.BackupsSettingsScreen
+import org.inkstack.settings.compose.sections.ChangelogScreen
+import org.inkstack.settings.compose.sections.CommunitySettingsScreen
+import org.inkstack.settings.compose.sections.DataCleanupSettingsScreen
+import org.inkstack.settings.compose.sections.DiscordSettingsScreen
+import org.inkstack.settings.compose.sections.DownloadsSettingsScreen
+import org.inkstack.settings.compose.sections.NavConfigScreen
+import org.inkstack.settings.compose.sections.PeriodicalBackupSettingsScreen
+import org.inkstack.settings.compose.sections.ProxySettingsScreen
+import org.inkstack.settings.compose.sections.ReaderSettingsScreen
+import org.inkstack.settings.compose.sections.ServicesSettingsScreen
+import org.inkstack.settings.compose.sections.SourceSettingsScreen
+import org.inkstack.settings.compose.sections.SourcesManageScreen
+import org.inkstack.settings.compose.sections.SourcesSettingsScreen
+import org.inkstack.settings.compose.sections.StorageNetworkSettingsScreen
 import org.inkstack.settings.compose.sections.SuggestionsSettingsScreen
-import org.inkstack.settings.discord.DiscordSettingsFragment
+import org.inkstack.settings.compose.sections.SyncSettingsScreen
+import org.inkstack.settings.compose.sections.TrackerSettingsScreen
 import org.inkstack.settings.search.SettingsItem
 import org.inkstack.settings.search.SettingsSearchViewModel
-import org.inkstack.settings.sources.SourceSettingsFragment
-import org.inkstack.settings.sources.SourcesSettingsFragment
-import org.inkstack.settings.sources.manage.SourcesManageFragment
-import org.inkstack.settings.tracker.TrackerSettingsFragment
-import org.inkstack.settings.userdata.BackupsSettingsFragment
+import org.inkstack.settings.search.SettingsSection
 
 private sealed class SettingsRoute {
 	data object Root : SettingsRoute()
 	data object About : SettingsRoute()
 	data object Suggestions : SettingsRoute()
-	data class PreferenceHost(
-		val fragmentClass: Class<out Fragment>,
-		val title: String,
-		val args: Bundle? = null,
-	) : SettingsRoute()
+	data object Appearance : SettingsRoute()
+	data object Reader : SettingsRoute()
+	data object Downloads : SettingsRoute()
+	data object Tracker : SettingsRoute()
+	data object Services : SettingsRoute()
+	data object Sync : SettingsRoute()
+	data object Community : SettingsRoute()
+	data object Discord : SettingsRoute()
+	data object Backups : SettingsRoute()
+	data object PeriodicalBackup : SettingsRoute()
+	data object StorageNetwork : SettingsRoute()
+	data object Proxy : SettingsRoute()
+	data object DataCleanup : SettingsRoute()
+	data object Sources : SettingsRoute()
+	data object SourcesManage : SettingsRoute()
+	data object NavConfig : SettingsRoute()
+	data object Changelog : SettingsRoute()
+	data object Debug : SettingsRoute()
+	data class Source(val sourceName: String) : SettingsRoute()
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @AndroidEntryPoint
-class SettingsActivity :
-	BaseComposeActivity(),
-	PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
+class SettingsActivity : BaseComposeActivity() {
 
 	private val searchViewModel: SettingsSearchViewModel by viewModels()
 
 	private var route by mutableStateOf<SettingsRoute>(SettingsRoute.Root)
-	private var nestedPreferenceStack by mutableStateOf<List<SettingsRoute.PreferenceHost>>(emptyList())
+	private var stack by mutableStateOf<List<SettingsRoute>>(emptyList())
 
 	private val backCallback = object : OnBackPressedCallback(false) {
 		override fun handleOnBackPressed() {
 			when {
-				nestedPreferenceStack.size > 1 -> {
-					nestedPreferenceStack = nestedPreferenceStack.dropLast(1)
-					route = nestedPreferenceStack.last()
+				stack.size > 1 -> {
+					stack = stack.dropLast(1)
+					route = stack.last()
+					applyTitle(route)
 				}
-				nestedPreferenceStack.isNotEmpty() || route !is SettingsRoute.Root -> {
-					nestedPreferenceStack = emptyList()
+				stack.isNotEmpty() || route !is SettingsRoute.Root -> {
+					stack = emptyList()
 					route = SettingsRoute.Root
 					isEnabled = false
 					setTitle(R.string.settings)
@@ -95,16 +100,17 @@ class SettingsActivity :
 		}
 	}
 
-	@OptIn(ExperimentalMaterial3Api::class)
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		onBackPressedDispatcher.addCallback(this, backCallback)
 
 		if (savedInstanceState == null) {
-			resolveDeepLinkRoute()?.let { openRoute(it) }
+			resolveDeepLinkRoute()?.let { openRoute(it, replaceStack = true) }
 		}
 
-		searchViewModel.onNavigateToPreference.observeEvent(this, ::navigateToPreference)
+		searchViewModel.onNavigateToPreference.observeEvent(this) { item ->
+			navigateToPreference(item)
+		}
 
 		setComposeContent {
 			val rootViewModel: RootSettingsViewModel = hiltViewModel()
@@ -119,237 +125,194 @@ class SettingsActivity :
 				)
 			}
 			val destinations = rememberRootSettingsDestinations(sourcesSummary)
-			val current = route
+			val goBack = { onBackPressedDispatcher.onBackPressed() }
 
-			when (current) {
+			when (val current = route) {
 				SettingsRoute.Root -> SettingsScreen(
 					destinations = destinations,
 					onBack = { dispatchNavigateUp() },
 					onOpen = ::openDestination,
 					modifier = Modifier.fillMaxSize(),
 				)
-
 				SettingsRoute.About -> AboutSettingsScreen(
-					onBack = { onBackPressedDispatcher.onBackPressed() },
-					onOpenChangelog = {
-						openRoute(
-							SettingsRoute.PreferenceHost(
-								ChangelogFragment::class.java,
-								getString(R.string.changelog),
-							),
-						)
-					},
+					onBack = goBack,
+					onOpenChangelog = { openRoute(SettingsRoute.Changelog) },
 					modifier = Modifier.fillMaxSize(),
 				)
-
 				SettingsRoute.Suggestions -> SuggestionsSettingsScreen(
-					onBack = { onBackPressedDispatcher.onBackPressed() },
+					onBack = goBack,
 					modifier = Modifier.fillMaxSize(),
 				)
-
-				is SettingsRoute.PreferenceHost -> InkstackScaffold(
+				SettingsRoute.Appearance -> AppearanceSettingsScreen(
+					onBack = goBack,
+					onOpenNavConfig = { openRoute(SettingsRoute.NavConfig) },
 					modifier = Modifier.fillMaxSize(),
-					topBar = {
-						TopAppBar(
-							title = { Text(current.title) },
-							navigationIcon = {
-								IconButton(onClick = { onBackPressedDispatcher.onBackPressed() }) {
-									Icon(
-										imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-										contentDescription = null,
-									)
-								}
-							},
-							windowInsets = WindowInsets.statusBars,
-							colors = TopAppBarDefaults.topAppBarColors(),
-						)
-					},
-					contentWindowInsets = WindowInsets.navigationBars,
-				) { padding ->
-					Box(
-						modifier = Modifier
-							.fillMaxSize()
-							.padding(padding),
-					) {
-						PreferenceFragmentPane(
-							fragmentClass = current.fragmentClass,
-							args = current.args,
+				)
+				SettingsRoute.Reader -> ReaderSettingsScreen(onBack = goBack, modifier = Modifier.fillMaxSize())
+				SettingsRoute.Downloads -> DownloadsSettingsScreen(onBack = goBack, modifier = Modifier.fillMaxSize())
+				SettingsRoute.Tracker -> TrackerSettingsScreen(onBack = goBack, modifier = Modifier.fillMaxSize())
+				SettingsRoute.Services -> ServicesSettingsScreen(
+					onBack = goBack,
+					onOpenSync = { openRoute(SettingsRoute.Sync) },
+					onOpenCommunity = { openRoute(SettingsRoute.Community) },
+					onOpenSuggestions = { openRoute(SettingsRoute.Suggestions) },
+					onOpenDiscord = { openRoute(SettingsRoute.Discord) },
+					modifier = Modifier.fillMaxSize(),
+				)
+				SettingsRoute.Sync -> SyncSettingsScreen(onBack = goBack, modifier = Modifier.fillMaxSize())
+				SettingsRoute.Community -> CommunitySettingsScreen(onBack = goBack, modifier = Modifier.fillMaxSize())
+				SettingsRoute.Discord -> DiscordSettingsScreen(onBack = goBack, modifier = Modifier.fillMaxSize())
+				SettingsRoute.Backups -> BackupsSettingsScreen(
+					onBack = goBack,
+					onOpenPeriodic = { openRoute(SettingsRoute.PeriodicalBackup) },
+					modifier = Modifier.fillMaxSize(),
+				)
+				SettingsRoute.PeriodicalBackup -> PeriodicalBackupSettingsScreen(
+					onBack = goBack,
+					modifier = Modifier.fillMaxSize(),
+				)
+				SettingsRoute.StorageNetwork -> StorageNetworkSettingsScreen(
+					onBack = goBack,
+					onOpenProxy = { openRoute(SettingsRoute.Proxy) },
+					onOpenDataCleanup = { openRoute(SettingsRoute.DataCleanup) },
+					modifier = Modifier.fillMaxSize(),
+				)
+				SettingsRoute.Proxy -> ProxySettingsScreen(onBack = goBack, modifier = Modifier.fillMaxSize())
+				SettingsRoute.DataCleanup -> DataCleanupSettingsScreen(onBack = goBack, modifier = Modifier.fillMaxSize())
+				SettingsRoute.Sources -> SourcesSettingsScreen(
+					onBack = goBack,
+					onOpenManage = { openRoute(SettingsRoute.SourcesManage) },
+					modifier = Modifier.fillMaxSize(),
+				)
+				SettingsRoute.SourcesManage -> SourcesManageScreen(
+					onBack = goBack,
+					onOpenSource = { openRoute(SettingsRoute.Source(it)) },
+					modifier = Modifier.fillMaxSize(),
+				)
+				is SettingsRoute.Source -> SourceSettingsScreen(
+					sourceName = current.sourceName,
+					onBack = goBack,
+					modifier = Modifier.fillMaxSize(),
+				)
+				SettingsRoute.NavConfig -> NavConfigScreen(onBack = goBack, modifier = Modifier.fillMaxSize())
+				SettingsRoute.Changelog -> ChangelogScreen(onBack = goBack, modifier = Modifier.fillMaxSize())
+				SettingsRoute.Debug -> {
+					val debugContent = DebugSettingsAccess.content
+					if (debugContent == null) {
+						SettingsScreen(
+							destinations = destinations,
+							onBack = { dispatchNavigateUp() },
+							onOpen = ::openDestination,
 							modifier = Modifier.fillMaxSize(),
 						)
+					} else {
+						debugContent(goBack)
 					}
 				}
 			}
 		}
 	}
 
-	override fun onPreferenceStartFragment(
-		caller: PreferenceFragmentCompat,
-		pref: Preference,
-	): Boolean {
-		val fragmentName = pref.fragment ?: return false
-		val fragmentClass = FragmentFactory.loadFragmentClass(classLoader, fragmentName)
-		when {
-			fragmentClass == SuggestionsSettingsFragment::class.java -> openRoute(SettingsRoute.Suggestions)
-			fragmentClass == AboutSettingsFragment::class.java -> openRoute(SettingsRoute.About)
-			else -> openRoute(
-				SettingsRoute.PreferenceHost(
-					fragmentClass = fragmentClass,
-					title = pref.title?.toString() ?: getString(R.string.settings),
-					args = pref.peekExtras(),
-				),
-			)
-		}
-		return true
-	}
-
-	fun setSectionTitle(title: CharSequence?) {
-		val resolved = title?.toString() ?: getString(R.string.settings)
-		setTitle(resolved)
-		val current = route
-		if (current is SettingsRoute.PreferenceHost) {
-			route = current.copy(title = resolved)
-			nestedPreferenceStack = nestedPreferenceStack.dropLast(1) + route as SettingsRoute.PreferenceHost
-		}
-	}
-
-	fun openFragment(fragmentClass: Class<out Fragment>, args: Bundle?, isFromRoot: Boolean) {
-		openRoute(
-			SettingsRoute.PreferenceHost(
-				fragmentClass = fragmentClass,
-				title = title?.toString() ?: getString(R.string.settings),
-				args = args,
-			),
-			replaceStack = isFromRoot,
-		)
-	}
-
 	private fun openDestination(destination: SettingsDestination) {
-		when (destination.key) {
-			"about" -> openRoute(SettingsRoute.About)
-			"services" -> {
-				// Services hub still Preference; suggestions is Compose via deep-link / search
-				openRoute(
-					SettingsRoute.PreferenceHost(
-						ServicesSettingsFragment::class.java,
-						getString(destination.titleRes),
-					),
-					replaceStack = true,
-				)
-			}
-			else -> {
-				val fragmentClass = when (destination.key) {
-					"appearance" -> AppearanceSettingsFragment::class.java
-					AppSettings.KEY_REMOTE_SOURCES -> SourcesSettingsFragment::class.java
-					"reader" -> ReaderSettingsFragment::class.java
-					"network" -> StorageAndNetworkSettingsFragment::class.java
-					"downloads" -> DownloadsSettingsFragment::class.java
-					"tracker" -> TrackerSettingsFragment::class.java
-					"userdata" -> BackupsSettingsFragment::class.java
-					else -> return
-				}
-				openRoute(
-					SettingsRoute.PreferenceHost(
-						fragmentClass,
-						getString(destination.titleRes),
-					),
-					replaceStack = true,
-				)
-			}
-		}
+		val next = when (destination.key) {
+			"about" -> SettingsRoute.About
+			"appearance" -> SettingsRoute.Appearance
+			AppSettings.KEY_REMOTE_SOURCES -> SettingsRoute.Sources
+			"reader" -> SettingsRoute.Reader
+			"network" -> SettingsRoute.StorageNetwork
+			"downloads" -> SettingsRoute.Downloads
+			"tracker" -> SettingsRoute.Tracker
+			"services" -> SettingsRoute.Services
+			"userdata" -> SettingsRoute.Backups
+			"debug" -> SettingsRoute.Debug.takeIf { DebugSettingsAccess.isAvailable }
+			else -> return
+		} ?: return
+		openRoute(next, replaceStack = true)
 	}
 
 	private fun navigateToPreference(item: SettingsItem) {
-		when {
-			item.fragmentClass == AboutSettingsFragment::class.java -> openRoute(SettingsRoute.About)
-			item.fragmentClass == SuggestionsSettingsFragment::class.java -> openRoute(SettingsRoute.Suggestions)
-			else -> openRoute(
-				SettingsRoute.PreferenceHost(
-					item.fragmentClass,
-					item.title.toString(),
-					buildBundle(1) { putString(ARG_PREF_KEY, item.key) },
-				),
-				replaceStack = true,
-			)
-		}
+		openRoute(item.section.toRoute(), replaceStack = true)
+	}
+
+	private fun SettingsSection.toRoute(): SettingsRoute = when (this) {
+		SettingsSection.About -> SettingsRoute.About
+		SettingsSection.Suggestions -> SettingsRoute.Suggestions
+		SettingsSection.Appearance -> SettingsRoute.Appearance
+		SettingsSection.Reader -> SettingsRoute.Reader
+		SettingsSection.Downloads -> SettingsRoute.Downloads
+		SettingsSection.Tracker -> SettingsRoute.Tracker
+		SettingsSection.Services -> SettingsRoute.Services
+		SettingsSection.Sync -> SettingsRoute.Sync
+		SettingsSection.Community -> SettingsRoute.Community
+		SettingsSection.Discord -> SettingsRoute.Discord
+		SettingsSection.Backups -> SettingsRoute.Backups
+		SettingsSection.PeriodicalBackup -> SettingsRoute.PeriodicalBackup
+		SettingsSection.StorageNetwork -> SettingsRoute.StorageNetwork
+		SettingsSection.Proxy -> SettingsRoute.Proxy
+		SettingsSection.DataCleanup -> SettingsRoute.DataCleanup
+		SettingsSection.Sources -> SettingsRoute.Sources
+		SettingsSection.SourcesManage -> SettingsRoute.SourcesManage
+		SettingsSection.NavConfig -> SettingsRoute.NavConfig
+		SettingsSection.Changelog -> SettingsRoute.Changelog
 	}
 
 	private fun openRoute(next: SettingsRoute, replaceStack: Boolean = false) {
 		route = next
 		backCallback.isEnabled = next !is SettingsRoute.Root
-		when (next) {
-			is SettingsRoute.PreferenceHost -> {
-				nestedPreferenceStack = if (replaceStack) listOf(next) else nestedPreferenceStack + next
-				setTitle(next.title)
-			}
-			SettingsRoute.About -> {
-				nestedPreferenceStack = emptyList()
-				setTitle(R.string.about)
-			}
-			SettingsRoute.Suggestions -> {
-				nestedPreferenceStack = emptyList()
-				setTitle(R.string.suggestions)
-			}
-			SettingsRoute.Root -> {
-				nestedPreferenceStack = emptyList()
-				setTitle(R.string.settings)
-			}
+		stack = when {
+			next is SettingsRoute.Root -> emptyList()
+			replaceStack -> listOf(next)
+			else -> stack + next
 		}
+		applyTitle(next)
+	}
+
+	private fun applyTitle(route: SettingsRoute) {
+		setTitle(
+			when (route) {
+				SettingsRoute.Root -> getString(R.string.settings)
+				SettingsRoute.About -> getString(R.string.about)
+				SettingsRoute.Suggestions -> getString(R.string.suggestions)
+				SettingsRoute.Appearance -> getString(R.string.appearance)
+				SettingsRoute.Reader -> getString(R.string.reader_settings)
+				SettingsRoute.Downloads -> getString(R.string.downloads)
+				SettingsRoute.Tracker -> getString(R.string.check_for_new_chapters)
+				SettingsRoute.Services -> getString(R.string.services)
+				SettingsRoute.Sync -> getString(R.string.sync_settings)
+				SettingsRoute.Community -> getString(R.string.community)
+				SettingsRoute.Discord -> getString(R.string.discord)
+				SettingsRoute.Backups -> getString(R.string.backup_restore)
+				SettingsRoute.PeriodicalBackup -> getString(R.string.periodic_backups)
+				SettingsRoute.StorageNetwork -> getString(R.string.storage_and_network)
+				SettingsRoute.Proxy -> getString(R.string.proxy)
+				SettingsRoute.DataCleanup -> getString(R.string.data_removal)
+				SettingsRoute.Sources -> getString(R.string.remote_sources)
+				SettingsRoute.SourcesManage -> getString(R.string.manage_sources)
+				SettingsRoute.NavConfig -> getString(R.string.main_screen_sections)
+				SettingsRoute.Changelog -> getString(R.string.changelog)
+				SettingsRoute.Debug -> getString(R.string.debug)
+				is SettingsRoute.Source -> getString(R.string.remote_sources)
+			},
+		)
 	}
 
 	private fun resolveDeepLinkRoute(): SettingsRoute? = when (intent?.action) {
-		AppRouter.ACTION_READER -> SettingsRoute.PreferenceHost(
-			ReaderSettingsFragment::class.java,
-			getString(R.string.reader_settings),
-		)
+		AppRouter.ACTION_READER -> SettingsRoute.Reader
 		AppRouter.ACTION_SUGGESTIONS -> SettingsRoute.Suggestions
-		AppRouter.ACTION_HISTORY -> SettingsRoute.PreferenceHost(
-			BackupsSettingsFragment::class.java,
-			getString(R.string.backup_restore),
+		AppRouter.ACTION_HISTORY -> SettingsRoute.Backups
+		AppRouter.ACTION_TRACKER -> SettingsRoute.Tracker
+		AppRouter.ACTION_PERIODIC_BACKUP -> SettingsRoute.PeriodicalBackup
+		AppRouter.ACTION_SOURCES -> SettingsRoute.Sources
+		AppRouter.ACTION_MANAGE_DISCORD -> SettingsRoute.Discord
+		AppRouter.ACTION_PROXY -> SettingsRoute.Proxy
+		AppRouter.ACTION_MANAGE_DOWNLOADS -> SettingsRoute.Downloads
+		AppRouter.ACTION_SOURCE -> SettingsRoute.Source(
+			MangaSource(intent.getStringExtra(AppRouter.KEY_SOURCE)).name,
 		)
-		AppRouter.ACTION_TRACKER -> SettingsRoute.PreferenceHost(
-			TrackerSettingsFragment::class.java,
-			getString(R.string.check_for_new_chapters),
-		)
-		AppRouter.ACTION_PERIODIC_BACKUP -> SettingsRoute.PreferenceHost(
-			PeriodicalBackupSettingsFragment::class.java,
-			getString(R.string.periodic_backups),
-		)
-		AppRouter.ACTION_SOURCES -> SettingsRoute.PreferenceHost(
-			SourcesSettingsFragment::class.java,
-			getString(R.string.remote_sources),
-		)
-		AppRouter.ACTION_MANAGE_DISCORD -> SettingsRoute.PreferenceHost(
-			DiscordSettingsFragment::class.java,
-			getString(R.string.discord),
-		)
-		AppRouter.ACTION_PROXY -> SettingsRoute.PreferenceHost(
-			ProxySettingsFragment::class.java,
-			getString(R.string.proxy),
-		)
-		AppRouter.ACTION_MANAGE_DOWNLOADS -> SettingsRoute.PreferenceHost(
-			DownloadsSettingsFragment::class.java,
-			getString(R.string.downloads),
-		)
-		AppRouter.ACTION_SOURCE -> {
-			val fragment = SourceSettingsFragment.newInstance(
-				MangaSource(intent.getStringExtra(AppRouter.KEY_SOURCE)),
-			)
-			SettingsRoute.PreferenceHost(
-				SourceSettingsFragment::class.java,
-				getString(R.string.remote_sources),
-				fragment.arguments,
-			)
-		}
-		AppRouter.ACTION_MANAGE_SOURCES -> SettingsRoute.PreferenceHost(
-			SourcesManageFragment::class.java,
-			getString(R.string.manage_sources),
-		)
+		AppRouter.ACTION_MANAGE_SOURCES -> SettingsRoute.SourcesManage
 		Intent.ACTION_VIEW -> when (intent.data?.host) {
 			HOST_ABOUT -> SettingsRoute.About
-			HOST_SYNC_SETTINGS -> SettingsRoute.PreferenceHost(
-				SyncSettingsFragment::class.java,
-				getString(R.string.sync_settings),
-			)
+			HOST_SYNC_SETTINGS -> SettingsRoute.Sync
 			else -> null
 		}
 		else -> null

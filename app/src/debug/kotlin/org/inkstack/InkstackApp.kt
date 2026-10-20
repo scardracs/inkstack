@@ -17,6 +17,13 @@ class InkstackApp : BaseApp() {
 			configureLeakCanary()
 		}
 
+	override fun onCreate() {
+		org.inkstack.settings.DebugSettingsAccess.register { onBack ->
+			org.inkstack.settings.DebugSettingsScreen(onBack = onBack)
+		}
+		super.onCreate()
+	}
+
 	override fun attachBaseContext(base: Context) {
 		super.attachBaseContext(base)
 		enableStrictMode()

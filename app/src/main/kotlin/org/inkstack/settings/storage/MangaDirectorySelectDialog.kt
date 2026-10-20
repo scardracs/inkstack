@@ -1,28 +1,40 @@
 package org.inkstack.settings.storage
 
 import android.content.Intent
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import org.inkstack.R
-import org.inkstack.core.exceptions.resolve.ToastErrorObserver
 import org.inkstack.core.os.OpenDocumentTreeHelper
-import org.inkstack.core.ui.AlertDialogFragment
-import org.inkstack.core.ui.list.OnListItemClickListener
-import org.inkstack.core.util.ext.observe
-import org.inkstack.core.util.ext.observeEvent
+import org.inkstack.core.ui.compose.ComposeAlertDialogFragment
+import org.inkstack.core.util.ext.getDisplayMessage
 import org.inkstack.core.util.ext.tryLaunch
-import org.inkstack.databinding.DialogDirectorySelectBinding
 
 @AndroidEntryPoint
-class MangaDirectorySelectDialog : AlertDialogFragment<DialogDirectorySelectBinding>(),
-	OnListItemClickListener<DirectoryModel> {
+class MangaDirectorySelectDialog : ComposeAlertDialogFragment() {
 
 	private val viewModel: MangaDirectorySelectViewModel by viewModels()
 	private val pickFileTreeLauncher = OpenDocumentTreeHelper(
@@ -33,35 +45,78 @@ class MangaDirectorySelectDialog : AlertDialogFragment<DialogDirectorySelectBind
 	) {
 		if (it != null) viewModel.onCustomDirectoryPicked(it)
 	}
-	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): DialogDirectorySelectBinding {
-		return DialogDirectorySelectBinding.inflate(inflater, container, false)
-	}
 
-	override fun onViewBindingCreated(binding: DialogDirectorySelectBinding, savedInstanceState: Bundle?) {
-		super.onViewBindingCreated(binding, savedInstanceState)
-		val adapter = AsyncListDifferDelegationAdapter(DirectoryDiffCallback(), directoryAD(this))
-		binding.root.adapter = adapter
-		viewModel.items.observe(viewLifecycleOwner) { adapter.items = it }
-		viewModel.onDismissDialog.observeEvent(viewLifecycleOwner) { dismiss() }
-		viewModel.onPickDirectory.observeEvent(viewLifecycleOwner) { pickCustomDirectory() }
-		viewModel.onError.observeEvent(viewLifecycleOwner, ToastErrorObserver(binding.root, this))
-	}
+	@Composable
+	override fun DialogContent(onDismissRequest: () -> Unit) {
+		val context = LocalContext.current
+		val items by viewModel.items.collectAsState()
 
-	override fun onBuildDialog(builder: MaterialAlertDialogBuilder): MaterialAlertDialogBuilder {
-		return super.onBuildDialog(builder)
-			.setCancelable(true)
-			.setTitle(R.string.manga_save_location)
-			.setNegativeButton(android.R.string.cancel, null)
-	}
-
-	override fun onItemClick(item: DirectoryModel, view: View) {
-		viewModel.onItemClick(item)
-	}
-
-	private fun pickCustomDirectory() {
-		val launched = pickFileTreeLauncher.tryLaunch(null)
-		if (!launched) {
-			Toast.makeText(context ?: return, R.string.operation_not_supported, Toast.LENGTH_SHORT).show()
+		LaunchedEffect(viewModel) {
+			viewModel.onDismissDialog.collectLatest { event ->
+				event?.consume { onDismissRequest() }
+			}
 		}
+		LaunchedEffect(viewModel) {
+			viewModel.onPickDirectory.collectLatest { event ->
+				event?.consume {
+					if (!pickFileTreeLauncher.tryLaunch(null)) {
+						Toast.makeText(context, R.string.operation_not_supported, Toast.LENGTH_SHORT).show()
+					}
+				}
+			}
+		}
+		LaunchedEffect(viewModel) {
+			viewModel.onError.collectLatest { event ->
+				event?.consume { error ->
+					Toast.makeText(context, error.getDisplayMessage(context.resources), Toast.LENGTH_SHORT).show()
+				}
+			}
+		}
+
+		AlertDialog(
+			onDismissRequest = onDismissRequest,
+			title = { Text(stringResource(R.string.manga_save_location)) },
+			text = {
+				LazyColumn(
+					modifier = Modifier
+						.fillMaxWidth()
+						.heightIn(max = 420.dp),
+				) {
+					items(items, key = { it.file?.path ?: it.titleRes }) { item ->
+						Row(
+							modifier = Modifier
+								.fillMaxWidth()
+								.clickable { viewModel.onItemClick(item) }
+								.padding(vertical = 6.dp),
+							verticalAlignment = Alignment.CenterVertically,
+						) {
+							RadioButton(
+								selected = item.isChecked,
+								onClick = { viewModel.onItemClick(item) },
+							)
+							Column(modifier = Modifier.padding(start = 4.dp)) {
+								Text(
+									text = item.title ?: stringResource(item.titleRes),
+									style = MaterialTheme.typography.bodyLarge,
+								)
+								item.file?.absolutePath?.let { path ->
+									Text(
+										text = path,
+										style = MaterialTheme.typography.bodySmall,
+										color = MaterialTheme.colorScheme.onSurfaceVariant,
+									)
+								}
+							}
+						}
+					}
+				}
+			},
+			confirmButton = {},
+			dismissButton = {
+				TextButton(onClick = onDismissRequest) {
+					Text(stringResource(android.R.string.cancel))
+				}
+			},
+		)
 	}
 }

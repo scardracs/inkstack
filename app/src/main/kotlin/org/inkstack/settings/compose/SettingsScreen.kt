@@ -29,6 +29,7 @@ import org.inkstack.BuildConfig
 import org.inkstack.R
 import org.inkstack.core.prefs.AppSettings
 import org.inkstack.core.ui.compose.InkstackScaffold
+import org.inkstack.settings.DebugSettingsAccess
 
 data class SettingsDestination(
 	val key: String,
@@ -43,62 +44,95 @@ fun rememberRootSettingsDestinations(enabledSourcesSummary: String): List<Settin
 	return remember(enabledSourcesSummary) {
 		fun summary(@StringRes vararg items: Int) =
 			items.joinToString { context.getString(it) }
-		listOf(
-			SettingsDestination(
-				key = "appearance",
-				titleRes = R.string.appearance,
-				iconRes = R.drawable.ic_appearance,
-				summary = summary(R.string.theme, R.string.list_mode, R.string.language),
-			),
-			SettingsDestination(
-				key = AppSettings.KEY_REMOTE_SOURCES,
-				titleRes = R.string.remote_sources,
-				iconRes = R.drawable.ic_manga_source,
-				summary = enabledSourcesSummary,
-			),
-			SettingsDestination(
-				key = "reader",
-				titleRes = R.string.reader_settings,
-				iconRes = R.drawable.ic_book_page,
-				summary = summary(R.string.read_mode, R.string.scale_mode, R.string.switch_pages),
-			),
-			SettingsDestination(
-				key = "network",
-				titleRes = R.string.storage_and_network,
-				iconRes = R.drawable.ic_usage,
-				summary = summary(R.string.storage_usage, R.string.proxy, R.string.prefetch_content),
-			),
-			SettingsDestination(
-				key = "downloads",
-				titleRes = R.string.downloads,
-				iconRes = R.drawable.ic_download,
-				summary = summary(R.string.manga_save_location, R.string.downloads_wifi_only),
-			),
-			SettingsDestination(
-				key = "tracker",
-				titleRes = R.string.check_for_new_chapters,
-				iconRes = R.drawable.ic_feed,
-				summary = summary(R.string.track_sources, R.string.notifications_settings),
-			),
-			SettingsDestination(
-				key = "services",
-				titleRes = R.string.services,
-				iconRes = R.drawable.ic_services,
-				summary = summary(R.string.suggestions, R.string.sync, R.string.tracking),
-			),
-			SettingsDestination(
-				key = "userdata",
-				titleRes = R.string.backup_restore,
-				iconRes = R.drawable.ic_backup_restore,
-				summary = summary(R.string.create_or_restore_backup, R.string.periodic_backups),
-			),
-			SettingsDestination(
-				key = "about",
-				titleRes = R.string.about,
-				iconRes = R.drawable.ic_info_outline,
-				summary = context.getString(R.string.app_version, BuildConfig.VERSION_NAME),
-			),
-		)
+		buildList {
+			add(
+				SettingsDestination(
+					key = "appearance",
+					titleRes = R.string.appearance,
+					iconRes = R.drawable.ic_appearance,
+					summary = summary(R.string.theme, R.string.list_mode, R.string.language),
+				),
+			)
+			add(
+				SettingsDestination(
+					key = AppSettings.KEY_REMOTE_SOURCES,
+					titleRes = R.string.remote_sources,
+					iconRes = R.drawable.ic_manga_source,
+					summary = enabledSourcesSummary,
+				),
+			)
+			add(
+				SettingsDestination(
+					key = "reader",
+					titleRes = R.string.reader_settings,
+					iconRes = R.drawable.ic_book_page,
+					summary = summary(R.string.read_mode, R.string.scale_mode, R.string.switch_pages),
+				),
+			)
+			add(
+				SettingsDestination(
+					key = "network",
+					titleRes = R.string.storage_and_network,
+					iconRes = R.drawable.ic_usage,
+					summary = summary(R.string.storage_usage, R.string.proxy, R.string.prefetch_content),
+				),
+			)
+			add(
+				SettingsDestination(
+					key = "downloads",
+					titleRes = R.string.downloads,
+					iconRes = R.drawable.ic_download,
+					summary = summary(R.string.manga_save_location, R.string.downloads_wifi_only),
+				),
+			)
+			add(
+				SettingsDestination(
+					key = "tracker",
+					titleRes = R.string.check_for_new_chapters,
+					iconRes = R.drawable.ic_feed,
+					summary = summary(R.string.track_sources, R.string.notifications_settings),
+				),
+			)
+			add(
+				SettingsDestination(
+					key = "services",
+					titleRes = R.string.services,
+					iconRes = R.drawable.ic_services,
+					summary = summary(R.string.suggestions, R.string.sync, R.string.tracking),
+				),
+			)
+			add(
+				SettingsDestination(
+					key = "userdata",
+					titleRes = R.string.backup_restore,
+					iconRes = R.drawable.ic_backup_restore,
+					summary = summary(R.string.create_or_restore_backup, R.string.periodic_backups),
+				),
+			)
+			add(
+				SettingsDestination(
+					key = "about",
+					titleRes = R.string.about,
+					iconRes = R.drawable.ic_info_outline,
+					summary = context.getString(R.string.app_version, BuildConfig.VERSION_NAME),
+				),
+			)
+			if (DebugSettingsAccess.isAvailable) {
+				val debugIcon = context.resources.getIdentifier(
+					"ic_debug",
+					"drawable",
+					context.packageName,
+				).takeIf { it != 0 } ?: R.drawable.ic_alert_outline
+				add(
+					SettingsDestination(
+						key = "debug",
+						titleRes = R.string.debug,
+						iconRes = debugIcon,
+						summary = "",
+					),
+				)
+			}
+		}
 	}
 }
 

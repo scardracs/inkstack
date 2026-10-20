@@ -3,11 +3,9 @@ package org.inkstack.settings.sources.auth
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -44,13 +42,13 @@ class SourceAuthActivity : BaseBrowserActivity(), BrowserCallback {
 			finishAfterTransition()
 			return
 		}
-		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = true)
-		viewBinding.webView.webViewClient = BrowserClient(this)
+		showCloseNavigation = true
+		webView.webViewClient = BrowserClient(this)
 		lifecycleScope.launch {
 			try {
 				proxyProvider.applyWebViewConfig()
 			} catch (e: Exception) {
-				Snackbar.make(viewBinding.webView, e.getDisplayMessage(resources), Snackbar.LENGTH_LONG).show()
+				snackbarHostState.showSnackbar(e.getDisplayMessage(resources))
 			}
 			if (savedInstanceState == null) {
 				val url = authProvider.authUrl
@@ -58,20 +56,15 @@ class SourceAuthActivity : BaseBrowserActivity(), BrowserCallback {
 					source.getTitle(this@SourceAuthActivity),
 					getString(R.string.loading_),
 				)
-				viewBinding.webView.loadUrl(url)
+				webView.loadUrl(url)
 			}
 		}
 	}
 
-	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-		android.R.id.home -> {
-			viewBinding.webView.stopLoading()
-			setResult(RESULT_CANCELED)
-			finishAfterTransition()
-			true
-		}
-
-		else -> super.onOptionsItemSelected(item)
+	override fun onNavigationClose() {
+		webView.stopLoading()
+		setResult(RESULT_CANCELED)
+		finishAfterTransition()
 	}
 
 	override fun onLoadingStateChanged(isLoading: Boolean) {
