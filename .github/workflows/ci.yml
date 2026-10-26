@@ -27,15 +27,15 @@ jobs:
       - name: Setup Android + Gradle
         uses: ./.github/actions/setup-android
 
-      - name: Assemble debug
-        run: ./gradlew :app:assembleDebug --stacktrace
-
-      - name: Parsers unit tests
-        # Excludes MangaParserTest (live network suite). Run locally via :parsers:testLiveSources
-        run: ./gradlew :parsers:test --stacktrace
-
-      - name: App unit tests
-        run: ./gradlew :app:testDebugUnitTest --stacktrace
+      - name: Assemble debug + unit tests
+        # One Gradle invocation: shared configuration / daemon / build cache.
+        # Parsers live network suite stays local (:parsers:testLiveSources).
+        run: >
+          ./gradlew
+          :app:assembleDebug
+          :parsers:test
+          :app:testDebugUnitTest
+          --stacktrace
 
   release:
     name: Assemble release (signed when secrets present)

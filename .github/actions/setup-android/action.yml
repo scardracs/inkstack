@@ -1,5 +1,5 @@
 name: Setup Android + Gradle
-description: Checkout deps already done; install JDK, Android CLI/SDK, Gradle cache
+description: JDK, cached Android SDK, Gradle wrapper cache
 
 inputs:
   java-version:
@@ -16,13 +16,23 @@ runs:
         distribution: temurin
         java-version: ${{ inputs.java-version }}
 
+    - name: Cache Android SDK
+      id: android-sdk
+      uses: actions/cache@v6
+      with:
+        path: ${{ env.ANDROID_HOME }}
+        # Bump the suffix when platforms / build-tools change.
+        key: android-sdk-${{ runner.os }}-api37-api36-bt36.0.0-v1
+
     - name: Install Android CLI
+      if: steps.android-sdk.outputs.cache-hit != 'true'
       shell: bash
       run: |
         curl -fsSL https://dl.google.com/android/cli/latest/linux_x86_64/install.sh | bash
         echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
     - name: Install Android SDK packages
+      if: steps.android-sdk.outputs.cache-hit != 'true'
       shell: bash
       run: |
         mkdir -p "$ANDROID_HOME/licenses"
@@ -40,7 +50,19 @@ runs:
             platforms/android-36 \
             build-tools/36.0.0
 
+    - name: Ensure platform-tools on PATH
+      if: steps.android-sdk.outputs.cache-hit == 'true'
+      shell: bash
+      run: |
+        echo "$ANDROID_HOME/platform-tools" >> "$GITHUB_PATH"
+        # CLI may still be useful for sdk updates; ignore if absent.
+        if [ -x "$HOME/.local/bin/android" ]; then
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+        fi
+
     - name: Gradle cache
       uses: gradle/actions/setup-gradle@v6
       with:
         cache-provider: basic
+        # Keep the daemon across steps in the same job (assemble + tests).
+        cache-read-only: false
