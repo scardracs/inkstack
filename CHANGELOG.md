@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.0.2
+
+Version `1.0.2` / `versionCode` 4.
+
+### Fixes
+
+- Glass selection / chrome icons: derive foreground from `surfaceContainerHigh` luminance (not theme mode) so Material You light container tints no longer swallow white icons; selection bar uses a more opaque fill; overflow menu icons use theme `onSurface`.
+
+### Dependencies
+
+- Checked catalog against current stable Maven / Google Maven releases (Compose BOM `2026.09.00`, AGP `9.4.1`, Kotlin `2.4.21`, Room `2.8.5`, etc. already current).
+- Bump OkHttp `5.5.0` → `5.5.1`.
+- Bump AndroidX WebKit `1.17.1` → `1.18.0`.
+
 ## 1.0.1
 
 Patch after `v1.0.0` never shipped: CI failed on `VersionIdTest` (still expected `0.1.0`). Version `1.0.1` / `versionCode` 3.
