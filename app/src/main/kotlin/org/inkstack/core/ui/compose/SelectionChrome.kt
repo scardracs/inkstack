@@ -121,12 +121,12 @@ fun GlassSelectionBar(
 	val tick = host?.revisionTick
 	BackHandler { session.dismiss() }
 	var overflowExpanded by remember { mutableStateOf(false) }
-	// Contrast vs glass fill (not theme mode). Opaque enough that manga covers under the
-	// pill cannot wash the icons out.
+	// Opaque glass so luminance-based content color matches the painted fill
+	// (translucent pills blend with covers and defeat contrast).
 	val content = inkstackGlassContentColor().copy(alpha = 1f)
 	val menuContent = MaterialTheme.colorScheme.onSurface
 	val visible = session.actions.filter { it.visible }
-	val inline = visible.filter { it.showInline }.take(3)
+	val inline = visible.filter { it.showInline && it.iconRes != 0 }.take(3)
 	val overflow = visible.filterNot { it in inline }
 
 	InkstackGlassSurface(
@@ -134,7 +134,8 @@ fun GlassSelectionBar(
 			.fillMaxWidth()
 			.padding(horizontal = 16.dp, vertical = 8.dp),
 		shape = InkstackGlassShape,
-		alpha = 0.94f,
+		alpha = 1f,
+		enabledBlur = false,
 	) {
 		CompositionLocalProvider(LocalContentColor provides content) {
 			Row(

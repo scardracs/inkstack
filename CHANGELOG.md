@@ -2,11 +2,18 @@
 
 ## 1.0.2
 
-Version `1.0.2` / `versionCode` 4.
+Version `1.0.2` / `versionCode` 4. (Retagged: replaces the earlier `v1.0.2` APK.)
 
 ### Fixes
 
-- Glass selection / chrome icons: derive foreground from `surfaceContainerHigh` luminance (not theme mode) so Material You light container tints no longer swallow white icons; selection bar uses a more opaque fill; overflow menu icons use theme `onSurface`.
+- Glass selection / chrome icons: derive foreground from `surfaceContainerHigh` luminance (not theme mode) so Material You light container tints no longer swallow white icons; selection bar uses an opaque fill.
+- Selection quick actions: resolve icons via an explicit `R.id`→`R.drawable` map. Reflecting into AppCompat `MenuItemImpl` fails on Android 14+ (empty IconButtons that looked like missing / same-color icons).
+
+### Build
+
+- Enable Gradle parallel, build cache, and configuration-cache; raise daemon heaps for local builds.
+- Drop redundant AGP-default `gradle.properties` flags; disable unused View Binding; remove ignored ProGuard `-optimizationpasses`.
+- CI: cache Android SDK (`actions/cache@v6`), one Gradle invocation for debug assemble + unit tests, skip `lintVital` on the release job.
 
 ### Dependencies
 

@@ -76,7 +76,9 @@ jobs:
         env:
           RELEASE_STORE_FILE: keystore/inkstack-release.jks
         run: |
-          ARGS=(:app:assembleRelease --stacktrace)
+          # Skip lintVital here — it parallelizes poorly with R8 on CI runners and
+          # duplicates work already covered by local/IDE lint. Save ~1m wall clock.
+          ARGS=(:app:assembleRelease -x lintVitalRelease --stacktrace)
           if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
             NAME="${GITHUB_REF_NAME#v}"
             ARGS+=("-PversionName=${NAME}")

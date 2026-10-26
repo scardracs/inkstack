@@ -136,7 +136,8 @@ android {
 	}
 
 	buildFeatures {
-		viewBinding = true
+		// No XML layouts left after Compose migration.
+		viewBinding = false
 		buildConfig = true
 		compose = true
 		resValues = true

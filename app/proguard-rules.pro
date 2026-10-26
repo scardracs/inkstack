@@ -1,5 +1,3 @@
-    -optimizationpasses 8
-
 -dontwarn okhttp3.internal.platform.**
 -dontwarn org.bouncycastle.**
 -dontwarn org.openjsse.**
