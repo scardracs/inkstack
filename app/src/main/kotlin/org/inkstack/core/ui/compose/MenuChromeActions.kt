@@ -19,10 +19,21 @@ fun Menu.toChromeActions(): List<SelectionChromeAction> = buildList {
 	}
 }
 
-private fun MenuItem.iconResId(): Int = try {
-	javaClass.getMethod("getIconResId").invoke(this) as Int
-} catch (_: ReflectiveOperationException) {
-	0
+private fun MenuItem.iconResId(): Int {
+	try {
+		val viaMethod = javaClass.getMethod("getIconResId").invoke(this) as Int
+		if (viaMethod != 0) return viaMethod
+	} catch (_: ReflectiveOperationException) {
+		// fall through
+	}
+	return try {
+		val field = javaClass.getDeclaredField("mIconResId").apply { isAccessible = true }
+		field.getInt(this)
+	} catch (_: ReflectiveOperationException) {
+		0
+	} catch (_: IllegalAccessException) {
+		0
+	}
 }
 
 private fun MenuItem.wantsInlineAction(): Boolean {

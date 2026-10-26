@@ -3,7 +3,6 @@ package org.inkstack.core.ui.compose
 import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,28 +24,29 @@ import androidx.compose.ui.unit.dp
 /** Default floating chrome shape — pill / rounded-xl. */
 val InkstackGlassShape: Shape = RoundedCornerShape(28.dp)
 
-/** Near-white foreground for icons/labels on dark frosted chrome (chiaro, not grey-on-charcoal). */
-private val GlassDarkContent = Color(0xFFF2F2F2)
+/** Near-white / near-black foregrounds — pick from the glass fill luminance, not theme mode. */
+private val GlassOnDarkFill = Color(0xFFF2F2F2)
+private val GlassOnLightFill = Color(0xFF1C1B1F)
 
 /**
  * Content color for controls drawn on [InkstackGlassSurface].
- * Dark theme: forced light/white-ish. Light theme: theme [onSurface].
+ *
+ * Uses [ColorScheme.surfaceContainerHigh] luminance (the glass fill), not [ColorScheme.surface]
+ * or [isSystemInDarkTheme]: Material You dark schemes often use a light container tint, so
+ * “white because dark theme” made icons disappear into the pill.
  */
 @Composable
 fun inkstackGlassContentColor(): Color {
-	val scheme = MaterialTheme.colorScheme
-	val isDark = isSystemInDarkTheme() || scheme.surface.luminance() < 0.5f
-	return if (isDark) GlassDarkContent else scheme.onSurface
+	val fill = MaterialTheme.colorScheme.surfaceContainerHigh
+	return if (fill.luminance() > 0.5f) GlassOnLightFill else GlassOnDarkFill
 }
 
 /**
- * Muted secondary label on glass (subtitles, placeholders) — still light in dark theme.
+ * Muted secondary label on glass (subtitles, placeholders).
  */
 @Composable
 fun inkstackGlassContentColorMuted(): Color {
-	val scheme = MaterialTheme.colorScheme
-	val isDark = isSystemInDarkTheme() || scheme.surface.luminance() < 0.5f
-	return if (isDark) GlassDarkContent.copy(alpha = 0.72f) else scheme.onSurfaceVariant
+	return inkstackGlassContentColor().copy(alpha = 0.72f)
 }
 
 /**
@@ -70,23 +70,24 @@ fun InkstackGlassSurface(
 	content: @Composable BoxScope.() -> Unit,
 ) {
 	val scheme = MaterialTheme.colorScheme
-	val isDark = isSystemInDarkTheme() || scheme.surface.luminance() < 0.5f
+	val fill = scheme.surfaceContainerHigh
+	val fillIsLight = fill.luminance() > 0.5f
 	val reduceTransparency = rememberReduceTransparency()
 	val blurCapable = enabledBlur &&
 		!reduceTransparency &&
 		Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 	val effectiveAlpha = when {
-		blurCapable -> alpha.coerceIn(0.68f, 0.88f)
-		else -> (alpha + 0.08f).coerceIn(0.78f, 0.94f)
+		blurCapable -> alpha.coerceIn(0.72f, 0.92f)
+		else -> (alpha + 0.10f).coerceIn(0.82f, 0.96f)
 	}
 	// Flat surfaceContainer tint — surfaceColorAtElevation adds a tonal band that
 	// also reads as a center streak on pill chrome.
-	val tint = remember(scheme.surfaceContainerHigh, effectiveAlpha) {
-		scheme.surfaceContainerHigh.copy(alpha = effectiveAlpha)
+	val tint = remember(fill, effectiveAlpha) {
+		fill.copy(alpha = effectiveAlpha)
 	}
-	val borderColor = remember(scheme.outlineVariant, isDark, blurCapable) {
+	val borderColor = remember(scheme.outlineVariant, fillIsLight, blurCapable) {
 		when {
-			isDark -> GlassDarkContent.copy(alpha = 0.18f)
+			!fillIsLight -> GlassOnDarkFill.copy(alpha = 0.18f)
 			blurCapable -> scheme.outlineVariant.copy(alpha = 0.40f)
 			else -> scheme.outlineVariant.copy(alpha = 0.28f)
 		}

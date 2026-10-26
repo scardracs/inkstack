@@ -121,8 +121,10 @@ fun GlassSelectionBar(
 	val tick = host?.revisionTick
 	BackHandler { session.dismiss() }
 	var overflowExpanded by remember { mutableStateOf(false) }
-	// Full-opacity glass foreground — menu drawables often resolve to theme greys that look disabled.
+	// Contrast vs glass fill (not theme mode). Opaque enough that manga covers under the
+	// pill cannot wash the icons out.
 	val content = inkstackGlassContentColor().copy(alpha = 1f)
+	val menuContent = MaterialTheme.colorScheme.onSurface
 	val visible = session.actions.filter { it.visible }
 	val inline = visible.filter { it.showInline }.take(3)
 	val overflow = visible.filterNot { it in inline }
@@ -132,6 +134,7 @@ fun GlassSelectionBar(
 			.fillMaxWidth()
 			.padding(horizontal = 16.dp, vertical = 8.dp),
 		shape = InkstackGlassShape,
+		alpha = 0.94f,
 	) {
 		CompositionLocalProvider(LocalContentColor provides content) {
 			Row(
@@ -189,7 +192,8 @@ fun GlassSelectionBar(
 									},
 									enabled = action.enabled,
 									leadingIcon = {
-										SelectionActionIcon(action = action, tint = content)
+										// Popup uses the theme surface — not the glass fill.
+										SelectionActionIcon(action = action, tint = menuContent)
 									},
 								)
 							}
